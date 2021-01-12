@@ -25,7 +25,7 @@ const widgetParam = args.widgetParameter
 let data = await getData()
 
 const title = "中国联通"
-const cuIconUrl = "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/f77d3cdc-b757-4acd-9766-a64421bf0c6d.png"
+const cuIconUrl = "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/fcdc0fe8-f24c-48ae-a73b-ee47b05f51c4.png"
 const dataSfs = SFSymbol.named("antenna.radiowaves.left.and.right")
 dataSfs.applyHeavyWeight()
 const dataIcon = dataSfs.image
@@ -77,7 +77,7 @@ let headerStack = widget.addStack()
 headerStack.layoutVertically
 headerStack.addSpacer()
 let logo = headerStack.addImage(await getImg(cuIconUrl))
-logo.imageSize = new Size(98, 30)
+logo.imageSize = new Size(468*0.2, 118*0.2)
 headerStack.addSpacer()
 widget.addSpacer()
 
