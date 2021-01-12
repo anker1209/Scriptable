@@ -1,7 +1,8 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
 // icon-color: red; icon-glyph: mobile-alt;
-// Author:anker
+// Author: 脑瓜
+// Github: https://github.com/anker1209/Scriptable
 // 该组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 
 // #############设置##############
