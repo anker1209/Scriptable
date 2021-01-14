@@ -1,5 +1,5 @@
 {
-  "author": "ÄÔ¹Ï",
+  "author": "è„‘ç“œ",
   "scriptable": true,
   "icon": "https://avatars2.githubusercontent.com/u/76637082?s=460&u=32c8666ab3e3e7e0aa5c2c570c9e8342f262a925&v=4",
   "repo": "https://github.com/dompling/Scriptable",
@@ -7,13 +7,13 @@
     {
       "version": "1.0.0",
       "author": "KeiKinn",
-      "description": "½Å±¾À´×Ô2YaÆÆ¿ÇÈÕ£¬ĞŞ¸´Å©ÀúÉúÈÕÏÔÊ¾´íÎó£¬ÓĞÈÎºÎÎÊÌâ@anker1209",
+      "description": "è„šæœ¬æ¥è‡ª2Yaç ´å£³æ—¥ï¼Œä¿®å¤å†œå†ç”Ÿæ—¥æ˜¾ç¤ºé”™è¯¯ï¼Œæœ‰ä»»ä½•é—®é¢˜@anker1209",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
       "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/d0eee765-d320-490d-a611-5d1b49590441.png",
       "name": "StickerOnScreen",
-      "title": "ÆÆ¿ÇÈÕ",
+      "title": "ç ´å£³æ—¥",
       "html": [
-        "Ô­×÷Õß£º< a href=\"https://github.com/dompling/Scriptable\">@dompling</>"
+        "åŸä½œè€…ï¼š< a href=\"https://github.com/dompling/Scriptable\">@dompling</>"
       ],
       "images": [
         "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7065.PNG"
@@ -21,14 +21,14 @@
     },
     {
       "version": "1.0.0",
-      "author": "ÄÔ¹Ï",
-      "description": "ÖĞ¹úÁªÍ¨Ğ¡×é¼ş£¬Á½ÖÖÄ£Ê½£¬Ä¬ÈÏÎªÔ²»·½ø¶ÈÌõÄ£Ê½£¬Ö÷ÆÁÄ»³¤°´Ğ¡×é¼ş-->±à¼­Ğ¡×é¼ş-->Parameter£¬ÊäÈë1£¬Ê¹ÓÃÎÄ×ÖÄ£Ê½",
+      "author": "è„‘ç“œ",
+      "description": "ä¸­å›½è”é€šå°ç»„ä»¶ï¼Œä¸¤ç§æ¨¡å¼ï¼Œé»˜è®¤ä¸ºåœ†ç¯è¿›åº¦æ¡æ¨¡å¼ï¼Œä¸»å±å¹•é•¿æŒ‰å°ç»„ä»¶-->ç¼–è¾‘å°ç»„ä»¶-->Parameterï¼Œè¾“å…¥1ï¼Œå°†ä½¿ç”¨æ–‡å­—æ¨¡å¼",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/Chinaunicom.js",
       "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/34ebdddc-90a8-4eb7-828b-f934c7386e12.png",
       "name": "Chinaunicom",
-      "title": "ÖĞ¹úÁªÍ¨",
+      "title": "ä¸­å›½è”é€š",
       "html": [
-        "×÷Õß£º< a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>"
+        "ä½œè€…ï¼š< a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>"
       ],
       "images": [
         "https://raw.githubusercontent.com/anker1209/Scriptable/main/IMG_2686.jpg"
