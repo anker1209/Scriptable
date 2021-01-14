@@ -1,0 +1,38 @@
+{
+  "author": "脑瓜",
+  "scriptable": true,
+  "icon": "https://avatars2.githubusercontent.com/u/76637082?s=460&u=32c8666ab3e3e7e0aa5c2c570c9e8342f262a925&v=4",
+  "repo": "https://github.com/dompling/Scriptable",
+  "apps": [
+    {
+      "version": "1.0.0",
+      "author": "KeiKinn",
+      "description": "脚本来自2Ya破壳日，修复农历生日显示错误，有任何问题@anker1209",
+      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
+      "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/d0eee765-d320-490d-a611-5d1b49590441.png",
+      "name": "StickerOnScreen",
+      "title": "破壳日",
+      "html": [
+        "原作者：< a href=\"https://github.com/dompling/Scriptable\">@dompling</>"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7065.PNG"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "author": "脑瓜",
+      "description": "中国联通小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
+      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/Chinaunicom.js",
+      "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/34ebdddc-90a8-4eb7-828b-f934c7386e12.png",
+      "name": "Chinaunicom",
+      "title": "中国联通",
+      "html": [
+        "作者：< a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/anker1209/Scriptable/main/IMG_2686.jpg"
+      ]
+    }
+  ]
+}
