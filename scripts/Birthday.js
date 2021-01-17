@@ -264,7 +264,7 @@ class Widget extends DmYY {
 	};
 
 	renderLarge = async (w) => {
-		w.addSpacer();
+		w.addSpacer(20);
 		const body = w.addStack();
 		const left = body.addStack();
 		this.setLeftView(left);
@@ -272,11 +272,11 @@ class Widget extends DmYY {
 		const right = body.addStack();
 		this.setRightView(right);
 
-		w.addSpacer();
+		w.addSpacer(20);
 		const footer = w.addStack();
 		const text = await this.fetch();
 		const subContent = footer.addText(text);
-		subContent.font = Font.lightSystemFont(16);
+		subContent.font = Font.systemFont(16);
 		subContent.textColor = this.widgetColor;
 		w.addSpacer();
 		return w;
