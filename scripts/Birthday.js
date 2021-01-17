@@ -276,7 +276,7 @@ class Widget extends DmYY {
 		const footer = w.addStack();
 		const text = await this.fetch();
 		const subContent = footer.addText(text);
-		subContent.font = Font.boldSystemFont(16);
+		subContent.font = Font.lightSystemFont(16);
 		subContent.textColor = this.widgetColor;
 		w.addSpacer();
 		return w;
