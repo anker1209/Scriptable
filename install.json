@@ -18,9 +18,10 @@
         "<br/>",
         "<h3 align=\"center\">日期填写说明</h3>",
         "<h4>生日配置</h4>",
-        "<li>如果过阳历生日，第一行填写阳历生日，第二行填写false或者不填</li>",
-        "<li>如果过农历生日，第一行填写农历日期，第二行填写true</li>",
+        "<li>如果过阳历生日，第二行填写阳历生日，第三行填写false或者不填</li>",
+        "<li>如果过农历生日，第二行填写农历日期，第三行填写true</li>",
         "<li>无论阳历还是农历，日期格式均为年-月-日，如：2020-01-01</li>"
+        "<li>第四行填写阳历日期true</li>",
       ],
       "images": [
         "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7065.PNG"
