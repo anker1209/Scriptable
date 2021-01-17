@@ -264,15 +264,15 @@ class Widget extends DmYY {
 	};
 
 	renderLarge = async (w) => {
-		w.addSpacer(20);
+		w.addSpacer();
 		const body = w.addStack();
 		const left = body.addStack();
 		this.setLeftView(left);
-		body.addSpacer(20);
+		body.addSpacer(10);
 		const right = body.addStack();
 		this.setRightView(right);
 
-		w.addSpacer(20);
+		w.addSpacer();
 		const footer = w.addStack();
 		const text = await this.fetch();
 		const subContent = footer.addText(text);
@@ -287,7 +287,7 @@ class Widget extends DmYY {
 		const left = body.addStack();
 		w.setPadding(16, 16, 16, 16);
 		this.setLeftView(left);
-		body.addSpacer(15);
+		body.addSpacer(10);
 		const right = body.addStack();
 		this.setRightView(right);
 		return w;
