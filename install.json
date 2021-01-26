@@ -10,6 +10,29 @@
       "description": "脚本来自2Ya破壳日，修复农历生日显示错误，有任何问题@anker1209",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
       "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/d0eee765-d320-490d-a611-5d1b49590441.png",
+      "name": "JD-in-one",
+      "title": "JD-in-one",
+      "html": [
+        "原作者：<a href=\"https://github.com/dompling/Scriptable\">@dompling</a>",
+        "<br/>",
+        "<br/>",
+        "<h3 align=\"center\">日期填写说明</h3>",
+        "<h4>生日配置</h4>",
+        "<li>如果过阳历生日，第二行填写阳历生日，第三行填写false或者不填</li>",
+        "<li>如果过农历生日，第二行填写农历日期，第三行填写true</li>",
+        "<li>无论阳历还是农历，日期格式均为年-月-日，如：2020-01-01</li>",
+        "<li>第四行填写阳历日期</li>"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7065.PNG"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "author": "2Ya",
+      "description": "脚本来自2Ya破壳日，修复农历生日显示错误，有任何问题@anker1209",
+      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
+      "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/d0eee765-d320-490d-a611-5d1b49590441.png",
       "name": "Birthday",
       "title": "破壳日",
       "html": [
