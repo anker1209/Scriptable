@@ -73,7 +73,7 @@ let timerKeys = []
 let latelyDays = []
 let isSign = await cache()
 let CACHE_KEY = "cache_jd_" + userID
-// Keychain.remove(CACHE_KEY)
+Keychain.remove(CACHE_KEY)
 const chartTextColor = Color.dynamic(new Color("000000", 1), new Color("ffffff", 1))
 const packageData = await getPackageData()
 const packageNum = packageData.dealLogList.length
