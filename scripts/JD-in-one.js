@@ -713,7 +713,7 @@ async function cache(){
   let myDate = new Date();
   let ty = myDate.toLocaleDateString()
   if(cache == true) {
-    let caches = Keychain.get("time")
+    let caches = Keychain.get("time" + userID)
     if(caches == ty) {
       var cachedata = 0
     }
