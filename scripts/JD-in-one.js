@@ -16,6 +16,8 @@ const size = {
   division: 25, // 左侧与右侧间距
   chartHeight: 120 //京豆K线图高度
 }
+const showBaitiao = false // 是否显示白条还款信息
+const showPackage = false // 是否显示包裹信息
 const newBG = false  //是否设置或者使用新的背景图片，若要设置背景图片，请勿将下一行值设为true
 const removeBG = false //是否需要清空背景图片，如果设置过背景图片，想再使用纯色背景，需将此设置为true清除背景图片缓存
 const setbgColor = false //是否设置固定纯色背景，如要设置，请在下行指定背景颜色，并将newBG设置为false
@@ -73,8 +75,6 @@ let isSign = await cache()
 let CACHE_KEY = "cache_jd_" + userID
 // Keychain.remove(CACHE_KEY)
 const chartTextColor = Color.dynamic(new Color("000000", 1), new Color("ffffff", 1))
-const showBaitiao = true
-const showPackage = false
 const packageData = await getPackageData()
 const packageNum = packageData.dealLogList.length
 const mainData = await getMainData(isSign)
