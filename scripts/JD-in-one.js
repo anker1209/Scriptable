@@ -7,7 +7,7 @@
 let widgetParam = args.widgetParameter
 const files = FileManager.local()
 // ######################设置####################
-const cookie = 'pt_key=AAJgBXG6ADCNpajqhrZ4W9eqApdORNhXH2NBgogGjPhCZuRJ-W-xp73zDBuX8Bz1EhA3Um18OG8; pt_pin=cheney0816;' // 两个引号之间输入京东cookie，只需填入pt_key和pt_pin字段即可
+const cookie = '' // 两个引号之间输入京东cookie，只需填入pt_key和pt_pin字段即可
 const userID = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1])
 const size = {
   logo: 30, // Logo大小
