@@ -6,24 +6,6 @@
   "apps": [
     {
       "version": "1.0.0",
-      "author": "脑瓜",
-      "description": "显示京东用户信息、物流信息、白条还款信息、京豆K线图、金豆收支、钢镚及金贴信息",
-      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/JD-in-one.js",
-      "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/e1902ff8-02e9-4dbf-99c7-cfc85ef3f1b7.png",
-      "name": "JD-in-one",
-      "title": "JD-in-one",
-      "html": [
-        "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</a>",
-        "<br/>",
-        "<br/>",
-        "<h3 align=\"center\">使用说明</h3>",
-      ],
-      "images": [
-        "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7143.PNG"
-      ]
-    },
-    {
-      "version": "1.0.0",
       "author": "2Ya",
       "description": "脚本来自2Ya破壳日，修复农历生日显示错误，有任何问题@anker1209",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
