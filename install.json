@@ -12,6 +12,12 @@
       "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/e1902ff8-02e9-4dbf-99c7-cfc85ef3f1b7.png",
       "name": "JD-in-one",
       "title": "JD-in-one",
+      "depend": [
+        {
+          "name": "DmYY",
+          "scriptURL": "https://raw.githubusercontent.com/dompling/Scriptable/master/Scripts/DmYY.js"
+        }
+      ],
       "html": [
         "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</a>",
         "<br/>",
