@@ -4,7 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DMYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version: 1.1.0  updata: 2021/01/27
+// version:1.1.0
+// updata: 2021/01/27
 let widgetParam = args.widgetParameter;
 let cookie ='';
 let userID = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
