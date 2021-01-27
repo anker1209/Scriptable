@@ -60,7 +60,6 @@ let baitiaoTitle;
 let baitiaoAmount;
 let baitiaoDesc;
 let CACHE_KEY;
-// Keychain.remove(CACHE_KEY)
 
 const df = new DateFormatter()
 let _date = new Date()
@@ -857,7 +856,7 @@ class Widget extends DmYY {
         'buttonName'
       ].replace(/最近还款日/g, '');
     }
-
+// Keychain.remove(CACHE_KEY)
     if (config.widgetFamily == 'small') {
       return await renderSmallWidget();
     } else if (config.widgetFamily == 'large') {
