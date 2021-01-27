@@ -23,7 +23,7 @@ const showPackage = false; // 是否显示包裹信息
 const chartTextColor = Color.dynamic(new Color('000000', 1),new Color('ffffff', 1),); // 京豆K线图深色和浅色模式对应的京豆数据字体颜色，注意切换模式以后颜色不会立即刷新，等它自动刷新就正常了
 // ####################################
 const w = new ListWidget();
-w.setPadding(14 * size.SC, 14 * size.SC, 14 * size.SC, 14 * size.SC); //使用透明背景的可以将此处四个数全部修改为0
+w.setPadding(14 * size.SC, 14 * size.SC, 14 * size.SC, 14 * size.SC);
 
 let packageData;
 let packageNum;
