@@ -45,7 +45,7 @@ const widget = new ListWidget()
 widget.setPadding(16, 16, 16, 16) // widget边距（上，下，左，右）
 
 // ############背景设置############
-const path = files.joinPath(files.documentsDirectory(), "testPath")
+const path = files.joinPath(files.documentsDirectory(), "Chinaunicom-20210129")
 if (newBG && config.runsInApp){
   const img = await Photos.fromLibrary()
   widget.backgroundImage = img
