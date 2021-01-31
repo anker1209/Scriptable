@@ -18,7 +18,7 @@ const size = {
   division: 20, // 左侧与右侧间距
   chartHeight: 120, //京豆K线图高度
 };
-const showBaitiao = true; // 是否显示白条还款信息
+const showBaitiao = false; // 是否显示白条还款信息
 const showPackage = false; // 是否显示包裹信息
 const chartTextColor = Color.dynamic(new Color('000000', 1),new Color('ffffff', 1),); // 京豆K线图深色和浅色模式对应的京豆数据字体颜色，注意切换模式以后颜色不会立即刷新，等它自动刷新就正常了
 // ####################################
