@@ -64,9 +64,7 @@ let CACHE_KEY;
 
 const doubleDate = await getDoubleDay(1);
 const _yestoday = doubleDate[0];
-log(_yestoday)
 const _today = doubleDate[1];
-log(_today)
 // #####################小组件###################
 async function renderSmallWidget() {
   const bodyStack = w.addStack();
