@@ -350,10 +350,10 @@ class Widget extends DmYY {
     canvas.fillEllipse(ringBG);
     canvas.drawImageInRect(ringIcon, ringBG);
 
-    const canvTextRect = new Rect(0, 100 - canvTextSize / 2 + 5, canvSize, canvTextSize);
+    const canvTextRect = new Rect(0, 100 - canvTextSize / 2 - 10, canvSize, canvTextSize);
     canvas.setTextAlignedCenter();
     canvas.setTextColor(cfontColor);
-    canvas.setFont(new Font("Bebas Neue Cyrillic Regular", canvTextSize))
+    canvas.setFont(new Font("AvenirNextCondensed-DemiBold", canvTextSize))
     canvas.drawTextInRect(`${birthdayText[1]}`, canvTextRect);
 
     const imageContent = rightTop.addStack();
