@@ -43,8 +43,9 @@
       "html": [
         "原作者：<a href=\"https://github.com/dompling/Scriptable\">@dompling</a>",
         "<br/>",
-        "<h3 align=\"center\">更新说明</h3>",
-        "<li>2021/02/02 增加年、月、天显示</li>",
+        "<br/>",
+        "<h4 align=\"center\">更新说明</h4>",
+        "<li>2021/02/02  增加年、月、天显示</li>",
         "<br/>",
         "<h3 align=\"center\">日期填写说明</h3>",
         "<h4>生日配置</h4>",
