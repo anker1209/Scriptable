@@ -33,7 +33,7 @@
       ]
     },
     {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "2Ya",
       "description": "脚本来自2Ya破壳日，修复农历生日显示错误，有任何问题@anker1209",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
@@ -43,6 +43,8 @@
       "html": [
         "原作者：<a href=\"https://github.com/dompling/Scriptable\">@dompling</a>",
         "<br/>",
+        "<h3 align=\"center\">更新说明</h3>",
+        "<li>2021/02/02 增加年、月、天显示</li>",
         "<br/>",
         "<h3 align=\"center\">日期填写说明</h3>",
         "<h4>生日配置</h4>",
