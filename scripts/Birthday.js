@@ -27,7 +27,6 @@ let countIcon = SFSymbol.named("hourglass.bottomhalf.fill").image;
 let lunarIcon = SFSymbol.named("25.square.fill").image; // 农历图标数字
 let birthIcon = SFSymbol.named("app.gift.fill").image;
 
-
 getAge = (beginStr) => {
   let tmpBirth = {};
   tmpBirth.year = 0;
