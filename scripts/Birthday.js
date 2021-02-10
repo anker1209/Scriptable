@@ -3,8 +3,8 @@
 // icon-color: pink; icon-glyph: birthday-cake;
 // Author: 2Ya UI: 脑瓜 https://t.me/Scriptable_JS
 // 该脚本依赖DmYY及Calendar: https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:1.0.1
-// update:2021/02/02
+// version:1.0.2
+// update:2021/02/10
 
 // 添加require，是为了vscode中可以正确引入包，以获得自动补全等功能
 if (typeof require === "undefined") require = importModule;
@@ -351,7 +351,7 @@ class Widget extends DmYY {
     const canvTextRect = new Rect(0, 100 - canvTextSize / 2 + 5, canvSize, canvTextSize);
     canvas.setTextAlignedCenter();
     canvas.setTextColor(cfontColor);
-    canvas.setFont(new Font("Bebas Neue Cyrillic Regular", canvTextSize))
+    canvas.setFont(new Font("AvenirNextCondensed-DemiBold", canvTextSize))
     canvas.drawTextInRect(`${birthdayText[1]}`, canvTextRect);
 
     const imageContent = rightTop.addStack();
