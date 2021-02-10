@@ -33,7 +33,7 @@
       ]
     },
     {
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": "2Ya",
       "description": "脚本来自2Ya破壳日，修复农历生日显示错误，有任何问题@anker1209",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
