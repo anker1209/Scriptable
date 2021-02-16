@@ -922,7 +922,7 @@ function loadImgCache(cacheKey) {
   return img
 }
 // #############################################
-async function httpRequest(dataName, url, json = true, options, pointCacheKey, type = 'GET', logable = true) {
+async function httpRequest(dataName, url, json = true, options, pointCacheKey, type = 'GET', logable = false) {
   let cacheKey = `${pointCacheKey}_${userID}`
   caches.pushCache(cacheKey);
   // 读取本地缓存
