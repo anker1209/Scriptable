@@ -626,7 +626,7 @@ function lineChartConfig(labels = [], datas = [], chartTextSize, topPadding) {
       {
         type: 'line',
         backgroundColor: '#ffffff', // 圆圈填充颜色
-        borderColor: getGradientFillHelper('horizontal', ['#FA6859', '#FA6859']),
+        borderColor: getGradientFillHelper('horizontal', ['#FA2D19', '#FA2D19']),
         'borderWidth': 2,
         pointRadius: 6,
         'fill': false,
