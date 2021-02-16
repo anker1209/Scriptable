@@ -8,10 +8,10 @@
       "version": "2.0.0",
       "author": "脑瓜",
       "description": "显示京东用户信息、物流信息、白条还款信息、京豆K线图、金豆收支、钢镚、金贴、红包信息",
-      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/JD-in-one.js",
+      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/JD-in-one-v2.js",
       "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/e0d872b9-4866-4abf-87f4-a681083e6e04.png",
-      "name": "JD-in-one",
-      "title": "JD-in-one",
+      "name": "JD-in-one-v2",
+      "title": "JD-in-one-v2",
       "depend": [
         {
           "name": "DmYY",
