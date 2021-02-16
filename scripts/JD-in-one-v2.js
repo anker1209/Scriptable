@@ -32,7 +32,7 @@ const walletShowType = 2; // 17.钱包内容显示。1：红包；2：钢镚和�
 const interval = 10; // 18.数据请求间隔时间。请设置合适时间，避免频繁访问接口数据以及加载缓慢。单位：分钟
 const removeAllCaches = false; // 19.是否清除所有缓存数据
 const resetBeanCache = false; // 20.是否重置京豆缓存
-const alwaysRefreshChart = true; // 21.是否保持刷新京豆图表。若设为false，京豆无变化时将使用缓存，否则每次刷新重新生成图表。建议排版设置好没问题后将此值修改为false
+const alwaysRefreshChart = true; // 21.是否保持刷新京豆图表。设置为true，每次刷新组件都会随机刷新图表颜色，设置为false则只有在京豆数据有变化的情况下刷新颜色。 建议在排版调整没有问题后，将该项设置为false，此项设置为true会大幅加长预览载入速度
 // ####################################
 
 const logo = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/f09e7977-b161-4361-ac78-e64729192ee6.png';
@@ -151,7 +151,7 @@ async function renderMediumWidget() {
   } else {
     await setCoinShow(mainStack);
   }
-  log(caches)
+  //log(caches)
   if (removeAllCaches) {
     removeCaches(caches);
     console.log('所有缓存数据已清空')
@@ -477,8 +477,8 @@ async function init() {
     beanCache = beanCacheData.base.jdNum;
   }
   await TotalBean();
-  console.log(beanCache)
-  console.log(beanCount)
+  console.log(`【京豆数据】${beanCache}`)
+  console.log(`【京豆数据】${beanCount}`)
   try {
     if (!cookie) return;
     if (Keychain.contains(CACHE_KEY) && !resetBeanCache) {
@@ -873,7 +873,7 @@ async function getBaitiaoData() {
   const res = await httpRequest(dataName, url, true, options, 'baitiaoData', 'POST');
   return res;
 }
-
+// #############################################
 async function getImageByUrl(url, pointCacheKey, useCache = true, logable = true) {
   let cacheKey = pointCacheKey;
   caches.pushCache(cacheKey);
@@ -921,7 +921,7 @@ function loadImgCache(cacheKey) {
   }
   return img
 }
-// #############################################
+
 async function httpRequest(dataName, url, json = true, options, pointCacheKey, type = 'GET', logable = false) {
   let cacheKey = `${pointCacheKey}_${userID}`
   caches.pushCache(cacheKey);
@@ -1009,7 +1009,7 @@ for (const cacheKey of cacheKeyList) {
 removeCache(cacheKey)
 }
 }
-// #############################################
+
 async function renderFail (msg) {
   const w = new ListWidget()
   w.addText("⚠️")
@@ -1019,7 +1019,7 @@ async function renderFail (msg) {
   t.font = Font.boldSystemFont(14)
   return w
   }
-
+// #############################################
 if (typeof require === 'undefined') require = importModule;
 const { DmYY, Runing } = require('./DmYY');
 class Widget extends DmYY {
