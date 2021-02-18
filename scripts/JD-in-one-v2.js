@@ -20,7 +20,7 @@ const size = {
   chartText: 18, // 07.京豆图表数据文字大小
   chartDay: 9, // 08.京豆图表日期文字大小
   lineChartTopPadding: 25, // 09.京豆K线图顶边距。京豆数据在顶部被剪切显示不全的请调高此数值
-  barChartTopPadding: 18 // 10.京豆柱状图和曲线面积图顶边距。京豆数据在顶部被剪切显示不全的请调高此数值
+  barChartTopPadding: 5 // 10.京豆柱状图和曲线面积图顶边距。京豆数据在顶部被剪切显示不全的请调高此数值
 };
 const chartTextColor = Color.dynamic(new Color('999999'),new Color('999999'),); // 11.京豆K线图浅色和深色模式对应的京豆数据文字颜色。注意切换模式以后颜色不会立即刷新，手动刷新或自动刷新
 const showBaitiao = true; // 12.是否显示白条还款信息，关闭或者打开无待还会显示下面选择的钱包内容
