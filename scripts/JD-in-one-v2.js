@@ -1248,6 +1248,12 @@ class Widget extends DmYY {
   run = () => {
     if (config.runsInApp) {
       this.registerAction('参数配置', this.template);
+      this.registerAction('参数重置', () => {
+        Object.keys(size).forEach(key => {
+          delete this.settings[key];
+        });
+        this.saveSettings();
+      });
       this.registerAction('账号设置', async () => {
         const index = await this.generateAlert('设置账号信息', [
           '网站登录',
