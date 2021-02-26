@@ -7,10 +7,11 @@
 // version:2.0.0
 // update:2021/02/15
 let fmLocal = FileManager.local();
-let cookie ='';
-let userID = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
+let cookie = '';
+let userID = decodeURIComponent(
+  cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
 // #################设置###############
-const size = {
+let size = {
   SC: 1.00, // 01.全局缩放比例。排版溢出、显示不全的请优先调低此数值，建议递减0.05调整，如0.95、0.90……
   logo: 30, // 02.logo大小
   userImage: 70, // 03.用户头像大小
@@ -20,19 +21,19 @@ const size = {
   chartText: 18, // 07.京豆图表数据文字大小
   chartDay: 9, // 08.京豆图表日期文字大小
   lineChartTopPadding: 18, // 09.京豆K线图顶边距。京豆数据在顶部被剪切显示不全的请调高此数值
-  barChartTopPadding: 5 // 10.京豆柱状图和曲线面积图顶边距。京豆数据在顶部被剪切显示不全的请调高此数值
+  barChartTopPadding: 5, // 10.京豆柱状图和曲线面积图顶边距。京豆数据在顶部被剪切显示不全的请调高此数值
 };
-const chartTextColor = Color.dynamic(new Color('999999'),new Color('999999'),); // 11.京豆K线图浅色和深色模式对应的京豆数据文字颜色。注意切换模式以后颜色不会立即刷新，手动刷新或自动刷新
-const showBaitiao = true; // 12.是否显示白条还款信息，关闭或者打开无待还会显示下面选择的钱包内容
-const showPackage = false; // 13.是否显示包裹信息
-const smallShowType = 1; // 14.小组件显示形式。1：京豆、钱包数据；2：个人信息
-const beanShowType = 1; // 15.中组件京豆显示类型。1：双日视图；2：K线图；3：柱状图；4：曲线面积图
-const smallBeanShowType = 1; // 16.小组件京豆显示类型。1：双日视图；2：K线图；3：柱状图；4：曲线面积图
-const walletShowType = 2; // 17.钱包内容显示。1：红包；2：钢镚和金贴。若要显示钱包内容，白条需关闭或者白条打开无待还
-const interval = 10; // 18.数据请求间隔时间。请设置合适时间，避免频繁访问接口数据以及加载缓慢。单位：分钟
-const removeAllCaches = false; // 19.是否清除所有缓存数据
-const resetBeanCache = false; // 20.是否重置京豆缓存
-const alwaysRefreshChart = true; // 21.是否保持刷新京豆图表。设置为true，每次刷新组件都会随机刷新图表颜色，设置为false则只有在京豆数据有变化的情况下刷新颜色。 建议在排版调整没有问题后，将该项设置为false，此项设置为true会大幅加长预览载入速度
+let chartTextColor = Color.dynamic(new Color('999999'), new Color('999999')); // 11.京豆K线图浅色和深色模式对应的京豆数据文字颜色。注意切换模式以后颜色不会立即刷新，手动刷新或自动刷新
+let showBaitiao = true; // 12.是否显示白条还款信息，关闭或者打开无待还会显示下面选择的钱包内容
+let showPackage = false; // 13.是否显示包裹信息
+let smallShowType = 1; // 14.小组件显示形式。1：京豆、钱包数据；2：个人信息
+let beanShowType = 1; // 15.中组件京豆显示类型。1：双日视图；2：K线图；3：柱状图；4：曲线面积图
+let smallBeanShowType = 1; // 16.小组件京豆显示类型。1：双日视图；2：K线图；3：柱状图；4：曲线面积图
+let walletShowType = 2; // 17.钱包内容显示。1：红包；2：钢镚和金贴。若要显示钱包内容，白条需关闭或者白条打开无待还
+let interval = 10; // 18.数据请求间隔时间。请设置合适时间，避免频繁访问接口数据以及加载缓慢。单位：分钟
+let removeAllCaches = false; // 19.是否清除所有缓存数据
+let resetBeanCache = false; // 20.是否重置京豆缓存
+let alwaysRefreshChart = true; // 21.是否保持刷新京豆图表。设置为true，每次刷新组件都会随机刷新图表颜色，设置为false则只有在京豆数据有变化的情况下刷新颜色。 建议在排版调整没有问题后，将该项设置为false，此项设置为true会大幅加长预览载入速度
 // ####################################
 
 const logo = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/f09e7977-b161-4361-ac78-e64729192ee6.png';
@@ -44,8 +45,8 @@ const plusIcon = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-95
 const walletImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/cd89ceec-7895-41ee-a1a3-3d3e7223035f.png';
 const jingtieImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/16a7038e-6082-4ad8-b17f-fdd08266fb22.png';
 const gangbengImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/9704e332-9e7f-47e8-b09a-1f1991d4aa84.png';
-
-let packageData, packageNum;
+let userImage = 'https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png';
+let packageData, packageNum, nickName = '未知用户', jValue = '0', plus = false;
 let baitiaoData, baitiaoTitle, baitiaoAmount, baitiaoDesc;
 let cacheChart = false;
 let beanCount = 0;
@@ -55,7 +56,54 @@ let timerKeys = [];
 let textColor;
 let CACHE_KEY;
 
-let colorArr = [['#FFF000', '#E62490'], ['#FDEB71', '#F8D800'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#81FBB8', '#28C76F'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#623AA2'], ['#FCCF31', '#F55555'], ['#F761A1', '#8C1BAB'], ['#43CBFF', '#9708CC'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#00C3FF', '#FFFF1C'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#2AFADF', '#4C83FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#00DBDE', '#FC00FF'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#FF6FD8', '#3813C2'], ['#EE9AE5', '#5961F9'], ['#FF5F6D', '#FFC371'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FD6E6A', '#FFC600'], ['#FFC600', '#FD6E6A'], ['#00C9FF', '#92FE9D'], ['#EE9CA7', '#FFDDE1'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#FFAA85', '#B3315F'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#FF4E50', '#F9D423'], ['#3C8CE7', '#00EAFF'], ['#FFA8A8', '#FCFF00'], ['#FF96F9', '#C32BAC']];
+let colorArr = [
+  ['#FFF000', '#E62490'],
+  ['#FDEB71', '#F8D800'],
+  ['#ABDCFF', '#0396FF'],
+  ['#FEB692', '#EA5455'],
+  ['#FEB692', '#EA5455'],
+  ['#CE9FFC', '#7367F0'],
+  ['#90F7EC', '#32CCBC'],
+  ['#FFF6B7', '#F6416C'],
+  ['#81FBB8', '#28C76F'],
+  ['#E2B0FF', '#9F44D3'],
+  ['#F97794', '#623AA2'],
+  ['#FCCF31', '#F55555'],
+  ['#F761A1', '#8C1BAB'],
+  ['#43CBFF', '#9708CC'],
+  ['#5EFCE8', '#736EFE'],
+  ['#FAD7A1', '#E96D71'],
+  ['#00C3FF', '#FFFF1C'],
+  ['#FEC163', '#DE4313'],
+  ['#F6CEEC', '#D939CD'],
+  ['#FDD819', '#E80505'],
+  ['#FFF3B0', '#CA26FF'],
+  ['#2AFADF', '#4C83FF'],
+  ['#EECDA3', '#EF629F'],
+  ['#C2E59C', '#64B3F4'],
+  ['#00DBDE', '#FC00FF'],
+  ['#FFF886', '#F072B6'],
+  ['#F5CBFF', '#C346C2'],
+  ['#FFF720', '#3CD500'],
+  ['#FF6FD8', '#3813C2'],
+  ['#EE9AE5', '#5961F9'],
+  ['#FF5F6D', '#FFC371'],
+  ['#FFD3A5', '#FD6585'],
+  ['#C2FFD8', '#465EFB'],
+  ['#FD6E6A', '#FFC600'],
+  ['#FFC600', '#FD6E6A'],
+  ['#00C9FF', '#92FE9D'],
+  ['#EE9CA7', '#FFDDE1'],
+  ['#F0FF00', '#58CFFB'],
+  ['#FFE985', '#FA742B'],
+  ['#FFAA85', '#B3315F'],
+  ['#72EDF2', '#5151E5'],
+  ['#F6D242', '#FF52E5'],
+  ['#FF4E50', '#F9D423'],
+  ['#3C8CE7', '#00EAFF'],
+  ['#FFA8A8', '#FCFF00'],
+  ['#FF96F9', '#C32BAC'],
+];
 let chartColor = colorArr[Math.floor(Math.random() * colorArr.length)];
 //chartColor = ['#DB36A4', '#F7FF00']; // 固定京豆图表渐变填充颜色
 
@@ -81,8 +129,9 @@ const _yestoday = doubleDay[0];
 const _today = doubleDay[1];
 
 const w = new ListWidget();
-w.url = "openApp.jdMobile://"
+w.url = 'openApp.jdMobile://';
 w.setPadding(14 * size.SC, 14 * size.SC, 14 * size.SC, 14 * size.SC);
+
 // #####################小组件###################
 async function renderSmallWidget() {
   const bodyStack = w.addStack();
@@ -116,6 +165,7 @@ async function renderSmallWidget() {
   }
   return w;
 }
+
 // #####################中组件###################
 async function renderMediumWidget() {
   const bodyStack = w.addStack();
@@ -154,10 +204,11 @@ async function renderMediumWidget() {
   //log(caches)
   if (removeAllCaches) {
     removeCaches(caches);
-    console.log('所有缓存数据已清空')
+    console.log('所有缓存数据已清空');
   }
   return w;
 }
+
 // #####################大组件###################
 async function renderLargeWidget() {
   const bodyStack = w.addStack();
@@ -175,6 +226,7 @@ async function renderLargeWidget() {
   w.addSpacer();
   return w;
 }
+
 // #####################用户信息###################
 async function setUserShow(widget) {
   const userStack = widget.addStack();
@@ -185,11 +237,14 @@ async function setUserShow(widget) {
   userImgStack.addSpacer();
   const imgStack = userImgStack.addStack();
   const subStack = imgStack.addStack();
+
   subStack.size = new Size(size.userImage * size.SC, size.userImage * size.SC);
   subStack.cornerRadius = size.userImage / 2 * size.SC;
-  subStack.backgroundImage = await getImageByUrl(userImage, `userImage_${userID}`);
+  subStack.backgroundImage = await getImageByUrl(
+    userImage, `userImage_${userID}`);
   if (plus) {
-    const userImg = subStack.addImage(await getImageByUrl(plusFG, 'plusFGImage'));
+    const userImg = subStack.addImage(
+      await getImageByUrl(plusFG, 'plusFGImage'));
   }
   userImgStack.addSpacer();
   userStack.addSpacer();
@@ -213,7 +268,8 @@ async function setUserShow(widget) {
   const nameStack = userStack.addStack();
   nameStack.centerAlignContent();
   if (plus) {
-    const nameImg = nameStack.addImage(await getImageByUrl(plusIcon, 'plusIcon'));
+    const nameImg = nameStack.addImage(
+      await getImageByUrl(plusIcon, 'plusIcon'));
     nameImg.imageSize = new Size(15 * size.SC, 15 * size.SC);
   } else {
     const person = SFSymbol.named('person.circle.fill');
@@ -236,7 +292,7 @@ async function setUserShow(widget) {
   valueStack.addSpacer(5 * size.SC);
   const value = valueStack.addText(jValue.toString());
   value.font = Font.mediumSystemFont(14 * size.SC);
-  
+
   valueStack.addSpacer(5 * size.SC);
   const jStack = valueStack.addStack();
   jStack.backgroundColor = new Color('fa2d19'); // “京享”二字背景颜色
@@ -245,9 +301,10 @@ async function setUserShow(widget) {
   const jLable = jStack.addText('京享');
   jLable.font = Font.systemFont(8 * size.SC);
   jLable.textColor = new Color('FFFFFF') // “京享”二字字体颜色
-  
+
   ;[name, value].map(t => t.textColor = textColor);
 }
+
 // #####################顶部内容###################
 async function setHeaderShow(widget, image) {
   const topStack = widget.addStack();
@@ -266,10 +323,11 @@ async function setHeaderShow(widget, image) {
   const desStack = topStack.addStack();
   desStack.layoutVertically();
   desStack.addSpacer(5.5 * size.SC);
-  const desText = desStack.addText(' 京豆'); 
+  const desText = desStack.addText(' 京豆');
   desText.font = Font.mediumSystemFont(10 * size.SC);
   desText.textColor = new Color('fa2d19', 0.7);
 }
+
 // #####################京豆收支###################
 async function setBeanShow(widget, textSize, imageSize) {
   const beanStack = widget.addStack();
@@ -301,10 +359,11 @@ async function setBeanShow(widget, textSize, imageSize) {
     '今日',
   );
 }
+
 // #####################京豆图表###################
 async function setChartShow(widget, type) {
   let beanNum = [], beanDate = [];
-  Object.keys(rangeTimer).forEach(function (day) {
+  Object.keys(rangeTimer).forEach(function(day) {
     const numValue = rangeTimer[day];
     const arrDay = day.split('-');
     beanDate.push(arrDay[2]);
@@ -328,6 +387,7 @@ async function setChartShow(widget, type) {
     beanDateStack.addSpacer();
   }
 }
+
 // #####################物流信息###################
 async function setPackageShow(widget) {
   const packageStack = widget.addStack();
@@ -335,24 +395,30 @@ async function setPackageShow(widget) {
   detailStack.layoutVertically();
   const packageTitleStack = detailStack.addStack();
   packageTitleStack.centerAlignContent();
-  const packageTitle = packageTitleStack.addText(packageData.dealLogList[0]['name']);
+  const packageTitle = packageTitleStack.addText(
+    packageData.dealLogList[0]['name']);
   packageTitle.lineLimit = 1;
   packageTitle.font = Font.mediumSystemFont(12 * size.SC);
   detailStack.addSpacer(2 * size.SC);
-  const packageDesc = detailStack.addText(packageData.dealLogList[0]['wlStateDesc']);
+  const packageDesc = detailStack.addText(
+    packageData.dealLogList[0]['wlStateDesc']);
   packageDesc.lineLimit = 3;
   packageDesc.font = Font.regularSystemFont(12 * size.SC);
   detailStack.addSpacer(2 * size.SC);
   const packageStateStack = detailStack.addStack();
-  const packageTime = packageStateStack.addText(packageData.dealLogList[0]['createTime']);
+  const packageTime = packageStateStack.addText(
+    packageData.dealLogList[0]['createTime']);
   packageTime.font = Font.regularSystemFont(9 * size.SC);
   packageTime.textOpacity = 0.7;
   packageStateStack.addSpacer();
-  const packageState = packageStateStack.addText(packageData.dealLogList[0]['stateName']);
+  const packageState = packageStateStack.addText(
+    packageData.dealLogList[0]['stateName']);
   packageState.font = Font.regularSystemFont(9 * size.SC);
   packageTime.textOpacity = 0.7;
-  ;[packageTitle, packageDesc, packageTime, packageState].map(t => t.textColor = textColor);
+  ;[packageTitle, packageDesc, packageTime, packageState].map(
+    t => t.textColor = textColor);
 }
+
 // #####################金贴&钢镚##################
 async function setCoinShow(widget, vertical = false) {
   const extraData = await getExtraData();
@@ -369,35 +435,40 @@ async function setCoinShow(widget, vertical = false) {
   if (!vertical) dataStack.addSpacer(20 * size.SC);
   rowCell(dataStack, gangbengImage, gangbengValue, '钢镚');
 }
+
 // #####################京东红包##################
 async function setRedPackageShow(widget) {
   const redPackageData = await getRedPackageData();
-  const redPackageImage = await getImageByUrl(walletImg, 'walletImage')
+  const redPackageImage = await getImageByUrl(walletImg, 'walletImage');
   const redPackage = redPackageData.data.balance;
   const expiredBalance = redPackageData.data.expiredBalance;
-  let expiredDesc = `今日过期${expiredBalance}`
-  if (expiredBalance == '') expiredDesc = `今日无过期`
+  let expiredDesc = `今日过期${expiredBalance}`;
+  if (expiredBalance == '') expiredDesc = `今日无过期`;
   rowWalletCell(widget, redPackageImage, `通用红包`, redPackage, expiredDesc);
 }
+
 // #####################小组件红包##################
 async function setSmallRedPackageShow(widget) {
   const redPackageData = await getRedPackageData();
-  const redPackageImage = await getImageByUrl(walletImg, 'walletImage')
+  const redPackageImage = await getImageByUrl(walletImg, 'walletImage');
   const redPackage = redPackageData.data.balance;
   const expiredBalance = redPackageData.data.expiredBalance;
-  let expiredDesc = `今日过期${expiredBalance}`
-  if (expiredBalance == '') expiredDesc = `今日无过期`
+  let expiredDesc = `今日过期${expiredBalance}`;
+  if (expiredBalance == '') expiredDesc = `今日无过期`;
   rowSmallWalletCell(widget, redPackageImage, `通用红包`, redPackage, expiredDesc);
 }
+
 // #####################京东白条##################
 async function setBaitiaoShow(widget) {
   const baitiaoImage = await getImageByUrl(baitiaoImg, 'baitiaoImage');
   rowWalletCell(widget, baitiaoImage, baitiaoTitle, baitiaoAmount, baitiaoDesc);
 }
+
 // ####################小组件白条##################
 async function setSmallBaitiaoShow(widget) {
   const baitiaoImage = await getImageByUrl(baitiaoImg, 'baitiaoImage');
-  rowSmallWalletCell(widget, baitiaoImage, baitiaoTitle, baitiaoAmount, baitiaoDesc);
+  rowSmallWalletCell(
+    widget, baitiaoImage, baitiaoTitle, baitiaoAmount, baitiaoDesc);
 }
 
 function rowCell(widget, image, value, title) {
@@ -446,7 +517,8 @@ function rowWalletCell(widget, image, title, value, desc) {
   const stackOneDesc = stackOne.addText(desc);
   stackOneDesc.font = Font.regularSystemFont(10 * size.SC);
   stackOneDesc.textOpacity = 0.7;
-  ;[stackOneTitle, stackOneValue, stackOneDesc].map(t => t.textColor = textColor);
+  ;[stackOneTitle, stackOneValue, stackOneDesc].map(
+    t => t.textColor = textColor);
 }
 
 function rowSmallWalletCell(widget, image, title, value, desc) {
@@ -466,7 +538,8 @@ function rowSmallWalletCell(widget, image, title, value, desc) {
   const stackTwoDesc = stackTwo.addText(desc);
   stackTwoDesc.font = Font.regularSystemFont(10 * size.SC);
   stackTwoDesc.textOpacity = 0.7;
-  ;[stackOneValue, stackTwoTitle, stackTwoDesc].map(t => t.textColor = textColor);
+  ;[stackOneValue, stackTwoTitle, stackTwoDesc].map(
+    t => t.textColor = textColor);
 }
 
 async function init() {
@@ -477,16 +550,17 @@ async function init() {
     beanCache = beanCacheData.base.jdNum;
   }
   await TotalBean();
-  console.log(`【京豆数据】${beanCache}`)
-  console.log(`【京豆数据】${beanCount}`)
+  console.log(`【京豆数据】${beanCache}`);
+  console.log(`【京豆数据】${beanCount}`);
   try {
     if (!cookie) return;
     if (Keychain.contains(CACHE_KEY) && !resetBeanCache) {
       rangeTimer = JSON.parse(Keychain.get(CACHE_KEY));
       timerKeys = Object.keys(rangeTimer);
-      if (rangeTimer.hasOwnProperty(_today) && beanCache != 0 && beanCache == beanCount) {
+      if (rangeTimer.hasOwnProperty(_today) && beanCache != 0 && beanCache ==
+        beanCount) {
         if (!alwaysRefreshChart) cacheChart = true;
-        console.log('【京豆数据】无变化，使用缓存数据')
+        console.log('【京豆数据】无变化，使用缓存数据');
         return;
       }
       if (timerKeys.length >= maxDays) {
@@ -503,7 +577,7 @@ async function init() {
       timerKeys = Object.keys(rangeTimer);
     }
     await getAmountData();
-    console.log(rangeTimer)
+    console.log(rangeTimer);
   } catch (e) {
     console.log(e);
   }
@@ -511,7 +585,7 @@ async function init() {
 
 async function getAmountData() {
   let i = 0,
-  page = 1;
+    page = 1;
   do {
     const response = await getJingBeanBalanceDetail(page);
     const result = response.code === '0';
@@ -529,8 +603,8 @@ async function getAmountData() {
           if (timerKeys.indexOf(dates[0]) > -1) {
             const amount = Number(item.amount);
             rangeTimer[dates[0]][0] += amount;
-            if (amount < 0) 
-            rangeTimer[dates[0]][1] += amount;
+            if (amount < 0)
+              rangeTimer[dates[0]][1] += amount;
           } else {
             i = 1;
             Keychain.set(CACHE_KEY, JSON.stringify(rangeTimer));
@@ -561,7 +635,7 @@ function getDay(dayNumber) {
 }
 
 async function TotalBean() {
-  const dataName = "【京豆数据】";
+  const dataName = '【京豆数据】';
   let userCache = 'userData';
   if (config.widgetFamily == 'small') {
     userCache = 'userData_small';
@@ -571,12 +645,13 @@ async function TotalBean() {
     headers: {
       cookie: cookie,
       Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-    }
+    },
   };
   const response = await httpRequest(dataName, url, true, options, userCache);
+  console.log(response);
   if (response.retcode === 0) {
     beanCount = response.base.jdNum;
-    userImage = response.base.headImageUrl || "https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png";
+    userImage = response.base.headImageUrl;
     nickName = response.base.nickname;
     jValue = response.base.jvalue;
     plus = response.isPlusVip;
@@ -605,7 +680,7 @@ async function getJingBeanBalanceDetail(page) {
         Accept: `application/json, text/javascript, */*; q=0.01`,
       },
     };
-    let params = { ...options, method: 'POST' };
+    let params = {...options, method: 'POST'};
     let request = new Request(params.url);
     Object.keys(params).forEach((key) => {
       request[key] = params[key];
@@ -669,7 +744,7 @@ function lineChartConfig(labels = [], datas = [], chartTextSize, topPadding) {
           },
           ticks: {
             display: false,
-            fontColor: '#000000', 
+            fontColor: '#000000',
             fontSize: '20',
           },
         },
@@ -693,7 +768,8 @@ function lineChartConfig(labels = [], datas = [], chartTextSize, topPadding) {
   return chartStr;
 }
 
-function barChartConfig(labels = [], datas = [], chartTextSize, topPadding, showType) {
+function barChartConfig(
+  labels = [], datas = [], chartTextSize, topPadding, showType) {
   const chartStr = `
   {
   type: 'bar',
@@ -705,7 +781,8 @@ function barChartConfig(labels = [], datas = [], chartTextSize, topPadding, show
         borderWidth: 0,
         pointRadius: 0,
         barPercentage: 0.5,
-        backgroundColor: getGradientFillHelper('vertical', ${JSON.stringify(chartColor)}),
+        backgroundColor: getGradientFillHelper('vertical', ${JSON.stringify(
+    chartColor)}),
         borderColor: false,
         data: ${JSON.stringify(datas)},
       },
@@ -773,7 +850,7 @@ function barChartConfig(labels = [], datas = [], chartTextSize, topPadding, show
 
 async function createChart(type) {
   let labels = [], data = [];
-  Object.keys(rangeTimer).forEach(function (month) {
+  Object.keys(rangeTimer).forEach(function(month) {
     const value = rangeTimer[month];
     const arrMonth = month.split('-');
     labels.push(`${arrMonth[1]}.${arrMonth[2]}`);
@@ -793,34 +870,40 @@ async function createChart(type) {
   let chartStr;
   switch (type) {
     case 3:
-    chartStr = barChartConfig(labels, data, chartTextSize, barTopPadding, 'bar');
-    break;
+      chartStr = barChartConfig(
+        labels, data, chartTextSize, barTopPadding, 'bar');
+      break;
     case 4:
-    chartStr = barChartConfig(labels, data, chartTextSize, barTopPadding, 'line');
-    break;
+      chartStr = barChartConfig(
+        labels, data, chartTextSize, barTopPadding, 'line');
+      break;
     default:
-    chartStr = lineChartConfig(labels, data, chartTextSize, lineTopPadding);
+      chartStr = lineChartConfig(labels, data, chartTextSize, lineTopPadding);
   }
-  const url = `https://quickchart.io/chart?w=${400 * size.SC}&h=${size.chartHeight * size.SC}&f=png&c=${encodeURIComponent(chartStr)}`;
+  const url = `https://quickchart.io/chart?w=${400 *
+  size.SC}&h=${size.chartHeight * size.SC}&f=png&c=${encodeURIComponent(
+    chartStr)}`;
   return await getImageByUrl(url, chartCacheKey, cacheChart);
 }
 
 // 获取金贴和钢镚
 async function getExtraData() {
   //津贴查询
-  const JTDataName = "【金贴数据】";
+  const JTDataName = '【金贴数据】';
   const JTUrl = 'https://ms.jr.jd.com/gw/generic/uc/h5/m/mySubsidyBalance';
   const options = {
     headers: {
       cookie: cookie,
       Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-    }
+    },
   };
-  const JTData = await httpRequest(JTDataName, JTUrl, true, options, 'jintieData');
+  const JTData = await httpRequest(
+    JTDataName, JTUrl, true, options, 'jintieData');
   //钢镚查询
-  const GBDataName = "【钢镚数据】";
+  const GBDataName = '【钢镚数据】';
   const GBUrl = 'https://coin.jd.com/m/gb/getBaseInfo.html';
-  const GBData = await httpRequest(GBDataName, GBUrl, true, options, 'gangbengData');
+  const GBData = await httpRequest(
+    GBDataName, GBUrl, true, options, 'gangbengData');
   const data = {
     jintie: JTData.resultData.data['balance'],
     gangbeng: GBData.gbBalance,
@@ -829,116 +912,125 @@ async function getExtraData() {
 }
 
 async function getPackageData() {
-  const dataName = "【包裹数据】";
+  const dataName = '【包裹数据】';
   const url =
     'https://wq.jd.com/bases/wuliudetail/notify?sceneval=2&sceneval=2&g_login_type=1&callback';
   const options = {
     headers: {
       cookie: cookie,
       Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-    }
+    },
   };
   const data = await httpRequest(dataName, url, true, options, 'packageData');
   if (data.errCode == 0) {
     console.log('【包裹数据】获取正常');
   } else {
     console.log('【包裹数据】获取失败，cookie错误或未能正确获取到');
-  };
+  }
   return data;
 }
 
 async function getRedPackageData() {
-  const dataName = "【红包数据】";
+  const dataName = '【红包数据】';
   const url =
     'https://wq.jd.com/user/info/QueryUserRedEnvelopes?channel=1&type=0&page=0&pageSize=0&expiredRedFlag=1&sceneval=2&g_login_type=1';
   const options = {
     headers: {
       cookie: cookie,
       Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-    }
+    },
   };
-  const data = await httpRequest(dataName, url, true, options, 'redPackageData');
+  const data = await httpRequest(
+    dataName, url, true, options, 'redPackageData');
   return data;
 }
 
 async function getBaitiaoData() {
-  const dataName = "【白条数据】";
+  const dataName = '【白条数据】';
   const url = 'https://ms.jr.jd.com/gw/generic/bt/h5/m/firstScreenNew';
   const options = {
     body: 'reqData={"clientType":"ios","clientVersion":"13.2.3","deviceId":"","environment":"3"}',
     headers: {
       cookie: cookie,
-    }
+    },
   };
-  const res = await httpRequest(dataName, url, true, options, 'baitiaoData', 'POST');
+  const res = await httpRequest(
+    dataName, url, true, options, 'baitiaoData', 'POST');
   return res;
 }
+
 // #############################################
-async function getImageByUrl(url, pointCacheKey, useCache = true, logable = true) {
+async function getImageByUrl(
+  url, pointCacheKey, useCache = true, logable = true) {
   let cacheKey = pointCacheKey;
   caches.pushCache(cacheKey);
   if (useCache) {
-    const cacheImg = loadImgCache(cacheKey)
+    const cacheImg = loadImgCache(cacheKey);
     if (cacheImg != undefined && cacheImg != null) {
-      if (logable) console.log(`使用缓存图片：${pointCacheKey}`)
+      if (logable) console.log(`使用缓存图片：${pointCacheKey}`);
       return loadImgCache(cacheKey);
     }
   }
 
   try {
-    if (logable) console.log(`在线请求图片：${pointCacheKey}`)
-    const req = new Request(url)
-    const img = await req.loadImage()
-    saveImgCache(cacheKey, img)
-    return img
+    if (logable) console.log(`在线请求图片：${pointCacheKey}`);
+    const req = new Request(url);
+    const img = await req.loadImage();
+    saveImgCache(cacheKey, img);
+    return img;
   } catch (e) {
-    console.error(`图片加载失败：${e}`)
-    let cacheImg = loadImgCache(cacheKey)
+    console.error(`图片加载失败：${e}`);
+    let cacheImg = loadImgCache(cacheKey);
     if (cacheImg != undefined) {
-      console.log(`使用缓存图片：${pointCacheKey}`)
-      return cacheImg
+      console.log(`使用缓存图片：${pointCacheKey}`);
+      return cacheImg;
     }
-    console.log(`使用预设图片`)
-    let ctx = new DrawContext()
-    ctx.size = new Size(80, 80)
-    ctx.setFillColor(Color.darkGray())
-    ctx.fillRect(new Rect(0, 0, 80, 80))
-    return await ctx.getImage()
+    console.log(`使用预设图片`);
+    let ctx = new DrawContext();
+    ctx.size = new Size(80, 80);
+    ctx.setFillColor(Color.darkGray());
+    ctx.fillRect(new Rect(0, 0, 80, 80));
+    return await ctx.getImage();
   }
 }
 
 function saveImgCache(cacheKey, img) {
-  const cacheFile = fmLocal.joinPath(FileManager.local().documentsDirectory(), cacheKey)
-  fmLocal.writeImage(cacheFile, img)
+  const cacheFile = fmLocal.joinPath(
+    FileManager.local().documentsDirectory(), cacheKey);
+  fmLocal.writeImage(cacheFile, img);
 }
 
 function loadImgCache(cacheKey) {
-  const cacheFile = fmLocal.joinPath(FileManager.local().documentsDirectory(), cacheKey)
-  const fileExists = fmLocal.fileExists(cacheFile)
-  let img = undefined
+  const cacheFile = fmLocal.joinPath(
+    FileManager.local().documentsDirectory(), cacheKey);
+  const fileExists = fmLocal.fileExists(cacheFile);
+  let img = undefined;
   if (fileExists) {
-    img = fmLocal.readImage(cacheFile)
+    img = fmLocal.readImage(cacheFile);
   }
-  return img
+  return img;
 }
 
-async function httpRequest(dataName, url, json = true, options, pointCacheKey, type = 'GET', logable = false) {
-  let cacheKey = `${pointCacheKey}_${userID}`
+async function httpRequest(
+  dataName, url, json = true, options, pointCacheKey, type = 'GET',
+  logable = false) {
+  let cacheKey = `${pointCacheKey}_${userID}`;
   caches.pushCache(cacheKey);
   // 读取本地缓存
-  const localCache = loadStringCache(cacheKey) ;
+  const localCache = loadStringCache(cacheKey);
   // 判断是否需要刷新
-  const lastCacheTime = getCacheModificationDate(cacheKey) ;
+  const lastCacheTime = getCacheModificationDate(cacheKey);
   const timeInterval = Math.floor((getCurrentTimeStamp() - lastCacheTime) / 60);
   // 过时且有本地缓存则直接返回本地缓存数据
   console.log('');
-  console.log(`${dataName}缓存${timeInterval}分钟前，有效期${interval}分钟，${localCache.length}`);
+  console.log(
+    `${dataName}缓存${timeInterval}分钟前，有效期${interval}分钟，${localCache.length}`);
   if (timeInterval < interval && localCache != null && localCache.length > 0) {
     console.log(`${dataName}读取缓存`);
     return json ? JSON.parse(localCache) : localCache;
   }
 
-  let data = null
+  let data = null;
   try {
     console.log(`${dataName}在线请求`);
     let req = new Request(url);
@@ -962,11 +1054,12 @@ async function httpRequest(dataName, url, json = true, options, pointCacheKey, t
   if (logable) {
     console.log(`${dataName}在线请求响应数据：${JSON.stringify(data)}`);
   }
-  return data
+  return data;
 }
 
 function loadStringCache(cacheKey) {
-  const cacheFile = fmLocal.joinPath(FileManager.local().documentsDirectory(), cacheKey);
+  const cacheFile = fmLocal.joinPath(
+    FileManager.local().documentsDirectory(), cacheKey);
   const fileExists = fmLocal.fileExists(cacheFile);
   let cacheString = '';
   if (fileExists) {
@@ -976,12 +1069,14 @@ function loadStringCache(cacheKey) {
 }
 
 function saveStringCache(cacheKey, content) {
-  const cacheFile = fmLocal.joinPath(FileManager.local().documentsDirectory(), cacheKey);
+  const cacheFile = fmLocal.joinPath(
+    FileManager.local().documentsDirectory(), cacheKey);
   fmLocal.writeString(cacheFile, content);
 }
 
 function getCacheModificationDate(cacheKey) {
-  const cacheFile = fmLocal.joinPath(FileManager.local().documentsDirectory(), cacheKey);
+  const cacheFile = fmLocal.joinPath(
+    FileManager.local().documentsDirectory(), cacheKey);
   const fileExists = fmLocal.fileExists(cacheFile);
   if (fileExists) {
     return fmLocal.modificationDate(cacheFile).getTime() / 1000;
@@ -995,33 +1090,36 @@ function getCurrentTimeStamp() {
 }
 
 function removeCache(cacheKey) {
-  const cacheFile = fmLocal.joinPath(FileManager.local().documentsDirectory(), cacheKey)
+  const cacheFile = fmLocal.joinPath(
+    FileManager.local().documentsDirectory(), cacheKey);
   const fileExists = fmLocal.fileExists(cacheFile);
   if (fileExists) {
     fmLocal.remove(cacheFile);
-    console.log(`清除缓存${cacheKey}`)
+    console.log(`清除缓存${cacheKey}`);
   }
   return;
 }
 
 function removeCaches(cacheKeyList) {
-for (const cacheKey of cacheKeyList) {
-removeCache(cacheKey)
-}
+  for (const cacheKey of cacheKeyList) {
+    removeCache(cacheKey);
+  }
 }
 
-async function renderFail (msg) {
-  const w = new ListWidget()
-  w.addText("⚠️")
-  w.addSpacer(10)
-  const t = w.addText(msg)
-  t.textColor = Color.red()
-  t.font = Font.boldSystemFont(14)
-  return w
-  }
+async function renderFail(msg) {
+  const w = new ListWidget();
+  w.addText('⚠️');
+  w.addSpacer(10);
+  const t = w.addText(msg);
+  t.textColor = Color.red();
+  t.font = Font.boldSystemFont(14);
+  return w;
+}
+
 // #############################################
 if (typeof require === 'undefined') require = importModule;
-const { DmYY, Runing } = require('./DmYY');
+const {DmYY, Runing} = require('./DmYY');
+
 class Widget extends DmYY {
   constructor(arg) {
     super(arg);
@@ -1030,81 +1128,212 @@ class Widget extends DmYY {
     this.run();
   }
 
-CookiesData = [];
+  CookiesData = [];
 
   jdWebView = async () => {
     const webView = new WebView();
     const url =
-      "https://mcr.jd.com/credit_home/pages/index.html?btPageType=BT&channelName=024";
+      'https://mcr.jd.com/credit_home/pages/index.html?btPageType=BT&channelName=024';
     await webView.loadURL(url);
     await webView.present(false);
     const req = new Request(
-      "https://ms.jr.jd.com/gw/generic/bt/h5/m/firstScreenNew"
+      'https://ms.jr.jd.com/gw/generic/bt/h5/m/firstScreenNew',
     );
-    req.method = "POST";
+    req.method = 'POST';
     req.body =
       'reqData={"clientType":"ios","clientVersion":"13.2.3","deviceId":"","environment":"3"}';
     await req.loadJSON();
     const cookies = req.response.cookies;
-    const account = { username: "", cookie: "" };
+    const account = {username: '', cookie: ''};
     const cookie = [];
     cookies.forEach((item) => {
       const value = `${item.name}=${item.value}`;
-      if (item.name === "pt_key") cookie.push(value);
-      if (item.name === "pt_pin") {
+      if (item.name === 'pt_key') cookie.push(value);
+      if (item.name === 'pt_pin') {
         account.username = item.value;
         cookie.push(value);
       }
     });
-    account.cookie = cookie.join("; ");
+    account.cookie = cookie.join('; ');
     console.log(account);
 
     if (account.cookie) {
-      this.settings = { ...this.settings, ...account };
+      this.settings = {...this.settings, ...account};
       this.saveSettings(false);
       console.log(`${this.name}: cookie获取成功，请关闭窗口！`);
-      this.notify(this.name, "cookie获取成功，请关闭窗口！");
+      this.notify(this.name, 'cookie获取成功，请关闭窗口！');
+    }
+  };
+
+  sizeConfig = async () => {
+    const a = new Alert();
+    const textConfig = [
+      '全局缩放',
+      'logo',
+      '头像',
+      '左侧信息宽度',
+      '左右间距',
+      '图表高度',
+      '图表数据文字',
+      '图表日期文字',
+      'K线顶边距',
+      '柱图顶边距',
+    ];
+    const actions = [
+      {action: {SC: '示例值，0.95、0.90...'}, desc: '排版溢出、显示不全的请优先调低此数值'},
+      {action: {logo: '示例值，30'}},
+      {action: {userImage: '示例值，70'}},
+      {action: {userStack: '示例值，100'}},
+      {action: {division: '示例值，25'}},
+      {action: {chartHeight: '示例值，130'}, desc: '京豆数据未与日期对齐的，请调低此数值'},
+      {action: {chartText: '示例值，18'}},
+      {action: {chartDay: '示例值，9'}},
+      {action: {lineChartTopPadding: '示例值，18'}, desc: '数据在顶部显示不全请调高此数值'},
+      {action: {barChartTopPadding: '示例值，5'}, desc: '数据在顶部显示不全请调高此数值'},
+    ];
+    textConfig.forEach(item => {
+      a.addAction(item);
+    });
+    a.addCancelAction('取消');
+    let i = await a.presentSheet();
+    if (i === -1) return;
+    await this.setAlertInput(
+      textConfig[i], actions[i].desc || '', actions[i].action);
+  };
+
+  alertAction = async (title, key, options = ['否', '是']) => {
+    this.settings[key] = await this.generateAlert(title, options);
+    this.saveSettings();
+  };
+
+  template = async () => {
+    const a = new Alert();
+    a.addAction('尺寸设置');
+    a.addAction('小号内容');
+    a.addAction('组件样式');
+    a.addAction('钱包内容');
+    a.addAction('K线文字色');
+    a.addAction('白条信息');
+    a.addAction('包裹信息');
+    a.addCancelAction('取消');
+    let i = await a.presentSheet();
+    if (i === -1) return;
+    switch (i) {
+      case 0:
+        await this.sizeConfig();
+        return;
+      case 1:
+        await this.alertAction('小号内容', 'smallShowType', ['京东、钱包', '个人信息']);
+        return;
+      case 2:
+        const opts = ['双日视图', 'K线图', '柱状图', '曲线面积图'];
+        await this.alertAction('组件样式', 'beanShowType', opts);
+        return;
+      case 3:
+        await this.alertAction('钱包内容', 'walletShowType', ['红包', '钢镚和金贴']);
+        return;
+      case 4:
+        await this.setLightAndDark(
+          'K线文字色', false, 'lightChartColor', 'darkChartColor');
+        return;
+      case 5:
+        return this.alertAction('显示白条', 'showBaitiao');
+      case 6:
+        return this.alertAction('显示物流', 'showPackage');
+      default:
+        return;
     }
   };
 
   run = () => {
     if (config.runsInApp) {
-      this.registerAction("账号设置", async () => {
-        const index = await this.generateAlert("设置账号信息", [
-          "网站登录",
-          "手动输入",
+      this.registerAction('参数配置', this.template);
+      this.registerAction('参数重置', () => {
+        Object.keys(size).forEach(key => {
+          delete this.settings[key];
+        });
+        this.saveSettings();
+      });
+      this.registerAction('账号设置', async () => {
+        const index = await this.generateAlert('设置账号信息', [
+          '网站登录',
+          '手动输入',
         ]);
         if (index === 0) {
           await this.jdWebView();
         } else {
-          await this.setAlertInput("账号设置", "京东账号 Ck", {
-            username: "昵称",
-            cookie: "Cookie",
+          await this.setAlertInput('账号设置', '京东账号 Ck', {
+            username: '昵称',
+            cookie: 'Cookie',
           });
         }
       });
       this.registerAction('代理缓存', this.actionSettings);
       this.registerAction('基础设置', this.setWidgetConfig);
     }
+    if (this.settings.SC !== undefined) size.SC = parseInt(this.settings.SC);
+    if (this.settings.logo !== undefined) size.logo = parseInt(
+      this.settings.logo);
+    if (this.settings.userImage !== undefined) size.userImage = parseInt(
+      this.settings.userImage);
+    if (this.settings.userStack !== undefined) size.userStack = parseInt(
+      this.settings.userStack);
+    if (this.settings.division !== undefined) size.division = parseInt(
+      this.settings.division);
+    if (this.settings.chartHeight !== undefined) size.chartHeight = parseInt(
+      this.settings.chartHeight);
+    if (this.settings.chartText !== undefined) size.chartText = parseInt(
+      this.settings.chartText);
+    if (this.settings.chartDay !== undefined) size.chartDay = parseInt(
+      this.settings.chartDay);
+    if (this.settings.lineChartTopPadding !==
+      undefined) size.lineChartTopPadding = parseInt(
+      this.settings.lineChartTopPadding);
+    if (this.settings.barChartTopPadding !==
+      undefined) size.barChartTopPadding = parseInt(
+      this.settings.barChartTopPadding);
+    if (this.settings.lightChartColor !== undefined &&
+      this.settings.darkChartColor !== undefined) {
+      chartTextColor = Color.dynamic(
+        new Color(this.settings.lightChartColor),
+        new Color(this.settings.darkChartColor),
+      );
+    }
+
+    if (this.settings.showBaitiao !== undefined) showBaitiao = !!parseInt(
+      this.settings.showBaitiao);
+    if (this.settings.showPackage !== undefined) showPackage = !!parseInt(
+      this.settings.showPackage);
+    if (this.settings.smallShowType !== undefined) smallShowType = parseInt(
+      this.settings.smallShowType) + 1;
+    if (this.settings.beanShowType !== undefined) beanShowType = parseInt(
+      this.settings.beanShowType) + 1;
+    if (this.settings.beanShowType !== undefined) smallBeanShowType = parseInt(
+      this.settings.beanShowType) + 1;
+    if (this.settings.walletShowType !== undefined) walletShowType = parseInt(
+      this.settings.walletShowType) + 1;
+
+    console.log('当前配置内容：' + JSON.stringify(this.settings));
 
     textColor = this.widgetColor;
 
     this.JDindex =
-      typeof args.widgetParameter === "string"
+      typeof args.widgetParameter === 'string'
         ? parseInt(args.widgetParameter)
         : false;
     try {
       const cookieData = this.settings.cookieData;
       if (this.JDindex !== false && cookieData[this.JDindex]) {
-        cookie = cookieData[this.JDindex]["cookie"];
+        cookie = cookieData[this.JDindex]['cookie'];
       } else {
         cookie = this.settings.cookie ? `${this.settings.cookie};` : cookie;
       }
-      userID = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
-      if (!cookie) throw "京东 CK 获取失败";
+      userID = decodeURIComponent(
+        cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
+      if (!cookie) throw '京东 CK 获取失败';
       return true;
     } catch (e) {
-      this.notify("错误提示", e);
+      this.notify('错误提示', e);
       return false;
     }
   };
@@ -1177,21 +1406,26 @@ CookiesData = [];
   async render() {
     await this.getWidgetBackgroundImage(w);
     CACHE_KEY = `cache_${Script.name()}_${userID}`;
-    packageData = await getPackageData();
-    packageNum = packageData.dealLogList.length;
+    if (showPackage) {
+      packageData = await getPackageData();
+      packageNum = packageData.dealLogList.length;
+    }
     await init();
     if (showBaitiao) {
       baitiaoData = await getBaitiaoData();
       try {
-        if (!baitiaoData.resultData.data['quota'] || !baitiaoData.resultData.data['bill']) {
-          return await renderFail("数据获取失败，请在脚本内将白条显示设置为false后重试！")
+        if (!baitiaoData.resultData.data['quota'] ||
+          !baitiaoData.resultData.data['bill']) {
+          return await renderFail('数据获取失败，请在脚本内将白条显示设置为false后重试！');
         }
       } catch (e) {
-        return await renderFail("数据解析失败")
+        return await renderFail('数据解析失败');
       }
       baitiaoTitle = baitiaoData['resultData']['data']['bill']['title'];
-      baitiaoAmount = baitiaoData['resultData']['data']['bill']['amount'].replace(/,/g, '');
-      baitiaoDesc = baitiaoData['resultData']['data']['bill']['buttonName'].replace(/最近还款日/g, '');
+      baitiaoAmount = baitiaoData['resultData']['data']['bill']['amount'].replace(
+        /,/g, '');
+      baitiaoDesc = baitiaoData['resultData']['data']['bill']['buttonName'].replace(
+        /最近还款日/g, '');
     }
 //     Keychain.remove(CACHE_KEY)
     if (config.widgetFamily == 'small') {
