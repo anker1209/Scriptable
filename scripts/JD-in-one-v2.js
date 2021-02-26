@@ -1406,10 +1406,8 @@ class Widget extends DmYY {
   async render() {
     await this.getWidgetBackgroundImage(w);
     CACHE_KEY = `cache_${Script.name()}_${userID}`;
-    if (showPackage) {
-      packageData = await getPackageData();
-      packageNum = packageData.dealLogList.length;
-    }
+    packageData = await getPackageData();
+    packageNum = packageData.dealLogList.length;
     await init();
     if (showBaitiao) {
       baitiaoData = await getBaitiaoData();
