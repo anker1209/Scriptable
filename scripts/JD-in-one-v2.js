@@ -1271,7 +1271,7 @@ class Widget extends DmYY {
       this.registerAction('代理缓存', this.actionSettings);
       this.registerAction('基础设置', this.setWidgetConfig);
     }
-    if (this.settings.SC !== undefined) size.SC = parseInt(this.settings.SC);
+    if (this.settings.SC !== undefined) size.SC = parseFloat(this.settings.SC);
     if (this.settings.logo !== undefined) size.logo = parseInt(
       this.settings.logo);
     if (this.settings.userImage !== undefined) size.userImage = parseInt(
