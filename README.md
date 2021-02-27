@@ -65,4 +65,4 @@ hostname = e.189.cn
 > 脚本内提供网站登录获取cookie，无代理缓存的可尝试网站登录获取cookie
 
 # 赞赏码
-<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/anker.JPG"  width="200" height="200" align="bottom" />
+<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/anker.JPG"  width="300" height="300" align="bottom" />
