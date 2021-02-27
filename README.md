@@ -2,7 +2,7 @@
 [电报群](https://t.me/Scriptable_JS)：https://t.me/Scriptable_JS
 
 # 中国联通小组件
-<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423603123-lt.png"  width="200" height="200" align="bottom" />
+<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423603123-lt.png"  width="1105" height="780" align="center" />
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 
 > QuanX添加复写规则：
@@ -24,7 +24,7 @@ hostname = act.10010.com, m.client.10010.com
 > 无代理缓存的，请使用Stream类抓包APP进行手动抓包，获取cookie后填入脚本内注释位置
 
 # 中国移动小组件
-<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423457282-yd.png"  width="200" height="200" align="bottom" />
+<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423457282-yd.png"  width="1105" height="780" align="center" />
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 
 > QuanX添加复写规则：
@@ -44,7 +44,7 @@ hostname = clientaccess.10086.cn
 > 运行脚本，点击代理缓存，获取缓存cookie
 
 # 中国电信小组件
-<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423524222-dx.png"  width="200" height="200" align="bottom" />
+<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423524222-dx.png"  width="1105" height="780" align="center" />
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 
 > QuanX添加复写规则：
