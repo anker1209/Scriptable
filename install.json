@@ -68,19 +68,56 @@
       ]
     },
     {
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "脑瓜",
       "description": "中国联通小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
-      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Chinaunicom.js",
+      "scriptURL": "",
       "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/34ebdddc-90a8-4eb7-828b-f934c7386e12.png",
       "name": "Chinaunicom",
       "title": "中国联通",
       "html": [
         "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>"
+        "<br/>",
+        "<br/>",
+        "<h4 align=\"center\">更新说明</h4>",
+        "v2.0.0",
+        "<li>v1.0.2  增加中尺寸组件</li>",
+        "<li>v1.0.1  增加代理缓存及设置菜单</li>",
+        "<br/>"
       ],
       "images": [
-        "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7050.PNG"
+        "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423603123-lt.png"
       ]
-    }
+    },
+    {
+      "version": "1.0.0",
+      "author": "脑瓜",
+      "description": "中国电信小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
+      "scriptURL": "",
+      "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/f12609b2-bf20-4993-be0f-99572d70d1b2.png",
+      "name": "ChinaTelecom_2021",
+      "title": "中国电信",
+      "html": [
+        "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423524222-dx.png"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "author": "脑瓜",
+      "description": "中国移动小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
+      "scriptURL": "",
+      "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/3270c85e-2904-44cc-85cd-8de325b05743.png",
+      "name": "ChinaMobile_2021",
+      "title": "中国移动",
+      "html": [
+        "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>"
+      ],
+      "images": [
+        "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423457282-yd.png"
+      ]
+    },
   ]
 }
