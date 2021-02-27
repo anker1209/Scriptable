@@ -6,8 +6,8 @@
 
 <img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423603123-lt.png"  height="700" align="left" />
 
-推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 
+推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 
 > QuanX添加复写规则：
 
