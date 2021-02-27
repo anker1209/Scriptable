@@ -4,6 +4,7 @@
 # 中国联通小组件
 <img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423603123-lt.png"  width="200" height="200" align="bottom" />
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
+
 > QuanX添加复写规则：
 
 ```ini
@@ -15,8 +16,11 @@
 hostname = act.10010.com, m.client.10010.com
 ```
 > Boxjs添加chavy大佬订阅链接：https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.json
+
 > 打开中国联通APP，进入签到页面并进行签到，获取cookie
+
 > 运行脚本，点击代理缓存，获取缓存cookie
+
 > 无代理缓存的，请使用Stream类抓包APP进行手动抓包，获取cookie后填入脚本内注释位置
 
 # 中国移动小组件
