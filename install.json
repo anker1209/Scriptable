@@ -73,7 +73,7 @@
       "description": "中国联通小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/Birthday.js",
       "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/34ebdddc-90a8-4eb7-828b-f934c7386e12.png",
-      "name": "Chinaunicom",
+      "name": "Chinaunicom_2021",
       "title": "中国联通",
       "html": [
         "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>",
@@ -81,8 +81,8 @@
         "<br/>",
         "<h4 align=\"center\">更新说明</h4>",
         "v2.0.0",
-        "<li>v1.0.2  增加中尺寸组件</li>",
-        "<li>v1.0.1  增加代理缓存及设置菜单</li>",
+        "<li>增加中尺寸组件</li>",
+        "<li>增加代理缓存及设置菜单</li>",
         "<br/>"
       ],
       "images": [
