@@ -5,6 +5,7 @@
 <img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423603123-lt.png"  width="200" height="200" align="bottom" />
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 > QuanX添加复写规则：
+
 ```ini
 [rewrite_local]
 ^https?:\/\/act.10010.com\/SigninApp\/signin\/querySigninActivity.htm url script-request-header https://raw.githubusercontent.com/yxgsir/chavyleung/master/10010/10010.cookie.js
@@ -22,6 +23,7 @@ hostname = act.10010.com, m.client.10010.com
 <img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423457282-yd.png"  width="200" height="200" align="bottom" />
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 > QuanX添加复写规则：
+> 
 ```ini
 [rewrite_local]
 ^https:\/\/clientaccess.10086.cn\/biz-orange\/LN\/uamrandcodelogin\/autoLogin url script-request-body https://raw.githubusercontent.com/chavyleung/scripts/master/10086/10086.fee.cookie.js
@@ -38,6 +40,7 @@ hostname = clientaccess.10086.cn
 <img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423524222-dx.png"  width="200" height="200" align="bottom" />
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 > QuanX添加复写规则：
+> 
 ```ini
 [rewrite_local]
 ^https?:\/\/e.189.cn\/store\/user\/package_detail.do url script-request-body https://raw.githubusercontent.com/Sunert/Scripts/master/Task/telecomInfinity.js
