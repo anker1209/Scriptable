@@ -58,7 +58,7 @@ https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.json
 
 > QuanX添加复写规则：
 
-```
+```ini
 [rewrite_local]
 ^https?:\/\/e.189.cn\/store\/user\/package_detail.do url script-request-body https://raw.githubusercontent.com/Sunert/Scripts/master/Task/telecomInfinity.js
 
