@@ -52,7 +52,7 @@ https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.json
 
 ## 中国电信
 
-![中国移动 图片](https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423457282-yd.png "移动小组件")
+![中国移动 图片](https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423524222-dx.png "移动小组件")
 
 推荐使用Boxjs代理缓存，cookie获取方法（以QuanX为例）：
 
