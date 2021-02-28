@@ -5,7 +5,7 @@
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:1.0.0
+// version:1.0.1
 // update:2021/02/27
 
 if (typeof require === 'undefined') require = importModule;
@@ -24,6 +24,7 @@ class Widget extends DmYY {
   widgetParam = args.widgetParameter;
 
   gradient = false;
+  usedFlow = false;
 
   flowColorHex = '8016C7';
   voiceColorHex = '029E4D';
@@ -53,7 +54,7 @@ class Widget extends DmYY {
   ];
 
   fee = {
-    title: '话费剩余',
+    title: '剩余话费',
     number: 0,
     unit: '元',
     en: '¥',
@@ -61,7 +62,7 @@ class Widget extends DmYY {
   
   flow = {
     percent: 0,
-    title: '流量剩余',
+    title: '剩余流量',
     number: 0,
     unit: 'MB',
     en: 'MB',
@@ -74,7 +75,7 @@ class Widget extends DmYY {
 
   voice = {
     percent: 0,
-    title: '语音剩余',
+    title: '剩余语音',
     number: 0,
     unit: '分钟',
     en: 'MIN',
@@ -151,7 +152,6 @@ class Widget extends DmYY {
           }
         });
       }
-      console.log(detail.items);
       if (!detail.number && !detail.total) {
         detail.items.forEach((data) => {
           if (data.offerType !== 19) {
@@ -171,10 +171,18 @@ class Widget extends DmYY {
         });
       } else {
         this.flow.percent = ((detail.balance / (detail.total || 1)) * 100).toFixed(2);
-        const flow = this.formatFlow(detail.balance);
-        this.flow.number = flow.count;
-        this.flow.unit = flow.unit;
-        this.flow.en = flow.unit;
+        if (this.usedFlow) {
+          const usedFlow = this.formatFlow(detail.used);
+          this.flow.title = '已用流量';
+          this.flow.number = usedFlow.count;
+          this.flow.unit = usedFlow.unit;
+          this.flow.en = usedFlow.unit;
+        } else {
+          const flow = this.formatFlow(detail.balance);
+          this.flow.number = flow.count;
+          this.flow.unit = flow.unit;
+          this.flow.en = flow.unit;
+        }
         this.flow.max = detail.total;
       }
 
@@ -547,6 +555,15 @@ class Widget extends DmYY {
           },
           );
       });
+      this.registerAction('流量设置', async () => {
+        await this.setAlertInput(
+          `${this.name}流量设置`,
+          '是否显示已用流量\n不限量或伪不限量用户可将此值设为true',
+          {
+            usedFlow: '',
+          },
+          );
+      });
       this.registerAction("账号设置", async () => {
         const index = await this.generateAlert("设置账号信息", [
           "网站登录",
@@ -581,10 +598,12 @@ class Widget extends DmYY {
         smallPadding,
         padding,
         gradient,
+        usedFlow,
       } = this.settings;
       this.cookie = cookie ? cookie : this.cookie;
       if (this.cookie) this.options.headers.cookie = this.cookie;
       this.gradient = gradient === 'true' ? true : this.gradient;
+      this.usedFlow = usedFlow === 'true' ? true : this.usedFlow;
       this.flowColorHex = step1 ? step1 : this.flowColorHex;
       this.voiceColorHex = step2 ? step2 : this.voiceColorHex;
       this.flow.BGColor = inner1 ? new Color(inner1) : new Color(this.flowColorHex, 0.2);
