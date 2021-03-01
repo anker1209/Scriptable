@@ -5,7 +5,7 @@
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:1.0.1
+// version:1.0.2
 // update:2021/02/27
 
 if (typeof require === 'undefined') require = importModule;
@@ -62,6 +62,7 @@ class Widget extends DmYY {
   
   flow = {
     percent: 0,
+    max: 40,
     title: '剩余流量',
     number: 0,
     unit: 'MB',
@@ -163,27 +164,30 @@ class Widget extends DmYY {
                   this.flow.number = flow.count;
                   this.flow.unit = flow.unit;
                   this.flow.en = flow.unit;
-                  this.flow.max = item.ratableAmount;
                 }
               }
             });
           }
         });
       } else {
-        this.flow.percent = ((detail.balance / (detail.total || 1)) * 100).toFixed(2);
         if (this.usedFlow) {
           const usedFlow = this.formatFlow(detail.used);
           this.flow.title = '已用流量';
           this.flow.number = usedFlow.count;
           this.flow.unit = usedFlow.unit;
           this.flow.en = usedFlow.unit;
+          if (this.flow.unit === 'GB') {
+            this.flow.percent = ((this.flow.number / (this.flow.max || 40)) * 100).toFixed(2);
+          } else {
+            this.flow.percent = (100 - (this.flow.number / ((this.flow.max || 40) * 1024)) * 100).toFixed(2);
+          }
         } else {
+          this.flow.percent = ((detail.balance / (detail.total || 1)) * 100).toFixed(2);
           const flow = this.formatFlow(detail.balance);
           this.flow.number = flow.count;
           this.flow.unit = flow.unit;
           this.flow.en = flow.unit;
         }
-        this.flow.max = detail.total;
       }
 
     }
@@ -375,7 +379,7 @@ class Widget extends DmYY {
   }
 
   arrColor() {
-    let colorArr = [['#FFF000', '#E62490'], ['#FDEB71', '#F8D800'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#81FBB8', '#28C76F'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#623AA2'], ['#FCCF31', '#F55555'], ['#F761A1', '#8C1BAB'], ['#43CBFF', '#9708CC'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#FFFF1C', '#00C3FF'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#2AFADF', '#4C83FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#00DBDE', '#FC00FF'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#FF6FD8', '#3813C2'], ['#EE9AE5', '#5961F9'], ['#FFC371', '#FF5F6D'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FFC600', '#FD6E6A'], ['#FFC600', '#FD6E6A'], ['#92FE9D', '#00C9FF'], ['#FFDDE1', '#EE9CA7'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#F9D423', '#FF4E50'], ['#3C8CE7', '#00EAFF'], ['#FCFF00', '#FFA8A8'], ['#FF96F9', '#C32BAC'],['#D0E6A5', '#FFDD94'], ['#FA897B', '#FFDD94'], ['#CCABD8', '#FA897B'], ['#8FC8EB', '#4675C0'], ['#EED8BD', '#23E256'], ['#FFCC4B', '#FF7D58'], ['#86E3CE', '#CCABD8'], ['#DBDBD9', '#D1D93C'], ['#B8BFD6', '#4675C0'], ['#E6BABF', '#43BBAF'], ['#E6BABF', '#8F3481'], ['#D0E6A5', '#86E3CE'], ['#F0D5B6', '#F16238'], ['#F8EC70', '#F9C708'], ['#DE88F4', '#48B4B9'], ['#C4E86B', '#00BCB4'], ['#F5CEC7', '#E79796'], ['#FFC446', '#FA0874'], ['#E1EE32', '#FFB547'], ['#FFD804', '#2ACCC8'], ['#E9A6D2', '#E9037B'], ['#F8EC70', '#49E2F6'], ['#A2F8CD', '#A2F852'], ['#49E2F6', '#A2F8CD'], ['#FDEFE2', '#FE214F'], ['#F8EC70', '#A2F8CD'], ['#F8EC70', '#49E2F6'], ['#D1FFB7', '#FFB7D1'], ['#B7FFE4', '#E4B7FF'], ['#FFB7D1', '#E4B7FF'], ['#D0E6A5', '#86E3CE'], ['#E8E965', '#64C5C7']];
+    let colorArr = [['#FFF000', '#E62490'], ['#FDEB71', '#F8D800'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#81FBB8', '#28C76F'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#623AA2'], ['#FCCF31', '#F55555'], ['#F761A1', '#8C1BAB'], ['#43CBFF', '#9708CC'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#FFFF1C', '#00C3FF'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#2AFADF', '#4C83FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#00DBDE', '#FC00FF'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#FF6FD8', '#3813C2'], ['#EE9AE5', '#5961F9'], ['#FFC371', '#FF5F6D'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FFC600', '#FD6E6A'], ['#FFC600', '#FD6E6A'], ['#92FE9D', '#00C9FF'], ['#FFDDE1', '#EE9CA7'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#F9D423', '#FF4E50'], ['#3C8CE7', '#00EAFF'], ['#FCFF00', '#FFA8A8'], ['#FF96F9', '#C32BAC'], ['#D0E6A5', '#FFDD94'], ['#FA897B', '#FFDD94'], ['#CCABD8', '#FA897B'], ['#8FC8EB', '#4675C0'], ['#EED8BD', '#23E256'], ['#FFCC4B', '#FF7D58'], ['#86E3CE', '#CCABD8'], ['#DBDBD9', '#D1D93C'], ['#B8BFD6', '#4675C0'], ['#E6BABF', '#43BBAF'], ['#E6BABF', '#8F3481'], ['#D0E6A5', '#86E3CE'], ['#F0D5B6', '#F16238'], ['#F8EC70', '#F9C708'], ['#DE88F4', '#48B4B9'], ['#C4E86B', '#00BCB4'], ['#F5CEC7', '#E79796'], ['#FFC446', '#FA0874'], ['#E1EE32', '#FFB547'], ['#FFD804', '#2ACCC8'], ['#E9A6D2', '#E9037B'], ['#F8EC70', '#49E2F6'], ['#A2F8CD', '#A2F852'], ['#49E2F6', '#A2F8CD'], ['#FDEFE2', '#FE214F'], ['#F8EC70', '#A2F8CD'], ['#F8EC70', '#49E2F6'], ['#D1FFB7', '#FFB7D1'], ['#B7FFE4', '#E4B7FF'], ['#FFB7D1', '#E4B7FF'], ['#D0E6A5', '#86E3CE'], ['#E8E965', '#64C5C7']];
     let colors = colorArr[Math.floor(Math.random() * colorArr.length)];
     return colors;
   }
@@ -560,7 +564,8 @@ class Widget extends DmYY {
           `${this.name}流量设置`,
           '是否显示已用流量\n不限量或伪不限量用户可将此值设为true',
           {
-            usedFlow: '',
+            usedFlow: '是否显示已用流量，缺省：false',
+            maxFlow: '实际流量或超限流量(GB)，缺省：40',
           },
           );
       });
@@ -599,6 +604,7 @@ class Widget extends DmYY {
         padding,
         gradient,
         usedFlow,
+        maxFlow,
       } = this.settings;
       this.cookie = cookie ? cookie : this.cookie;
       if (this.cookie) this.options.headers.cookie = this.cookie;
@@ -611,6 +617,7 @@ class Widget extends DmYY {
       this.flow.FGColor = new Color(this.flowColorHex);
       this.voice.FGColor = new Color(this.voiceColorHex);
 
+      this.flow.max = maxFlow ? parseFloat(maxFlow) : this.flow.max;
       this.logoScale = logoScale ? parseFloat(logoScale) : this.logoScale;
       this.ringStackSize = ringStackSize ? parseFloat(ringStackSize) : this.ringStackSize;
       this.ringTextSize = ringTextSize ? parseFloat(ringTextSize) : this.ringTextSize;
