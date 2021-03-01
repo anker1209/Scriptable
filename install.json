@@ -103,7 +103,7 @@
       ]
     },
     {
-      "version": "1.0.0",
+      "version": "1.0.2",
       "author": "脑瓜",
       "description": "中国电信小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaTelecom_2021.js",
@@ -118,6 +118,13 @@
       ],
       "html": [
         "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</>"
+        "<br/>",
+        "<br/>",
+        "<h4 align=\"center\">更新说明</h4>",
+        "v1.0.2",
+        "<li>增加超限流量/实际流量设置</li>",
+        "<li>增加显示“已用流量”设置</li>",
+        "<br/>"
       ],
       "images": [
         "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423524222-dx.png"
