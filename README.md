@@ -75,4 +75,4 @@ https://raw.githubusercontent.com/Sunert/Scripts/master/Task/sunert.boxjs.json
 > 脚本内提供网站登录获取cookie，无代理缓存的可尝试网站登录获取cookie
 
 # 赞赏码
-<img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/eaa616d9-da4c-473b-9570-826f112af295.JPG"  width="300" height="300" align="bottom" />
+<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/anker.JPG"  width="300" height="300" align="bottom" />
