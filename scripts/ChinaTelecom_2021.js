@@ -177,7 +177,7 @@ class Widget extends DmYY {
           this.flow.unit = usedFlow.unit;
           this.flow.en = usedFlow.unit;
           if (this.flow.unit === 'GB') {
-            this.flow.percent = ((this.flow.number / (this.flow.max || 40)) * 100).toFixed(2);
+            this.flow.percent = (100 - (this.flow.number / (this.flow.max || 40)) * 100).toFixed(2);
           } else {
             this.flow.percent = (100 - (this.flow.number / ((this.flow.max || 40) * 1024)) * 100).toFixed(2);
           }
