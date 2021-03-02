@@ -26,8 +26,8 @@ class Widget extends DmYY {
   gradient = false;
   usedFlow = false;
 
-  flowColorHex = '8016C7';
-  voiceColorHex = '029E4D';
+  flowColorHex = 'FF6620';
+  voiceColorHex = '78C100';
 
   ringStackSize = 61;
   ringTextSize = 14;
