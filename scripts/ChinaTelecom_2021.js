@@ -54,7 +54,7 @@ class Widget extends DmYY {
   ];
 
   fee = {
-    title: '剩余话费',
+    title: '话费余额',
     number: 0,
     unit: '元',
     en: '¥',
@@ -63,7 +63,7 @@ class Widget extends DmYY {
   flow = {
     percent: 0,
     max: 40,
-    title: '剩余流量',
+    title: '可用流量',
     number: 0,
     unit: 'MB',
     en: 'MB',
@@ -76,7 +76,7 @@ class Widget extends DmYY {
 
   voice = {
     percent: 0,
-    title: '剩余语音',
+    title: '语音剩余',
     number: 0,
     unit: '分钟',
     en: 'MIN',
