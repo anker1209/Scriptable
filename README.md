@@ -33,7 +33,7 @@ hostname = act.10010.com, m.client.10010.com
 
 [Script]
 Rewrite: CUCC = type=http-request,pattern=^https?:\/\/act.10010.com\/SigninApp\/signin\/querySigninActivity.htm,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10010/10010.cookie.js
-Rewrite: CUCC = type=http-request,pattern^https?:\/\/act.10010.com\/SigninApp(.*?)\/signin\/daySign,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10010/10010.cookie.js
+Rewrite: CUCC = type=http-request,pattern=^https?:\/\/act.10010.com\/SigninApp(.*?)\/signin\/daySign,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10010/10010.cookie.js
 ```
 
 > Boxjs添加chavy大佬订阅链接：
