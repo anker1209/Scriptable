@@ -52,6 +52,10 @@
         {
           "name": "DmYY",
           "scriptURL": "https://raw.githubusercontent.com/dompling/Scriptable/master/Scripts/DmYY.js"
+        },
+        {
+          "name": "Calendar",
+          "scriptURL": "https://raw.githubusercontent.com/dompling/Scriptable/master/Scripts/Calendar.js"
         }
       ],
       "html": [
