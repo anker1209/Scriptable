@@ -234,19 +234,6 @@ class Widget extends DmYY {
       updateText.font = Font.mediumSystemFont(10);
       updateText.textColor = new Color(color, 0.6);
       updateStack.addSpacer();
-      
-      let tempStack = dataStack.addStack();
-      tempStack.layoutVertically()
-      let tempStack1 = tempStack.addStack()
-      tempStack1.addSpacer()
-      let tempText1 = tempStack1.addText(this.flow.colors.toString())
-tempStack1.addSpacer()
-let tempStack2 = tempStack.addStack()
-tempStack2.addSpacer()
-      let tempText2 = tempStack2.addText(this.voice.colors.toString())
-tempStack2.addSpacer()
-      ;[tempText1, tempText2].map(t => t.font = Font.systemFont(6));
-      ;[tempText1, tempText2].map(t => t.textColor = updateText.textColor);
     }
     
     dataStack.addSpacer();
