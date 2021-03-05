@@ -1,22 +1,30 @@
-name: Auto Merge
 
+name: 自动同步
 on:
-  push:
-    branches:
-      -main
   schedule:
-     - cron: '*/1 * * * *'
-
+    - cron: '0 */1 * * *'
+  workflow_dispatch:
+  watch:
+    types: started
+  repository_dispatch:
+    types: repo-sync
 jobs:
-  update_external_airflow_fork:
+  repo-sync:
+    env:
+      PAT: ${{ github.event.client_payload.PAT || secrets.PAT }}
     runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
     steps:
-      - uses: Semporia/github-forks-sync-action@master
+      - uses: actions/checkout@v2
         with:
-          github_token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }} # 令牌
-          upstream_repository: anker1209/Scriptable  # 上游仓库
-          target_repository: Semporia/Scriptable  # 你要推送的仓库
-          upstream_branch: main  # 默认是拉取上游仓库的main分支
-          target_branch: main  # 默认推送到你的仓库main分支
-          force: true  # 是否强制推送
-          tags: true  # 确定是否使用-tags
+          persist-credentials: false
+
+      - name: 开始🔄自动同步🔄
+        uses: repo-sync/github-sync@v2
+        if: env.PAT
+        with:
+          source_repo: "https://github.com/anker1209/Scriptable.git"
+          source_branch: "main"
+          destination_branch: "main"
+          github_token: ${{ github.event.client_payload.PAT || secrets.PAT }}
+      
