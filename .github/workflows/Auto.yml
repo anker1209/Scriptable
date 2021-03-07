@@ -1,7 +1,7 @@
 name: Auto master
 on:
   schedule:
-    - cron: '* * * * *'
+    - cron: '0 */1 * * *'
   workflow_dispatch:
   watch:
     types: started
