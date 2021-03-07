@@ -1,17 +1,16 @@
-
-name: 自动同步
+name: Auto master
 on:
   schedule:
-    - cron: '0 */1 * * *'
+    - cron: '* * * * *'
   workflow_dispatch:
   watch:
     types: started
   repository_dispatch:
-    types: repo-sync
+    types: anker1209-Scriptable # 上游作者库名
 jobs:
   repo-sync:
     env:
-      PAT: ${{ github.event.client_payload.PAT || secrets.PAT }}
+      PAT: ${{ secrets.PAT }} 
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
@@ -19,12 +18,11 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 开始自动同步
+      - name: sync anker1209-Scriptable  # 需要同步的作者库名
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
-          source_repo: "https://github.com/anker1209/Scriptable.git"
-          source_branch: "main"
-          destination_branch: "main"
-          github_token: ${{ github.event.client_payload.PAT || secrets.PAT }}
-      
+          source_repo: "https://github.com/anker1209/Scriptable.git" # 需要 clone 的上游仓库地址 
+          source_branch: "main" # 需要clone上游作者的分支名
+          destination_branch: "main" # 需要clone到自己项目的分支名
+          github_token: ${{ secrets.PAT }}
