@@ -1,28 +1,40 @@
+# 工作流名称
 name: Auto master
+# 触发工作流事件
 on:
   schedule:
+    # cron 表达式,格林威治时间 (GMT) 每小时0分钟开始执行
     - cron: '0 */1 * * *'
+  # 手动触发
   workflow_dispatch:
   watch:
-    types: started
+    types: started # Star触发
   repository_dispatch:
     types: anker1209-Scriptable # 上游作者库名
+
+# 工作流运行由可以顺序或并行运行的一个或多个作业组成
 jobs:
-  repo-sync:
+  # 此工作流程包含一个名为"repo-sync"的作业
+  repo-sync: 
     env:
       PAT: ${{ secrets.PAT }} 
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
+    # 步骤代表将作为工作一部分执行的一系列任务
     steps:
-      - uses: actions/checkout@v2
+      # 在$ GITHUB_WORKSPACE下签出您的存储库，以便您的工作可以访问它
+      - uses: actions/checkout@v2 
         with:
           persist-credentials: false
-
+      # 使用sync 同步
       - name: sync anker1209-Scriptable  # 需要同步的作者库名
         uses: repo-sync/github-sync@v2
         if: env.PAT
         with:
-          source_repo: "https://github.com/anker1209/Scriptable.git" # 需要 clone 的上游仓库地址 
-          source_branch: "main" # 需要clone上游作者的分支名
-          destination_branch: "main" # 需要clone到自己项目的分支名
+          # 需要 clone 的上游仓库地址 
+          source_repo: "https://github.com/anker1209/Scriptable.git" 
+          # 需要clone上游作者的分支名
+          source_branch: "main" 
+          # 需要clone到自己项目的分支名
+          destination_branch: "main" 
           github_token: ${{ secrets.PAT }}
