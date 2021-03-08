@@ -1,17 +1,18 @@
 {
   "desc": "说明",
   "update": "更新日期：2021.03.08，随时更新，遇到问题请先在此查询。",
+  "height": "90",
   "data": [{
     "name": "界面问题",
     "item": [{
         "question": "头像没有显示/没有更新",
         "answer": "1、京东APP上传头像；2、[重置设置]重置缓存；3、运行脚本",
-        "height": "70"
+        "height": "80"
       },
       {
         "question": "",
         "answer": "",
-        "height": "56"
+        "height": "66"
       }
     ]
   }, {
@@ -19,17 +20,17 @@
     "item": [{
         "question": "为什么京豆总数、京享值都变成0了？",
         "answer": "京东接口访问受限",
-        "height": "56"
+        "height": "66"
       },
       {
         "question": "",
         "answer": "",
-        "height": "56"
+        "height": "66"
       },
       {
         "question": "",
         "answer": "",
-        "height": "56"
+        "height": "66"
       }
     ]
   }]
