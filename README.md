@@ -130,7 +130,8 @@ https://raw.githubusercontent.com/Sunert/Scripts/master/Task/sunert.boxjs.json
 
 ## JD_in_one
 
-还没时间弄。。。。太难了我。。。
+![JD_in_one 图片](https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7150.png "JD_in_one")
+![JD_in_one 图片](https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7151.png "JD_in_one")
 
 # 赞赏码
 <img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/anker.JPG"  width="300" height="300" align="bottom" />
