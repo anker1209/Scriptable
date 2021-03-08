@@ -3,16 +3,16 @@
   "data ": [{
     "name": "排版问题",
     "item": [{
-        "question": "为什么京豆总数、京享值都变成0了？",
-        "answer": "京东接口访问受限"
+        "question": "头像没有显示",
+        "answer": "1、京东APP上传头像；2、[重置设置]重置缓存；3、运行脚本"
       },
       {
-        "question": "为什么京豆总数、京享值都变成0了？",
-        "answer": "京东接口访问受限"
+        "question": "",
+        "answer": ""
       },
       {
-        "question": "为什么京豆总数、京享值都变成0了？",
-        "answer": "京东接口访问受限"
+        "question": "",
+        "answer": ""
       }
     ]
   }, {
@@ -22,12 +22,12 @@
         "answer": "京东接口访问受限"
       },
       {
-        "question": "为什么京豆总数、京享值都变成0了？",
-        "answer": "京东接口访问受限"
+        "question": "",
+        "answer": ""
       },
       {
-        "question": "为什么京豆总数、京享值都变成0了？",
-        "answer": "京东接口访问受限"
+        "question": "",
+        "answer": ""
       }
     ]
   }]
