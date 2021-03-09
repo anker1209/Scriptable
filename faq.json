@@ -13,6 +13,11 @@
         "question": "▶ 参数设置如何保留？",
         "answer": "参数设置绑定脚本文件名，只要文件名未变，参数将一直作用于该文件。请勿随意更改脚本文件名，更改文件名后，之前设置的所有参数将重置。",
         "height": "94"
+      } ,
+      {
+        "question": "▶ Scriptable如何显示行号？",
+        "answer": "点击scriptable左上角齿轮 —> Editor —> show line numbers。",
+        "height": "80"
       }
     ]
   }, {
