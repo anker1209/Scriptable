@@ -4,8 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.1.0
-// update:2021/03/09
+// version:2.1.1
+// update:2021/03/10
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -32,7 +32,7 @@ class Widget extends DmYY {
   // 请勿在此修改参数值
 
   fm = FileManager.local();
-  version = '2.1.0';
+  version = '2.1.1';
   basicSetting = {
     scale: 1.00,
     logo: 30,
@@ -60,6 +60,7 @@ class Widget extends DmYY {
     showPackage: '关闭',
     logable: '关闭',
     alwaysRefreshChart: '打开',
+    planB: '关闭',
   };
   package = {
     number: 0,
@@ -677,41 +678,51 @@ class Widget extends DmYY {
 
   init = async () => {
     try {
-    let beanCacheKey = `beanData${this.isSmall()}_${this.userName}`;
-    let beanCacheData = !this.loadStringCache(beanCacheKey) ? {} : JSON.parse(this.loadStringCache(beanCacheKey));
-    let beanCache = beanCacheData.base ? beanCacheData.base.jdNum : 0;
-    await this.TotalBean();
-    console.log(`京豆数据：${beanCache}`);
-    console.log(`京豆数据：${this.beanCount}`);
-
-    if (!this.cookie) return;
-    if (Keychain.contains(this.CACHE_KEY)) {
-      this.rangeTimer = JSON.parse(Keychain.get(this.CACHE_KEY));
-      if (this.rangeTimer.hasOwnProperty(this.today) && beanCache !== 0 && beanCache == this.beanCount) {
-        this.cacheChart = this.funcSetting.alwaysRefreshChart ? false : true;
-        console.log('京豆数据：无变化，使用缓存数据');
-        return;
+      let beanCache = 0;
+      if (this.funcSetting.planB ==='打开') {
+        let beanCacheKey = `beanDataPlanB${this.isSmall()}_${this.userName}`;
+        let beanCacheData = !this.loadStringCache(beanCacheKey) ? {} : JSON.parse(this.loadStringCache(beanCacheKey));
+        let beanCache = beanCacheData.data ? beanCacheData.data.totalUserBean : 0;
+        await this.getBeanData();
+        await this.getJValue();
+        await this.getPlus();
+      } else {
+        let beanCacheKey = `beanData${this.isSmall()}_${this.userName}`;
+        let beanCacheData = !this.loadStringCache(beanCacheKey) ? {} : JSON.parse(this.loadStringCache(beanCacheKey));
+        let beanCache = beanCacheData.base ? beanCacheData.base.jdNum : 0;
+        await this.TotalBean();
       }
+      console.log(`京豆数据：${beanCache}`);
+      console.log(`京豆数据：${this.beanCount}`);
 
-      this.rangeTimer[this.today] = [0, 0];
-      const timerKeys = Object.keys(this.rangeTimer);
-      if (timerKeys.length > this.maxDays) {
-        for (let i = 0; i < timerKeys.length - this.maxDays; i++) {
-          delete this.rangeTimer[timerKeys[i]];
+      if (!this.cookie) return;
+      if (Keychain.contains(this.CACHE_KEY)) {
+        this.rangeTimer = JSON.parse(Keychain.get(this.CACHE_KEY));
+        if (this.rangeTimer.hasOwnProperty(this.today) && beanCache !== 0 && beanCache == this.beanCount) {
+          this.cacheChart = this.funcSetting.alwaysRefreshChart ? false : true;
+          console.log('京豆数据：无变化，使用缓存数据');
+          return;
         }
-        Keychain.set(this.CACHE_KEY, JSON.stringify(this.rangeTimer));
-      }
 
-      this.timerKeys = [this.today];
-    } else {
-      this.rangeTimer = this.getDay(5);
-      this.timerKeys = Object.keys(this.rangeTimer);
+        this.rangeTimer[this.today] = [0, 0];
+        const timerKeys = Object.keys(this.rangeTimer);
+        if (timerKeys.length > this.maxDays) {
+          for (let i = 0; i < timerKeys.length - this.maxDays; i++) {
+            delete this.rangeTimer[timerKeys[i]];
+          }
+          Keychain.set(this.CACHE_KEY, JSON.stringify(this.rangeTimer));
+        }
+
+        this.timerKeys = [this.today];
+      } else {
+        this.rangeTimer = this.getDay(5);
+        this.timerKeys = Object.keys(this.rangeTimer);
+      }
+      await this.getAmountData();
+    } catch (e) {
+      console.log(e);
     }
-    await this.getAmountData();
-  } catch (e) {
-    console.log(e);
-  }
-};
+  };
 
   getAmountData = async () => {
     let i = 0,
@@ -884,6 +895,57 @@ class Widget extends DmYY {
       const data = await this.httpRequest(dataName, url, true, options, 'redPackageData');
       this.redPackage.number = data.data.balance ? data.data.balance : 0;
       if (data.data.expiredBalance && data.data.expiredBalance !== '') this.redPackage.desc = `今日过期${data.data.expiredBalance}`;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  getBeanData = async () => {
+    const dataName = '备用京豆';
+    let userCache = `beanDataPlanB${this.isSmall()}`;
+    const url = 'https://api.m.jd.com/client.action?functionId=findBeanHome&body=%7B%22source%22%3Anull%2C%22orderId%22%3Anull%2C%22rnVersion%22%3A%223.9%22%2C%22rnClient%22%3A%221%22%7D&appid=ld';
+    const options = {
+      headers: {
+        cookie: this.cookie,
+      },
+    };
+    try {
+      const data = await this.httpRequest(dataName, url, true, options, userCache);
+      this.beanCount = data.data.totalUserBean;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  getJValue = async () => {
+    const dataName = '备用京享';
+    const url = 'https://vip.m.jd.com/scoreDetail/current';
+    const options = {
+      headers: {
+        cookie: this.cookie,
+      },
+    };
+    try {
+      const data = await this.httpRequest(dataName, url, true, options, 'JValue');
+      this.jValue = data.model.scoreDescription.userScore.score;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  getPlus = async () => {
+    const dataName = '备用会员';
+    const url = 'https://plus.m.jd.com/user/getUserInfo?an=plus.mobile&contentType=2_9';
+    const options = {
+      headers: {
+        cookie: this.cookie,
+      },
+    };
+    try {
+      const data = await this.httpRequest(dataName, url, true, options, 'Plus');
+      this.isPlus = data.result.plusUserAssetInfo.unCouponCount ? true : false;
+      this.nickName = data.result.plusUserExportInfo.nickName;
+      this.userImage = `http:${data.result.plusUserExportInfo.headImgUrl}`;
     } catch (e) {
       console.log(e);
     }
@@ -1093,13 +1155,13 @@ class Widget extends DmYY {
       let info = new UITableRow();
       info.height = parseFloat(data.height);
       let desc = info.addText(data.update, data.desc);
-      desc.subtitleColor = Color.red();
+      desc.subtitleColor = Color.blue();
       desc.titleFont = Font.mediumSystemFont(14);
       desc.subtitleFont = Font.systemFont(14);
       table.addRow(info);
       for (let i = 0; i < data.data.length; i++) {
         let header = new UITableRow();
-        header.backgroundColor = new Color('F5F5F5');
+        header.backgroundColor = Color.dynamic(new Color('F5F5F5'), new Color('000000'));;
         let heading = header.addText(data.data[i].name)
         heading.titleFont = Font.mediumSystemFont(17);
         heading.centerAligned();
@@ -1111,7 +1173,7 @@ class Widget extends DmYY {
             rowtext.titleFont = Font.mediumSystemFont(16);
             rowtext.titleColor = Color.blue();
             rowtext.subtitleFont = Font.systemFont(14);
-            rowtext.subtitleColor = new Color('333333');
+            rowtext.subtitleColor = Color.dynamic(new Color('000000', 0.7), new Color('ffffff', 0.7));
             table.addRow(row);
         });
       }
@@ -1181,6 +1243,7 @@ class Widget extends DmYY {
       {type: 'menu', title: '打开/关闭包裹信息', desc: '只有中组件显示一条物流信息，\n若无物流信息会显示图表设置里选择的图表类型。\n\n缺省值：关闭', option: {showPackage: ''}, menu: ['打开', '关闭']},
       {type: 'menu', title: '打开/关闭运行日志', desc: '出现数据异常请将此值设为true，\n查看运行日志。\n\n⚠️注意：\n查看运行日志需将缓存时间更改为0。\n\n缺省值：关闭', option: {logable: ''}, menu: ['打开', '关闭']},
       {type: 'menu', title: '打开/关闭刷新图表', desc: '打开，每次刷新组件会随机刷新图表颜色（仅柱状图表和曲线面积图）；关闭，则只有在京豆数据有变化的情况下刷新图表颜色及数据。建议在排版调整没有问题后，设置为关闭。设置为打开会加长数据载入时间。\n\n⚠️注意：图表设置选项里修改图表高度、颜色、文字大小、顶边距需打开此选项以查看即时反馈。\n\n缺省值：打开', option: {alwaysRefreshChart: ''}, menu: ['打开', '关闭']},
+      {type: 'menu', title: '打开/关闭备用接口', desc: '若其他数据正常，京豆总数、京享值为0，用户名为未知用户，说明频繁访问被限制，请打开此备用接口。\n\n缺省值：关闭', option: {planB: ''}, menu: ['打开', '关闭']},
     ];
     table.removeAllRows();
     let topRow = new UITableRow();
