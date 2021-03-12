@@ -5,8 +5,8 @@
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:1.0.0
-// update:2021/02/27
+// version:1.0.1
+// update:2021/03/12
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
