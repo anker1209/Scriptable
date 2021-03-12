@@ -106,7 +106,7 @@
       ]
     },
     {
-      "version": "1.0.2",
+      "version": "1.0.3",
       "author": "脑瓜",
       "description": "中国电信小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaTelecom_2021.js",
@@ -126,6 +126,8 @@
         "<br/>",
         "<br/>",
         "<h4 align=\"center\">更新说明</h4>",
+        "v1.0.3",
+        "<li>更新渐变色数组</li>",
         "v1.0.2",
         "<li>增加超限流量/实际流量设置</li>",
         "<li>增加显示“已用流量”设置</li>",
@@ -136,7 +138,7 @@
       ]
     },
     {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "脑瓜",
       "description": "中国移动小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaMobile_2021.js",
@@ -156,7 +158,12 @@
       "html": [
         "作者：<a href=\"https://github.com/anker1209/Scriptable\">@anker1209</a>",
         "<br/>",
-        "教程：<a href=\"https://github.com/anker1209/Scriptable\">https://github.com/anker1209/Scriptable</a>"
+        "教程：<a href=\"https://github.com/anker1209/Scriptable\">https://github.com/anker1209/Scriptable</a>",
+        "<br/>",
+        "<br/>",
+        "<h4 align=\"center\">更新说明</h4>",
+        "v1.0.1",
+        "<li>更新渐变色数组</li>"
       ],
       "images": [
         "https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423457282-yd.png"
