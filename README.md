@@ -45,7 +45,7 @@ https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.json
 
 > 无代理缓存的，请使用Stream类抓包APP进行手动抓包，cooke字段以"t3_token="开头，以"city=xxx|xxx"结尾，获取cookie后填入脚本内注释位置
 
-> 友情提示：联通获取cookie后，请勿打开app，否则第二天cookie将会失效，失效后需要每天打开app激活cookie。
+> <fontcolor="#dd0000">友情提示：联通获取cookie后，请勿打开app，否则第二天cookie将会失效，失效后需要每天打开app激活cookie。</font>
 
 ## 中国移动
 
