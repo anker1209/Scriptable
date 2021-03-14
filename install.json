@@ -106,7 +106,7 @@
       ]
     },
     {
-      "version": "1.0.3",
+      "version": "1.0.4",
       "author": "脑瓜",
       "description": "中国电信小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaTelecom_2021.js",
@@ -126,6 +126,8 @@
         "<br/>",
         "<br/>",
         "<h4 align=\"center\">更新说明</h4>",
+        "v1.0.4",
+        "<li>更新一类不限量用户数据</li>",
         "v1.0.3",
         "<li>更新渐变色数组</li>",
         "v1.0.2",
