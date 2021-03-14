@@ -3,8 +3,8 @@
 // icon-color: pink; icon-glyph: birthday-cake;
 // Author: 2Ya UI: 脑瓜 https://t.me/Scriptable_JS
 // 该脚本依赖DmYY及Calendar: https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:1.0.2
-// update:2021/02/10
+// version:1.0.3
+// update:2021/03/14
 
 // 添加require，是为了vscode中可以正确引入包，以获得自动补全等功能
 if (typeof require === "undefined") require = importModule;
@@ -218,7 +218,7 @@ class Widget extends DmYY {
     this.contentText = response;
   };
 
-  setRightCell = (rowCell, icon, iconColor, title, value) => {
+  setRightCell = (rowCell, icon, iconColor, title, value, dayImage = false) => {
     const subWidget = rowCell.addStack();
     subWidget.centerAlignContent();
     const subImg = subWidget.addImage(icon);
@@ -233,6 +233,12 @@ class Widget extends DmYY {
     subValue.font = Font.systemFont(mainTextSize);
     subValue.textColor = this.widgetColor;
     subValue.lineLimit = 1;
+    if (dayImage) {
+      subWidget.addSpacer(2);
+      let dayIcon = subWidget.addImage(dayImage.image);
+      dayIcon.imageSize = new Size(mainTextSize + 1, mainTextSize + 1);
+      dayIcon.tintColor = new Color('1ab6f8');;
+    }
   };
 
   setLeftView = (w) => {
@@ -308,7 +314,7 @@ class Widget extends DmYY {
     const passDate = new Date(preData.cYear, preData.cMonth-1, preData.cDay);
     log(passDate)
     const canvSize = 172;
-    const canvTextSize = 55;
+    const canvTextSize = 45;
     const canvas = new DrawContext(); 
     const canvWidth = 12; 
     const canvRadius = 80; 
@@ -348,10 +354,10 @@ class Widget extends DmYY {
     canvas.fillEllipse(ringBG);
     canvas.drawImageInRect(ringIcon, ringBG);
 
-    const canvTextRect = new Rect(0, 100 - canvTextSize / 2 + 5, canvSize, canvTextSize);
+    const canvTextRect = new Rect(0, 100 - canvTextSize / 2 - 10, canvSize, canvTextSize);
     canvas.setTextAlignedCenter();
     canvas.setTextColor(cfontColor);
-    canvas.setFont(new Font("AvenirNextCondensed-DemiBold", canvTextSize))
+    canvas.setFont(Font.mediumRoundedSystemFont(canvTextSize));
     canvas.drawTextInRect(`${birthdayText[1]}`, canvTextRect);
 
     const imageContent = rightTop.addStack();
@@ -361,15 +367,20 @@ class Widget extends DmYY {
     
     const tmpBirth = this.getAge(this.defaultData.eday);
     let ageYear = tmpBirth.year > 0 ? `${tmpBirth.year}岁` : '';
-    let ageMonth = tmpBirth.month > 0 ? `${tmpBirth.month}个月` : '';
+    let ageMonth = tmpBirth.month > 0 ? `${tmpBirth.month}月` : '';
     let ageDay = tmpBirth.day > 0 ? `${tmpBirth.day}天` : '';
     const age = ageYear + ageMonth + ageDay;
+    const dayIcon =  SFSymbol.named(tmpBirth.day + '.circle.fill');
 
-    this.setRightCell(right, countIcon, "1ab6f8", `年龄`, age);
+    if (tmpBirth.year > 0 && tmpBirth.month > 0 && tmpBirth.day > 0) {
+      this.setRightCell(right, countIcon, '1ab6f8', '年龄', ageYear + ageMonth, dayIcon);
+    } else {
+      this.setRightCell(right, countIcon, '1ab6f8', '年龄', age);
+    }
     right.addSpacer(lineHeight);
-    this.setRightCell(right, lunarIcon, "30d15b", "农历", `${IMonthCn}${IDayCn}`);
+    this.setRightCell(right, lunarIcon, '30d15b', '农历', `${IMonthCn}${IDayCn}`);
     right.addSpacer(lineHeight);
-    this.setRightCell(right, birthIcon, "fc6d6d", "生日", _birth);
+    this.setRightCell(right, birthIcon, 'fc6d6d', '生日', _birth);
     return right;
   };
 
