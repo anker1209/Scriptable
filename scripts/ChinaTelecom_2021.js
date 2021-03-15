@@ -5,8 +5,8 @@
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:1.0.3
-// update:2021/03/12
+// version:1.0.4
+// update:2021/03/14
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -123,6 +123,19 @@ class Widget extends DmYY {
     return {count: (n / 1024).toFixed(2), unit: 'GB'};
   }
 
+  unlimitUser(flow) {
+    const usedFlow = this.formatFlow(flow);
+    this.flow.title = '已用流量';
+    this.flow.number = usedFlow.count;
+    this.flow.unit = usedFlow.unit;
+    this.flow.en = usedFlow.unit;
+    if (this.flow.unit === 'GB') {
+      this.flow.percent = (100 - (this.flow.number / (this.flow.max || 40)) * 100).toFixed(2);
+    } else {
+      this.flow.percent = (100 - (this.flow.number / ((this.flow.max || 40) * 1024)) * 100).toFixed(2);
+    }
+  }
+
   getData = async () => {
     const detail = await this.http({
       url: this.fetchUrl.detail,
@@ -165,22 +178,16 @@ class Widget extends DmYY {
                   this.flow.unit = flow.unit;
                   this.flow.en = flow.unit;
                 }
+                if (data.offerType == 21 && item.ratableAmount == '0') {
+                  this.unlimitUser(item.usageAmount);
+                }
               }
             });
           }
         });
       } else {
         if (this.usedFlow) {
-          const usedFlow = this.formatFlow(detail.used);
-          this.flow.title = '已用流量';
-          this.flow.number = usedFlow.count;
-          this.flow.unit = usedFlow.unit;
-          this.flow.en = usedFlow.unit;
-          if (this.flow.unit === 'GB') {
-            this.flow.percent = (100 - (this.flow.number / (this.flow.max || 40)) * 100).toFixed(2);
-          } else {
-            this.flow.percent = (100 - (this.flow.number / ((this.flow.max || 40) * 1024)) * 100).toFixed(2);
-          }
+          this.unlimitUser(detail.used);
         } else {
           this.flow.percent = ((detail.balance / (detail.total || 1)) * 100).toFixed(2);
           const flow = this.formatFlow(detail.balance);
