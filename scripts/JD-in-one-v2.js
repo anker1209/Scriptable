@@ -4,8 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.1.1
-// update:2021/03/10
+// version:2.1.2
+// update:2021/03/21
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -32,7 +32,7 @@ class Widget extends DmYY {
   // 请勿在此修改参数值
 
   fm = FileManager.local();
-  version = '2.1.1';
+  version = '2.1.2';
   basicSetting = {
     scale: 1.00,
     logo: 30,
@@ -40,7 +40,8 @@ class Widget extends DmYY {
     userStack: 103,
     division: 25,
     interval: 10,
-    customizeName : '',
+    customizeName: '',
+    customizeAvatar: '',
     smallShowType: '京豆、钱包数据',
     walletShowType: '红包',
   };
@@ -54,6 +55,8 @@ class Widget extends DmYY {
     barPadding: 5,
     smallShowType: '双日视图',
     showType: '双日视图',
+    countBean: '收入-支出',
+    colorful: '关闭',
   };
   funcSetting = {
     showBaitiao: '打开',
@@ -78,6 +81,11 @@ class Widget extends DmYY {
     title: '通用红包',
     number: 0,
     desc: '今日无过期',
+  };
+  expireBean = {
+    title: '过期京豆',
+    number: 0,
+    desc: '',
   };
   extra = {
     jingtie: 0,
@@ -119,17 +127,17 @@ class Widget extends DmYY {
         'datasets': [
         {
           type: 'line',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#FA2D19',
           borderColor: getGradientFillHelper('horizontal', ['#FA2D19', '#FA2D19']),
-          'borderWidth': 2,
-          pointRadius: 6,
-          'fill': false,
+          borderWidth: ${this.isSmall(true) ? 4 : 3},
+          pointRadius: ${this.isSmall(true) ? 8 : 6},
+          fill: false,
           showLine: true,
-          'data': ${JSON.stringify(datas)},
+          data: ${JSON.stringify(datas)},
         },
         ],
       },
-      'options': {
+      options: {
         plugins: {
           datalabels: {
             display: true,
@@ -151,20 +159,17 @@ class Widget extends DmYY {
         },
         responsive: true,
         maintainAspectRatio: true,
-        'legend': {
-          'display': false,
+        legend: {
+          display: false,
         },
         scales: {
           xAxes: [
           {
             gridLines: {
               display: false,
-              color: '#000000',
             },
             ticks: {
               display: false,
-              fontColor: '#000000',
-              fontSize: '20',
             },
           },
           ],
@@ -173,11 +178,9 @@ class Widget extends DmYY {
             ticks: {
               display: false,
               beginAtZero: false,
-              fontColor: '#000000',
             },
             gridLines: {
               display: false,
-              color: '#000000',
             },
           },
           ],
@@ -189,6 +192,9 @@ class Widget extends DmYY {
 
   barChart(labels = [], datas = [], chartTextSize, topPadding, showType) {
     let chartTextColor = Color.dynamic(new Color(this.chartSetting.textDayColor),new Color(this.chartSetting.textNightColor),);
+    let backgroundColor = [];
+    if (this.chartSetting.colorful === '打开') backgroundColor = JSON.stringify(this.colorfulBar())
+      else backgroundColor = `getGradientFillHelper('vertical', ${JSON.stringify(this.chartColors())})`
     const chartStr = `
     {
       type: 'bar',
@@ -200,7 +206,7 @@ class Widget extends DmYY {
           borderWidth: 0,
           pointRadius: 0,
           barPercentage: 0.5,
-          backgroundColor: getGradientFillHelper('vertical', ${JSON.stringify(this.chartColors())}),
+          backgroundColor: ${backgroundColor},
           borderColor: false,
           data: ${JSON.stringify(datas)},
         },
@@ -269,12 +275,20 @@ class Widget extends DmYY {
   chartColors () {
     let colorArr = [['#FFF000', '#E62490'], ['#FDEB71', '#F8D800'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#F072B6'], ['#FCCF31', '#F55555'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#FFFF1C', '#00C3FF'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#2AFADF', '#4C83FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#EE9AE5', '#5961F9'], ['#FFC371', '#FF5F6D'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FFC600', '#FD6E6A'], ['#FFC600', '#FD6E6A'], ['#92FE9D', '#00C9FF'], ['#FFDDE1', '#EE9CA7'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#F9D423', '#FF4E50'], ['#3C8CE7', '#00EAFF'], ['#FCFF00', '#FFA8A8'], ['#FF96F9', '#C32BAC'], ['#D0E6A5', '#FFDD94'], ['#FFDD94', '#FA897B'], ['#FFCC4B', '#FF7D58'], ['#D0E6A5', '#86E3CE'], ['#F0D5B6', '#F16238'], ['#F8EC70', '#F9C708'], ['#C4E86B', '#00BCB4'], ['#F5CEC7', '#E79796'], ['#FFC446', '#FA0874'], ['#E1EE32', '#FFB547'], ['#FFD804', '#2ACCC8'], ['#E9A6D2', '#E9037B'], ['#F8EC70', '#49E2F6'], ['#A2F8CD', '#A2F852'], ['#49E2F6', '#A2F8CD'], ['#FDEFE2', '#FE214F'], ['#F8EC70', '#A2F8CD'], ['#F8EC70', '#49E2F6'], ['#D1FFB7', '#FFB7D1'], ['#B7FFE4', '#E4B7FF'], ['#FFB7D1', '#E4B7FF'], ['#D0E6A5', '#86E3CE'], ['#E8E965', '#64C5C7']];
     let chartColors = colorArr[Math.floor(Math.random() * colorArr.length)];
-    //chartColor = ['#DB36A4', '#F7FF00']; // 固定京豆图表渐变填充颜色
+    //chartColors = ['#DB36A4', '#F7FF00']; // 固定京豆图表填充颜色
     return chartColors;
   }
 
-  isSmall () {
-    return config.widgetFamily == 'small' ? '_small' : ''
+  colorfulBar () {
+    let colorArr = [['#1B9E77', '#D95F02', '#7570B3', '#E7298A', '#66A61E', '#E6AB02'], ['#D53E4F', '#FC8D59', '#FEE08B', '#E6F598', '#99D594', '#3288BD'], ['#A6CEE3', '#1F78B4', '#B2DF8A', '#33A02C', '#FB9A99', '#E31A1C'], ['#E41A1C', '#377EB8', '#4DAF4A', '#984EA3', '#FF7F00', '#FFFF33'], ['#CEB966', '#9CB084', '#6BB1C9', '#6585CF', '#7E6BC9', '#A379BB'], ['#F81B02', '#FC7715', '#AFBF41', '#50C49F', '#3B95C4', '#B560D4'], ['#FFC000', '#A5D028', '#08CC78', '#F24099', '#5AA6C0', '#F56617'], ['#F09415', '#C1B56B', '#4BAF73', '#5AA6C0', '#D17DF9', '#FA7E5C'], ['#0F6FC6', '#009DD9', '#0BD0D9', '#10CF9B', '#7CCA62', '#A5C249'], ['#3494BA', '#58B6C0', '#75BDA7', '#7A8C8E', '#84ACB6', '#2683C6'], ['#1CADE4', '#2683C6', '#27CED7', '#42BA97', '#3E8853', '#62A39F'], ['#4A66AC', '#629DD1', '#297FD5', '#7F8FA9', '#5AA2AE', '#9D90A0'], ['#4A66AC', '#629DD1', '#297FD5', '#7F8FA9', '#5AA2AE', '#9D90A0'], ['#2C7C9F', '#244A58', '#E2751D', '#FFB400', '#7EB606', '#C00000'], ['#AC3EC1', '#477BD1', '#46B298', '#90BA4C', '#DD9D31', '#E25247'], ['#9ACD4C', '#FAA93A', '#D35940', '#B258D3', '#63A0CC', '#8AC4A7'], ['#D16349', '#CCB400', '#8CADAE', '#8C7B70', '#8FB08C', '#D19049'], ['#990000', '#EFAB16', '#78AC35', '#35ACA2', '#4083CF', '#0D335E'], ['#98C723', '#59B0B9', '#DEAE00', '#B77BB4', '#E0773C', '#A98D63'], ['#2DA2BF', '#DA1F28', '#EB641B', '#39639D', '#474B78', '#7D3C4A'], ['#8C8D86', '#E6C069', '#897B61', '#8DAB8E', '#77A2BB', '#E28394'], ['#9EC544', '#50BEA3', '#4A9CCC', '#9A66CA', '#C54F71', '#DE9C3C'], ['#41AEBD', '#97E9D5', '#A2CF49', '#608F3D', '#F4DE3A', '#FCB11C'], ['#2FA3EE', '#4BCAAD', '#86C157', '#D99C3F', '#CE6633', '#A35DD1'], ['#629DD1', '#297FD5', '#7F8FA9', '#4A66AC', '#5AA2AE', '#9D90A0'], ['#FA8716', '#F5C201', '#526DB0', '#989AAC', '#DC5924', '#B4B392'], ['#3399FF', '#69FFFF', '#CCFF33', '#3333FF', '#9933FF', '#FF33FF'], ['#FBC01E', '#EFE1A2', '#FA8716', '#BE0204', '#640F10', '#7E13E3'], ['#90C226', '#54A021', '#E6B91E', '#E76618', '#C42F1A', '#918655'], ['#0F6FC6', '#009DD9', '#0BD0D9', '#10CF9B', '#7CCA62', '#A5C249'], ['#FFB91D', '#F97817', '#6DE304', '#FF0000', '#732BEA', '#C913AD'], ['#C70F0C', '#DD6B0D', '#FAA700', '#93E50D', '#17C7BA', '#0A96E4'], ['#72A376', '#B0CCB0', '#A8CDD7', '#C0BEAF', '#CEC597', '#E8B7B7'], ['#40BAD2', '#FAB900', '#90BB23', '#EE7008', '#1AB39F', '#D5393D'], ['#B71E42', '#DE478E', '#BC72F0', '#795FAF', '#586EA6', '#6892A0'], ['#80B606', '#E29F1D', '#2397E2', '#35ACA2', '#5430BB', '#8D34E0'], ['#549E39', '#8AB833', '#C0CF3A', '#029676', '#4AB5C4', '#0989B1'], ['#99CB38', '#63A537', '#37A76F', '#44C1A3', '#4EB3CF', '#51C3F9'], ['#F8C000', '#F88600', '#F83500', '#8B723D', '#818B3D', '#586215'], ['#439EB7', '#E28B55', '#DCB64D', '#4CA198', '#835B82', '#645135'], ['#8C73D0', '#C2E8C4', '#C5A6E8', '#B45EC7', '#9FDAFB', '#95C5B0'], ['#749805', '#BACC82', '#6E9EC2', '#2046A5', '#5039C6', '#7411D0'], ['#1CADE4', '#2683C6', '#27CED7', '#42BA97', '#3E8853', '#62A39F'], ['#B01513', '#EA6312', '#E6B729', '#6AAC90', '#5F9C9D', '#9E5E9B'], ['#B31166', '#E33D6F', '#E45F3C', '#E9943A', '#9B6BF2', '#D53DD0'], ['#76C5EF', '#FEA022', '#FF6700', '#70A525', '#A5D848', '#20768C'], ['#A1D68B', '#5EC795', '#4DADCF', '#CDB756', '#E29C36', '#8EC0C1'], ['#418AB3', '#A6B727', '#F69200', '#80C34F', '#FEC306', '#DF5327'], ['#94B6D2', '#DD8047', '#A5AB81', '#D8B25C', '#7BA79D', '#80C34F'], ['#7FD13B', '#EA157A', '#FEB80A', '#00ADDC', '#738AC8', '#1AB39F'], ['#F0AD00', '#60B5CC', '#E66C7D', '#6BB76D', '#E88651', '#C64847'], ['#5B9BD5', '#ED7D31', '#A5A5A5', '#FFC000', '#4472C4', '#70AD47'], ['#4F81BD', '#C0504D', '#9BBB59', '#8064A2', '#4BACC6', '#F79646'], ['#B83D68', '#AC66BB', '#DE6C36', '#F9B639', '#CF6DA4', '#FA8D3D'], ['#F2D908', '#9DE61E', '#0D8BE6', '#C61B1B', '#E26F08', '#8D35D1'], ['#83992A', '#3C9770', '#44709D', '#A23C33', '#D97828', '#DEB340'], ['#FE8637', '#7598D9', '#B32C16', '#F5CD2D', '#AEBAD5', '#777C84'], ['#727CA3', '#9FB8CD', '#D2DA7A', '#FADA7A', '#B88472', '#8E736A'], ['#A5B592', '#F3A447', '#E7BC29', '#D092A7', '#9C85C0', '#809EC2'], ['#30ACEC', '#80C34F', '#E29D3E', '#D64A3B', '#D64787', '#A666E1'], ['#F6A21D', '#9BAFB5', '#C96731', '#9CA383', '#87795D', '#A0988C'], ['#A2C816', '#E07602', '#E4C402', '#7DC1EF', '#21449B', '#A2B170'], ['#FF7F01', '#F1B015', '#FBEC85', '#D2C2F1', '#DA5AF4', '#9D09D1'], ['#FDA023', '#AA2B1E', '#71685C', '#64A73B', '#EB5605', '#B9CA1A'], ['#00C6BB', '#6FEBA0', '#B6DF5E', '#EFB251', '#EF755F', '#ED515C'], ['#E84C22', '#FFBD47', '#B64926', '#FF8427', '#CC9900', '#B22600'], ['#E32D91', '#C830CC', '#4EA6DC', '#4775E7', '#8971E1', '#D54773'], ['#0C5986', '#DDF53D', '#508709', '#BF5E00', '#9C0001', '#660075'], ['#C6B178', '#9C5B14', '#71B2BC', '#78AA5D', '#867099', '#4C6F75'], ['#1CADE4', '#2683C6', '#27CED7', '#42BA97', '#3E8853', '#62A39F'], ['#A63212', '#E68230', '#9BB05E', '#6B9BC7', '#4E66B2', '#8976AC'], ['#073779', '#8FD9FB', '#FFCC00', '#EB6615', '#C76402', '#B523B4'], ['#BC451B', '#D3BA68', '#BB8640', '#AD9277', '#A55A43', '#AD9D7B'], ['#052F61', '#A50E82', '#14967C', '#6A9E1F', '#E87D37', '#C62324'], ['#4E67C8', '#5ECCF3', '#A7EA52', '#5DCEAF', '#FF8021', '#F14124'], ['#3891A7', '#FEB80A', '#C32D2E', '#84AA33', '#964305', '#475A8D'], ['#990000', '#FF6600', '#FFBA00', '#99CC00', '#528A02', '#9C007F'], ['#1D86CD', '#732E9A', '#B50B1B', '#E8950E', '#55992B', '#2C9C89'], ['#F7901E', '#FEC60B', '#9FE62F', '#4EA5D1', '#1C4596', '#542D90'], ['#51A6C2', '#51C2A9', '#7EC251', '#E1DC53', '#B54721', '#A16BB1'], ['#6EA0B0', '#CCAF0A', '#8D89A4', '#748560', '#9E9273', '#7E848D'], ['#759AA5', '#CFC60D', '#99987F', '#90AC97', '#FFAD1C', '#B9AB6F'], ['#B74D21', '#A32323', '#4576A3', '#615D9A', '#67924B', '#BF7B1B'], ['#F0A22E', '#A5644E', '#B58B80', '#C3986D', '#A19574', '#C17529'], ['#E8BC4A', '#83C1C6', '#E78D35', '#909CE1', '#839C41', '#CC5439'], ['#53548A', '#438086', '#A04DA3', '#C4652D', '#8B5D3D', '#5C92B5'], ['#86CE24', '#00A2E6', '#FAC810', '#7D8F8C', '#D06B20', '#958B8B'], ['#DF2E28', '#FE801A', '#E9BF35', '#81BB42', '#32C7A9', '#4A9BDC'], ['#FF388C', '#E40059', '#9C007F', '#68007F', '#005BD3', '#00349E'], ['#AD84C6', '#8784C7', '#5D739A', '#6997AF', '#84ACB6', '#6F8183'], ['#92278F', '#9B57D3', '#755DD9', '#665EB8', '#45A5ED', '#5982DB'], ['#31B6FD', '#4584D3', '#5BD078', '#A5D028', '#F5C040', '#05E0DB'], ['#A53010', '#DE7E18', '#9F8351', '#728653', '#92AA4C', '#6AAC91'], ['#FFCA08', '#F8931D', '#CE8D3E', '#EC7016', '#E64823', '#9C6A6A'], ['#F0A22E', '#A5644E', '#B58B80', '#C3986D', '#A19574', '#C17529'], ['#4E79A7', '#F28E2B', '#E15759', '#76B7B2', '#59A14F', '#EDC948'], ['#4E79A7', '#A0CBE8', '#F28E2B', '#FFBE7D', '#59A14F', '#8CD17D'], ['#E03531', '#F0BD27', '#51B364', '#FF684C', '#FFDA66', '#8ACE7E'], ['#4E9F50', '#87D180', '#EF8A0C', '#FCC66D', '#3CA8BC', '#98D9E4'], ['#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD', '#E377C2'], ['#32A251', '#ACD98D', '#FF7F0F', '#FFB977', '#3CB7CC', '#98D9E4'], ['#2C69B0', '#F02720', '#AC613C', '#6BA3D6', '#EA6B73', '#E9C39B'], ];
+    let chartColors = colorArr[Math.floor(Math.random() * colorArr.length)];
+    //chartColors = ['#1B9E77', '#D95F02', '#7570B3', '#E7298A', '#66A61E', '#E6AB02']; // 固定京豆图表填充颜色
+    return chartColors;
+  }
+
+  isSmall (a = false) {
+    if (a) return config.widgetFamily == 'small' ? true : false;
+    else return config.widgetFamily == 'small' ? '_small' : '';
   }
 
   // #####################小组件###################
@@ -299,8 +313,10 @@ class Widget extends DmYY {
         default:
         await this.setBeanShow(bodyStack, 22 * this.basicSetting.scale, 40 * this.basicSetting.scale);
       }
-      bodyStack.addSpacer();
-      if (this.funcSetting.showBaitiao === '打开' && this.baitiao.number > 0) {
+      bodyStack.addSpacer(5 * this.basicSetting.scale);
+      if (this.expireBean.number > 0) {
+        await this.setExpireBeanShow(bodyStack, true);
+      } else if (this.funcSetting.showBaitiao === '打开' && this.baitiao.number > 0) {
         await this.setBaitiaoShow(bodyStack, true);
       } else if (this.basicSetting.walletShowType === '红包') {
         await this.setRedPackageShow(bodyStack, true);
@@ -337,9 +353,11 @@ class Widget extends DmYY {
         default:
         await this.setBeanShow(mainStack, 30 * this.basicSetting.scale, 50 * this.basicSetting.scale);
       }
-      mainStack.addSpacer();
+      mainStack.addSpacer(5 * this.basicSetting.scale);
     }
-    if (this.funcSetting.showBaitiao === '打开' && this.baitiao.number > 0) {
+    if (this.expireBean.number > 0) {
+      await this.setExpireBeanShow(mainStack);
+    } else if (this.funcSetting.showBaitiao === '打开' && this.baitiao.number > 0) {
       await this.setBaitiaoShow(mainStack);
     } else if (this.basicSetting.walletShowType === '红包') {
       await this.setRedPackageShow(mainStack);
@@ -383,7 +401,7 @@ class Widget extends DmYY {
     const subStack = imgStack.addStack();
     subStack.size = new Size(this.basicSetting.userImage * this.basicSetting.scale, this.basicSetting.userImage * this.basicSetting.scale);
     subStack.cornerRadius = this.basicSetting.userImage / 2 * this.basicSetting.scale;
-    subStack.backgroundImage = await this.getImageByUrl(this.userImage, `userImage_${this.userName}`);
+    subStack.backgroundImage = await this.getImageByUrl(this.basicSetting.customizeAvatar || this.userImage, `userImage_${this.userName}`);
     if (this.isPlus) {
       const userImg = subStack.addImage(await this.getImageByUrl(this.plusFG, 'plusFGImage'));
     }
@@ -514,7 +532,9 @@ class Widget extends DmYY {
       const value = this.rangeTimer[day];
       const arrDay = day.split('-');
       labels.push(arrDay[2]);
-      data.push(value[0]);
+      if (this.chartSetting.countBean === '收入-支出')
+        data.push(value[0]);
+      else data.push(value[0] - value[1]);
     });
     let cacheKey = `chart${type}Image${this.isSmall()}_${this.userName}`;
     let textSize = this.chartSetting.textSize;
@@ -538,7 +558,7 @@ class Widget extends DmYY {
       default:
       chartStr = this.lineChart(labels, data, textSize, linePadding);
     }
-    const url = `https://quickchart.io/chart?w=${400 * this.basicSetting.scale}&h=${this.chartSetting.height * this.basicSetting.scale}&f=png&c=${encodeURIComponent(chartStr)}`;
+    const url = `https://quickchart.io/chart?w=${400}&h=${this.chartSetting.height}&f=png&c=${encodeURIComponent(chartStr)}`;
     const chart = await this.getImageByUrl(url, cacheKey, this.cacheChart);
 
     const chartStack = stack.addStack();
@@ -605,6 +625,12 @@ class Widget extends DmYY {
   async setBaitiaoShow(stack, small = false) {
     const baitiaoImage = await this.getImageByUrl(this.baitiaoImg, 'baitiaoImage');
     small ? this.rowSmallWalletCell(stack, baitiaoImage, this.baitiao) : this.rowWalletCell(stack, baitiaoImage, this.baitiao);
+  }
+
+  // #####################过期京豆##################
+  async setExpireBeanShow(stack, small = false) {
+    const walletImage = await this.getImageByUrl(this.walletImg, 'walletImage');
+    small ? this.rowSmallWalletCell(stack, walletImage, this.expireBean) : this.rowWalletCell(stack, walletImage, this.expireBean);
   }
 
   rowCell(stack, image, value, title) {
@@ -682,15 +708,16 @@ class Widget extends DmYY {
       if (this.funcSetting.planB ==='打开') {
         let beanCacheKey = `beanDataPlanB${this.isSmall()}_${this.userName}`;
         let beanCacheData = !this.loadStringCache(beanCacheKey) ? {} : JSON.parse(this.loadStringCache(beanCacheKey));
-        let beanCache = beanCacheData.data ? beanCacheData.data.totalUserBean : 0;
+        beanCache = beanCacheData.data ? beanCacheData.data.totalUserBean : 0;
         await this.getBeanData();
         await this.getJValue();
         await this.getPlus();
       } else {
         let beanCacheKey = `beanData${this.isSmall()}_${this.userName}`;
         let beanCacheData = !this.loadStringCache(beanCacheKey) ? {} : JSON.parse(this.loadStringCache(beanCacheKey));
-        let beanCache = beanCacheData.base ? beanCacheData.base.jdNum : 0;
+        beanCache = beanCacheData.data ? beanCacheData.data.assetInfo.beanNum : 0;
         await this.TotalBean();
+        await this.getJValue();
       }
       console.log(`京豆数据：${beanCache}`);
       console.log(`京豆数据：${this.beanCount}`);
@@ -699,7 +726,7 @@ class Widget extends DmYY {
       if (Keychain.contains(this.CACHE_KEY)) {
         this.rangeTimer = JSON.parse(Keychain.get(this.CACHE_KEY));
         if (this.rangeTimer.hasOwnProperty(this.today) && beanCache !== 0 && beanCache == this.beanCount) {
-          this.cacheChart = this.funcSetting.alwaysRefreshChart ? false : true;
+          this.cacheChart = this.funcSetting.alwaysRefreshChart ==='打开' ? false : true;
           console.log('京豆数据：无变化，使用缓存数据');
           return;
         }
@@ -779,27 +806,27 @@ class Widget extends DmYY {
   TotalBean = async () => {
     const dataName = '京豆数据';
     let userCache = `beanData${this.isSmall()}`;
-    const url = 'https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2';
+    const url = 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion';
     const options = {
       headers: {
         cookie: this.cookie,
-        Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
       },
     };
     const response = await this.httpRequest(dataName, url, true, options, userCache);
     try {
-      if (response.retcode === 0 && response['base']) {
-        this.beanCount = response.base.jdNum;
-        this.userImage = response.base.headImageUrl || 'https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png';
-        this.nickName = response.base.nickname;
-        this.jValue = response.base.jvalue;
-        this.isPlus = response.isPlusVip;
-      };
+      if (response.retcode === '0' && response['data']) {
+        this.beanCount = response.data.assetInfo.beanNum;
+        this.userImage = response.data.userInfo.baseInfo.headImageUrl.replace(/big/, 'mid') || 'https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png';
+        this.nickName = response.data.userInfo.baseInfo.nickname;
+        this.isPlus = response.data.userInfo.isPlusVip === '1' ? true : false;
+      } else {
+        this.notify(this.name, response.msg);
+        console.log('京豆数据：获取失败，' + response.msg)
+      }
     } catch (e) {
-      console.log('京东服务器返回空数据' + e);
+      console.log(e);
     }
-    return response;
-    }
+  }
 
   getJingBeanBalanceDetail = async (page) => {
     try {
@@ -845,8 +872,13 @@ class Widget extends DmYY {
     try {
       const JTData = await this.httpRequest(JTDataName, JTUrl, true, options, 'jintieData');
       const GBData = await this.httpRequest(GBDataName, GBUrl, true, options, 'gangbengData');
-      this.extra.jingtie = JTData.resultData.data['balance'];
-      this.extra.gangbeng = GBData.gbBalance;
+      if (JTData.resultCode === 0) {
+        this.extra.jingtie = JTData.resultData.data['balance'];
+      } else {
+        this.notify(this.name, JTdata.resultMsg);
+        console.log('金贴数据：获取失败，' + JTdata.resultMsg);
+      };
+      if (GBData.gbBalance) this.extra.gangbeng = GBData.gbBalance;
     } catch(e) {
       console.log(e);
     }
@@ -864,14 +896,15 @@ class Widget extends DmYY {
     try {
       const data = await this.httpRequest(dataName, url, true, options, 'packageData');
       if (data.errCode == 0 && data['dealLogList']) {
-        console.log('包裹数据：获取正常');
+        console.log('包裹数据：获取成功');
         console.log(`包裹数据：您有${data['dealLogList'].length}个包裹`);
         if (data['dealLogList'].length > 0) {
+          let item = data.dealLogList[Math.floor(Math.random() * data['dealLogList'].length)]
           this.package.number = data.dealLogList.length;
-          this.package.title = data.dealLogList[0]['name'];
-          this.package.desc = data.dealLogList[0]['wlStateDesc'];
-          this.package.time = data.dealLogList[0]['createTime'];
-          this.package.status = data.dealLogList[0]['stateName'];
+          this.package.title = item['name'];
+          this.package.desc = item['wlStateDesc'];
+          this.package.time = item['createTime'];
+          this.package.status = item['stateName'];
         }
       } else {
         console.log('包裹数据：获取失败');
@@ -893,8 +926,44 @@ class Widget extends DmYY {
     };
     try {
       const data = await this.httpRequest(dataName, url, true, options, 'redPackageData');
-      this.redPackage.number = data.data.balance ? data.data.balance : 0;
-      if (data.data.expiredBalance && data.data.expiredBalance !== '') this.redPackage.desc = `今日过期${data.data.expiredBalance}`;
+      if (data.errcode === 0) {
+        this.redPackage.number = data.data.balance ? data.data.balance : 0;
+        if (data.data.expiredBalance && data.data.expiredBalance !== '') this.redPackage.desc = `今日过期${data.data.expiredBalance}`;
+      } else {
+        this.notify(this.name, data.msg);
+        console.log('红包数据：获取失败，' + data.msg);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  getExipireBean = async() => {
+    const dataName = '过期京豆';
+    const url = 'https://wq.jd.com/activep3/singjd/queryexpirejingdou?_=g_login_type=1&sceneval=2';
+    const options = {
+      headers: {
+        cookie: this.cookie,
+        Referer: 'https://wqs.jd.com/promote/201801/bean/mybean.html',
+      },
+    };
+    try {
+      let data = await this.httpRequest(dataName, url, false, options, 'exipireBeanData');
+      if (data) {
+        data = JSON.parse(data.slice(23, -13));
+        if (data.ret === 0) {
+          for(let i = 0; i < data['expirejingdou'].length; i++) {
+            if (data['expirejingdou'][i]['expireamount'] > 0) {
+              this.expireBean.number = data['expirejingdou'][i]['expireamount'];
+              this.expireBean.desc = this.timeFormat(data['expirejingdou'][i]['time'] * 1000);
+              break;
+            }
+          }
+        } else {
+          this.notify(this.name, data.errmsg);
+          console.log('过期京豆：获取失败，' + data.errmsg);
+        }
+      }
     } catch (e) {
       console.log(e);
     }
@@ -911,7 +980,8 @@ class Widget extends DmYY {
     };
     try {
       const data = await this.httpRequest(dataName, url, true, options, userCache);
-      this.beanCount = data.data.totalUserBean;
+      if (data.data['totalUserBean']) this.beanCount = data.data['totalUserBean'];
+      else console.log('备用京豆：获取失败');
     } catch (e) {
       console.log(e);
     }
@@ -927,7 +997,11 @@ class Widget extends DmYY {
     };
     try {
       const data = await this.httpRequest(dataName, url, true, options, 'JValue');
-      this.jValue = data.model.scoreDescription.userScore.score;
+      if (data.code === 0) {
+        this.jValue = data.model.scoreDescription.userScore.score;
+      } else {
+        console.log('备用京享：获取失败');
+      };
     } catch (e) {
       console.log(e);
     }
@@ -943,7 +1017,7 @@ class Widget extends DmYY {
     };
     try {
       const data = await this.httpRequest(dataName, url, true, options, 'Plus');
-      this.isPlus = data.result.plusUserAssetInfo.unCouponCount ? true : false;
+      this.isPlus = data.result.plusUserAssetInfo.hasOwnProperty('unCouponCount') ? true : false;
       this.nickName = data.result.plusUserExportInfo.nickName;
       this.userImage = `http:${data.result.plusUserExportInfo.headImgUrl}`;
     } catch (e) {
@@ -1113,6 +1187,16 @@ class Widget extends DmYY {
     }
   }
 
+  timeFormat(time) {
+    let date;
+    if (time) {
+      date = new Date(time);
+    } else {
+      date = new Date();
+    }
+    return ((date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : '0' + (date.getMonth() + 1)) + '月' + (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate()) + '日';
+  }
+
   async updateCheck(version){
     let data;
     try {
@@ -1224,19 +1308,22 @@ class Widget extends DmYY {
       {type: 'text', title: '左右栏间距', desc: '左侧用户信息栏与右侧京豆数据间距\n\n缺省值：25', option: {division: ''}},
       {type: 'text', title: '缓存时间', desc: '数据请求间隔时间\n请设置合适时间，避免频繁访问接口数据以及加载缓慢。单位：分钟\n\n缺省值：10', option: {interval: ''}},
       {type: 'text', title: '自定义昵称', desc: '自定义用户信息栏的昵称名称，\n留空将显示京东账号昵称。\n\n注意：单脚本多账户若使用自定义昵称，所有账户将同时显示此昵称，如需单独自定义昵称，请复制脚本单独设置。', option: {customizeName: ''}},
+      {type: 'text', title: '自定义头像', desc: '自定义用户信息栏的头像，\n留空将显示京东APP头像。\n\n注意：单脚本多账户若使用自定义头像，所有账户将同时显示此头像，如需单独自定义头像，请复制脚本单独设置。', option: {customizeAvatar: ''}},
       {type: 'menu', title: '小组件显示内容', desc: '\n缺省值：京豆、钱包数据', option: {smallShowType: ''}, menu: ['京豆、钱包数据', '个人信息']},
       {type: 'menu', title: '钱包显示类型', desc: '若要显示钱包内容，白条需关闭或者白条打开的情况下无待还白条。\n\n缺省值：红包', option: {walletShowType: ''}, menu: ['红包', '钢镚和金贴']},
     ];
     const chart = [
       {type: 'text', title: '图表高度', desc: '京豆数据未与日期对齐的，\n请调低此数值\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：130', option: {height: ''}},
       {type: 'text', title: '日期文字大小', desc: '京豆图表底部日期文字大小\n\n缺省值：9', option: {daySize: ''}},
-      {type: 'text', title: '京豆数据文字大小', desc: '京豆图表数据文字大小\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：18', option: {textSize: ''}},
-      {type: 'text', title: '京豆数据文字白天颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textDayColor: ''}},
-      {type: 'text', title: '京豆数据文字晚上颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textNightColor: ''}},
-      {type: 'text', title: '折线图顶边距', desc: '京豆折线图顶边距\n京豆数据在顶部被剪切显示不全的，\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：15', option: {linePadding: ''}},
-      {type: 'text', title: '柱状图顶边距', desc: '京豆柱状图和曲线面积图顶边距\n京豆数据在顶部被剪切显示不全的,\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：5', option: {barPadding: ''}},
-      {type: 'menu', title: '小组件显示图表类型', desc: '\n缺省值：双日视图', option: {smallShowType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图']},
-      {type: 'menu', title: '中组件显示图表类型', desc: '\n缺省值：双日视图', option: {showType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图']},
+      {type: 'text', title: '京豆数文字大小', desc: '京豆图表数据文字大小\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：18', option: {textSize: ''}},
+      {type: 'text', title: '京豆数白天颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textDayColor: ''}},
+      {type: 'text', title: '京豆数晚上颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textNightColor: ''}},
+      {type: 'text', title: '折线图表顶边距', desc: '京豆折线图顶边距\n京豆数据在顶部被剪切显示不全的，\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：15', option: {linePadding: ''}},
+      {type: 'text', title: '柱状图表顶边距', desc: '京豆柱状图和曲线面积图顶边距\n京豆数据在顶部被剪切显示不全的,\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：5', option: {barPadding: ''}},
+      {type: 'menu', title: '小组件图表类型', desc: '\n缺省值：双日视图', option: {smallShowType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图']},
+      {type: 'menu', title: '中组件图表类型', desc: '\n缺省值：双日视图', option: {showType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图']},
+      {type: 'menu', title: '每日京豆数计算', desc: '\n缺省值：收入-支出', option: {countBean: ''}, menu: ['收入-支出', '收入']},
+      {type: 'menu', title: '多彩柱状图', desc: '设置为打开时仅对柱状图表生效\n\n缺省值：关闭', option: {colorful: ''}, menu: ['打开', '关闭']},
     ];
     const func = [
       {type: 'menu', title: '打开/关闭白条信息', desc: '关闭或者打开后无待还白条的情况下，\n会显示基础设置里选择的钱包内容。\n\n缺省值：打开', option: {showBaitiao: ''}, menu: ['打开', '关闭']},
@@ -1405,14 +1492,14 @@ class Widget extends DmYY {
       this.registerAction('基础设置', this.setWidgetConfig);
     }
     Object.keys(this.settings['basicSetting']).forEach((key) => {
-      if (key == 'customizeName' || key == 'smallShowType' || key == 'walletShowType') {
+      if (key == 'customizeName' || key == 'customizeAvatar' || key == 'smallShowType' || key == 'walletShowType') {
         this.basicSetting[key] = this.settings['basicSetting'][key];
       } else if (!isNaN(this.settings['basicSetting'][key])) {
         this.basicSetting[key] = parseFloat(this.settings['basicSetting'][key]);
       }
     });
     Object.keys(this.settings['chartSetting']).forEach((key) => {
-      if (key == 'textDayColor' || key == 'textNightColor' || key =='showType' || key == 'smallShowType') {
+      if (key == 'textDayColor' || key == 'textNightColor' || key =='showType' || key == 'smallShowType' || key == 'countBean' || key == 'colorful') {
         this.chartSetting[key] = this.settings['chartSetting'][key];
       } else if (!isNaN(this.settings['chartSetting'][key])) {
         this.chartSetting[key] = parseFloat(this.settings['chartSetting'][key]);
@@ -1559,6 +1646,7 @@ class Widget extends DmYY {
     };
     await this.init();
     await this.getPackageData();
+    await this.getExipireBean();
     if (this.funcSetting.showBaitiao === '打开') await this.getBaitiaoData();
     if (this.funcSetting.logable === '打开') console.log(this.rangeTimer);
     const widget = new ListWidget();
