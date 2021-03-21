@@ -4,7 +4,7 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.1.2
+// version:2.2.0
 // update:2021/03/21
 
 if (typeof require === 'undefined') require = importModule;
@@ -32,7 +32,7 @@ class Widget extends DmYY {
   // 请勿在此修改参数值
 
   fm = FileManager.local();
-  version = '2.1.2';
+  version = '2.2.0';
   basicSetting = {
     scale: 1.00,
     logo: 30,
