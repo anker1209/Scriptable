@@ -5,7 +5,7 @@
   "repo": "https://github.com/anker1209/Scriptable",
   "apps": [
     {
-      "version": "2.1.1",
+      "version": "2.2.0",
       "author": "脑瓜",
       "description": "显示京东用户信息、物流信息、白条还款信息、京豆K线图、金豆收支、钢镚、金贴、红包信息",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/JD-in-one-v2.js",
@@ -23,9 +23,13 @@
         "<br/>",
         "<br/>",
         "<h4 align=\"center\">更新说明</h4>",
-        "v2.1.1",
-        "<li>增加备用接口，解决访问限制造成京豆数、京享值为0，用户为未知用户的问题</li>",
-        "<li>修复常见问题页面暗色模式显示问题</li>",
+        "v2.1.2",
+        "<li>默认接口更新为最新接口，备用接口保留</li>",
+        "<li>增加过期京豆显示</li>",
+        "<li>增加自定义头像功能</li>",
+        "<li>可选每日京豆计算方式</li>",
+        "<li>增加多彩柱状图表</li>",
+        "<li>包裹随机显示</li>",
         "<br/>",
         "<h3 align=\"center\">使用说明</h3>"
       ],
