@@ -4,8 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.2.0
-// update:2021/03/21
+// version:2.2.1
+// update:2021/03/24
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -32,7 +32,11 @@ class Widget extends DmYY {
   // 请勿在此修改参数值
 
   fm = FileManager.local();
-  version = '2.2.0';
+  iCloudInUse = this.fm.isFileStoredIniCloud(module.filename);
+  fm = this.iCloudInUse ? FileManager.iCloud() : this.fm;
+  CACHE_FOLDER = 'JD_in_one';
+  cachePath = this.fm.joinPath(this.fm.documentsDirectory(), this.CACHE_FOLDER);
+  version = '2.2.1';
   basicSetting = {
     scale: 1.00,
     logo: 30,
@@ -127,8 +131,8 @@ class Widget extends DmYY {
         'datasets': [
         {
           type: 'line',
-          backgroundColor: '#FA2D19',
-          borderColor: getGradientFillHelper('horizontal', ['#FA2D19', '#FA2D19']),
+          backgroundColor: '#FFFFFF',
+          borderColor: getGradientFillHelper('horizontal', ['#FA6859', '#FA6859']),
           borderWidth: ${this.isSmall(true) ? 4 : 3},
           pointRadius: ${this.isSmall(true) ? 8 : 6},
           fill: false,
@@ -396,14 +400,14 @@ class Widget extends DmYY {
     const imgStack = userImgStack.addStack();
     if (this.isPlus) {
       imgStack.size = new Size(this.basicSetting.userImage * this.basicSetting.scale, this.basicSetting.userImage * this.basicSetting.scale * 1.0329);
-      imgStack.backgroundImage = await this.getImageByUrl(this.plusBG, 'plusBGImage');
+      imgStack.backgroundImage = await this.getImageByUrl(this.plusBG, 'plusBGImage.png');
     }
     const subStack = imgStack.addStack();
     subStack.size = new Size(this.basicSetting.userImage * this.basicSetting.scale, this.basicSetting.userImage * this.basicSetting.scale);
     subStack.cornerRadius = this.basicSetting.userImage / 2 * this.basicSetting.scale;
-    subStack.backgroundImage = await this.getImageByUrl(this.basicSetting.customizeAvatar || this.userImage, `userImage_${this.userName}`);
+    subStack.backgroundImage = await this.getImageByUrl(this.basicSetting.customizeAvatar || this.userImage, `userImage_${this.userName}.png`);
     if (this.isPlus) {
-      const userImg = subStack.addImage(await this.getImageByUrl(this.plusFG, 'plusFGImage'));
+      const userImg = subStack.addImage(await this.getImageByUrl(this.plusFG, 'plusFGImage.png'));
     }
     userImgStack.addSpacer();
     userStack.addSpacer();
@@ -427,7 +431,7 @@ class Widget extends DmYY {
     const nameStack = userStack.addStack();
     nameStack.centerAlignContent();
     if (this.isPlus) {
-      const nameImg = nameStack.addImage(await this.getImageByUrl(this.plusIcon, 'plusIcon'));
+      const nameImg = nameStack.addImage(await this.getImageByUrl(this.plusIcon, 'plusIcon.png'));
       nameImg.imageSize = new Size(15 * this.basicSetting.scale, 15 * this.basicSetting.scale);
     } else {
       const person = SFSymbol.named('person.circle.fill');
@@ -466,11 +470,11 @@ class Widget extends DmYY {
   async setHeaderShow(stack, image) {
     const topStack = stack.addStack();
     topStack.centerAlignContent();
-    const JDLogo = topStack.addImage(await this.getImageByUrl(this.logo, 'logoImage'));
+    const JDLogo = topStack.addImage(await this.getImageByUrl(this.logo, 'logoImage.png'));
     JDLogo.imageSize = new Size(this.basicSetting.logo * this.basicSetting.scale, this.basicSetting.logo * this.basicSetting.scale);
     if (image) {
       topStack.addSpacer(10 * this.basicSetting.scale);
-      const JD = topStack.addImage(await this.getImageByUrl(image, 'jingdongImage'));
+      const JD = topStack.addImage(await this.getImageByUrl(image, 'jingdongImage.png'));
       JD.imageSize = new Size(194 * 0.2 * this.basicSetting.scale, 78 * 0.2 * this.basicSetting.scale);
     }
     topStack.addSpacer();
@@ -510,7 +514,7 @@ class Widget extends DmYY {
     // 京豆图片
     const ddStack = beanStack.addStack();
     ddStack.layoutVertically();
-    const ddImg = ddStack.addImage(await this.getImageByUrl(this.beanImg, 'beanImage'));
+    const ddImg = ddStack.addImage(await this.getImageByUrl(this.beanImg, 'beanImage.png'));
     ddImg.imageSize = new Size(imageSize, imageSize);
     beanStack.addSpacer();
     // 昨日收支
@@ -536,7 +540,7 @@ class Widget extends DmYY {
         data.push(value[0]);
       else data.push(value[0] - value[1]);
     });
-    let cacheKey = `chart${type}Image${this.isSmall()}_${this.userName}`;
+    let cacheKey = `chart${type}Image${this.isSmall()}_${this.userName}.png`;
     let textSize = this.chartSetting.textSize;
     let linePadding = this.chartSetting.linePadding;
     let barPadding = this.chartSetting.barPadding;
@@ -604,8 +608,8 @@ class Widget extends DmYY {
   async setCoinShow(stack, vertical = false) {
     await this.getExtraData();
     const extraDataStack = stack.addStack();
-    const jtImage = await this.getImageByUrl(this.jingtieImg, 'jtImage');
-    const gbImage = await this.getImageByUrl(this.gangbengImg, 'gbImage');
+    const jtImage = await this.getImageByUrl(this.jingtieImg, 'jtImage.png');
+    const gbImage = await this.getImageByUrl(this.gangbengImg, 'gbImage.png');
     const dataStack = extraDataStack.addStack();
     if (vertical) dataStack.layoutVertically();
     this.rowCell(dataStack, jtImage, this.extra.jingtie.toString(), '金贴');
@@ -617,19 +621,19 @@ class Widget extends DmYY {
   // #####################京东红包##################
   async setRedPackageShow(stack, small = false) {
     await this.getRedPackageData();
-    const walletImage = await this.getImageByUrl(this.walletImg, 'walletImage');
+    const walletImage = await this.getImageByUrl(this.walletImg, 'walletImage.png');
     small ? this.rowSmallWalletCell(stack, walletImage, this.redPackage) : this.rowWalletCell(stack, walletImage, this.redPackage);
   }
 
   // #####################京东白条##################
   async setBaitiaoShow(stack, small = false) {
-    const baitiaoImage = await this.getImageByUrl(this.baitiaoImg, 'baitiaoImage');
+    const baitiaoImage = await this.getImageByUrl(this.baitiaoImg, 'baitiaoImage.png');
     small ? this.rowSmallWalletCell(stack, baitiaoImage, this.baitiao) : this.rowWalletCell(stack, baitiaoImage, this.baitiao);
   }
 
   // #####################过期京豆##################
   async setExpireBeanShow(stack, small = false) {
-    const walletImage = await this.getImageByUrl(this.walletImg, 'walletImage');
+    const walletImage = await this.getImageByUrl(this.walletImg, 'walletImage.png');
     small ? this.rowSmallWalletCell(stack, walletImage, this.expireBean) : this.rowWalletCell(stack, walletImage, this.expireBean);
   }
 
@@ -1064,7 +1068,8 @@ class Widget extends DmYY {
     try {
       if (logable) console.log(`在线请求：${cacheKey}`);
       const req = new Request(url);
-      const img = await req.loadImage();
+      const imgData = await req.load();
+      const img = Image.fromData(imgData);
       this.saveImgCache(cacheKey, img);
       return img;
     } catch (e) {
@@ -1084,18 +1089,19 @@ class Widget extends DmYY {
   }
 
   saveImgCache(cacheKey, img) {
-    const cacheFile = this.fm.joinPath(
-      FileManager.local().documentsDirectory(), cacheKey);
+    if (!this.fm.fileExists(this.cachePath)) {
+      this.fm.createDirectory(this.cachePath, true);
+    };
+    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
     this.fm.writeImage(cacheFile, img);
   }
 
   loadImgCache(cacheKey) {
-    const cacheFile = this.fm.joinPath(
-      FileManager.local().documentsDirectory(), cacheKey);
+    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
     const fileExists = this.fm.fileExists(cacheFile);
     let img = undefined;
     if (fileExists) {
-      img = this.fm.readImage(cacheFile);
+      img = Image.fromFile(cacheFile);
     }
     return img;
   }
@@ -1140,8 +1146,7 @@ class Widget extends DmYY {
   }
 
   loadStringCache(cacheKey) {
-    const cacheFile = this.fm.joinPath(
-      FileManager.local().documentsDirectory(), cacheKey);
+    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
     const fileExists = this.fm.fileExists(cacheFile);
     let cacheString = '';
     if (fileExists) {
@@ -1151,14 +1156,15 @@ class Widget extends DmYY {
   }
 
   saveStringCache(cacheKey, content) {
-    const cacheFile = this.fm.joinPath(
-      FileManager.local().documentsDirectory(), cacheKey);
+    if (!this.fm.fileExists(this.cachePath)) {
+      this.fm.createDirectory(this.cachePath, true);
+    };
+    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
     this.fm.writeString(cacheFile, content);
   }
 
   getCacheModificationDate(cacheKey) {
-    const cacheFile = this.fm.joinPath(
-      FileManager.local().documentsDirectory(), cacheKey);
+    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
     const fileExists = this.fm.fileExists(cacheFile);
     if (fileExists) {
       return this.fm.modificationDate(cacheFile).getTime() / 1000;
@@ -1172,7 +1178,7 @@ class Widget extends DmYY {
   }
 
   removeCache(cacheKey) {
-    const cacheFile = this.fm.joinPath(FileManager.local().documentsDirectory(), cacheKey)
+    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey)
     const fileExists = this.fm.fileExists(cacheFile);
     if (fileExists) {
       this.fm.remove(cacheFile);
