@@ -249,7 +249,6 @@ class Widget extends DmYY {
         },
         title: {
           display: false,
-          text: '${backgroundColor}',
         },
         scales: {
           xAxes: [
