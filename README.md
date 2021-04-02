@@ -35,7 +35,7 @@ hostname = act.10010.com, m.client.10010.com
 Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/m\.client\.10010\.com\/mobileserviceimportant\/smart\/smartwisdomCommon,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/dompling/Script/master/10010/index.js,script-update-interval=0
 ```
 
-> Boxjs添加YaYa美女订阅链接：
+> Boxjs添加YaYa美女订阅链接（感谢YaYa辛苦付出~）：
 https://raw.githubusercontent.com/dompling/Script/master/dompling.boxjs.json
 
 > 打开中国联通app --> 首页的流量查询获取Cookie；
