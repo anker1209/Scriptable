@@ -75,7 +75,7 @@
       ]
     },
     {
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "脑瓜",
       "description": "中国联通小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaUnicom_2021.js",
@@ -95,13 +95,8 @@
         "<br/>",
         "<br/>",
         "<h4 align=\"center\">更新说明</h4>",
-        "v2.0.1",
-        "<li>修正万元户余额显示问题</li>",
-        "<br/>",
-        "v2.0.0",
-        "<li>修复每日需打开联通app激活cookie的问题</li>",
-        "<li>增加中尺寸组件</li>",
-        "<li>增加代理缓存及设置菜单</li>",
+        "v2.1.0",
+        "<li>修改cookie获取方式</li>",
         "<br/>"
       ],
       "images": [
