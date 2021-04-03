@@ -21,8 +21,8 @@ cookie获取方法：
 hostname = act.10010.com, m.client.10010.com
 
 [rewrite_local]
-^https?:\/\/act.10010.com\/SigninApp\/signin\/querySigninActivity.htm url script-request-header https://raw.githubusercontent.com/chavyleung/scripts/master/10010/10010.cookie.js
-^https?:\/\/act.10010.com\/SigninApp(.*?)\/signin\/daySign url script-request-header https://raw.githubusercontent.com/chavyleung/scripts/master/10010/10010.cookie.js
+# 获取联通cookie
+^https:\/\/m\.client\.10010\.com\/mobileserviceimportant\/smart\/smartwisdomCommon  url script-request-header https://raw.githubusercontent.com/dompling/Script/master/10010/index.js
 ```
 
 #### Surge：
@@ -32,22 +32,17 @@ hostname = act.10010.com, m.client.10010.com
 hostname = act.10010.com, m.client.10010.com
 
 [Script]
-Rewrite: CUCC = type=http-request,pattern=^https?:\/\/act.10010.com\/SigninApp\/signin\/querySigninActivity.htm,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10010/10010.cookie.js
-Rewrite: CUCC = type=http-request,pattern=^https?:\/\/act.10010.com\/SigninApp(.*?)\/signin\/daySign,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10010/10010.cookie.js
+Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/m\.client\.10010\.com\/mobileserviceimportant\/smart\/smartwisdomCommon,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/dompling/Script/master/10010/index.js,script-update-interval=0
 ```
 
-> Boxjs添加chavy大佬订阅链接：
-https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.json
+> Boxjs添加YaYa美女订阅链接（感谢YaYa辛苦付出~）：
+https://raw.githubusercontent.com/dompling/Script/master/dompling.boxjs.json
 
-> 打开中国联通APP，进入签到页面并进行签到，获取cookie；
+> 打开中国联通app --> 首页的流量查询获取Cookie；
 
 > 运行脚本，点击基础设置-->BoxJS域名，设置为你自己的BoxJS域名，再次运行脚本，选择代理缓存，获取缓存cookie；
 
-> 无代理缓存的，请使用Stream类抓包APP进行手动抓包，cooke字段以"t3_token="开头，以"city=xxx|xxx"结尾，获取cookie后填入脚本内注释位置
-
-> **友情提示：联通获取cookie后，请勿打开app，否则第二天cookie将会失效，失效后需要每天打开app激活cookie。**
-
-## 中国移动
+## 中国移动（暂时不可用）
 
 ![中国移动 图片](https://raw.githubusercontent.com/anker1209/Scriptable/main/image/screenzy-1614423457282-yd.png "移动小组件")
 

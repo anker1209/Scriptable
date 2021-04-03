@@ -5,8 +5,8 @@
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:2.0.1
-// update:2021/03/04
+// version:2.1.0
+// update:2021/04/02
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -234,6 +234,20 @@ class Widget extends DmYY {
       updateText.font = Font.mediumSystemFont(10);
       updateText.textColor = new Color(color, 0.6);
       updateStack.addSpacer();
+      /*
+      let tempStack = dataStack.addStack();
+      tempStack.layoutVertically()
+      let tempStack1 = tempStack.addStack()
+      tempStack1.addSpacer()
+      let tempText1 = tempStack1.addText(this.flow.colors.toString())
+tempStack1.addSpacer()
+let tempStack2 = tempStack.addStack()
+tempStack2.addSpacer()
+      let tempText2 = tempStack2.addText(this.voice.colors.toString())
+tempStack2.addSpacer()
+      ;[tempText1, tempText2].map(t => t.font = Font.systemFont(6));
+      ;[tempText1, tempText2].map(t => t.textColor = updateText.textColor);
+      */
     }
     
     dataStack.addSpacer();
@@ -349,7 +363,7 @@ class Widget extends DmYY {
   }
 
   arrColor() {
-    let colorArr = [['#FFF000', '#E62490'], ['#FDEB71', '#F8D800'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#81FBB8', '#28C76F'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#F072B6'], ['#FCCF31', '#F55555'], ['#F761A1', '#8C1BAB'], ['#43CBFF', '#9708CC'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#FFFF1C', '#00C3FF'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#2AFADF', '#4C83FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#00DBDE', '#FC00FF'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#EE9AE5', '#5961F9'], ['#FFC371', '#FF5F6D'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FFC600', '#FD6E6A'], ['#FFC600', '#FD6E6A'], ['#92FE9D', '#00C9FF'], ['#FFDDE1', '#EE9CA7'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#F9D423', '#FF4E50'], ['#3C8CE7', '#00EAFF'], ['#FCFF00', '#FFA8A8'], ['#FF96F9', '#C32BAC'], ['#D0E6A5', '#FFDD94'], ['#FFDD94', '#FA897B'], ['#FFCC4B', '#FF7D58'], ['#DBDBD9', '#D1D93C'], ['#B8BFD6', '#4675C0'], ['#D0E6A5', '#86E3CE'], ['#F0D5B6', '#F16238'], ['#F8EC70', '#F9C708'], ['#DE88F4', '#48B4B9'], ['#C4E86B', '#00BCB4'], ['#F5CEC7', '#E79796'], ['#FFC446', '#FA0874'], ['#E1EE32', '#FFB547'], ['#FFD804', '#2ACCC8'], ['#E9A6D2', '#E9037B'], ['#F8EC70', '#49E2F6'], ['#A2F8CD', '#A2F852'], ['#49E2F6', '#A2F8CD'], ['#FDEFE2', '#FE214F'], ['#F8EC70', '#A2F8CD'], ['#F8EC70', '#49E2F6'], ['#D1FFB7', '#FFB7D1'], ['#B7FFE4', '#E4B7FF'], ['#FFB7D1', '#E4B7FF'], ['#D0E6A5', '#86E3CE'], ['#E8E965', '#64C5C7']];
+    let colorArr = [['#FFF000', '#E62490'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#F072B6'], ['#FCCF31', '#F55555'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#FFFF1C', '#00C3FF'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#FFC371', '#FF5F6D'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FFC600', '#FD6E6A'], ['#FFC600', '#FD6E6A'], ['#92FE9D', '#00C9FF'], ['#FFDDE1', '#EE9CA7'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#F9D423', '#FF4E50'], ['#00EAFF', '#3C8CE7'], ['#FCFF00', '#FFA8A8'], ['#FF96F9', '#C32BAC'], ['#FFDD94', '#FA897B'], ['#FFCC4B', '#FF7D58'], ['#D0E6A5', '#86E3CE'], ['#F0D5B6', '#F16238'], ['#C4E86B', '#00BCB4'], ['#FFC446', '#FA0874'], ['#E1EE32', '#FFB547'], ['#FFD804', '#2ACCC8'], ['#E9A6D2', '#E9037B'], ['#F8EC70', '#49E2F6'], ['#A2F8CD', '#A2F852'], ['#A2F8CD', '#00C3FF'], ['#FDEFE2', '#FE214F'], ['#F8EC70', '#A2F8CD'], ['#F8EC70', '#49E2F6'], ['#FFB7D1', '#E4B7FF'], ['#D0E6A5', '#86E3CE'], ['#E8E965', '#64C5C7']];
     let colors = colorArr[Math.floor(Math.random() * colorArr.length)];
     return colors;
   }
@@ -474,7 +488,7 @@ class Widget extends DmYY {
   Run() {
     if (config.runsInApp) {
       const widgetInitConfig = {
-        loginheader: 'chavy_tokenheader_10010',
+        cookie: '@YaYa_10010.cookie',
       };
       this.registerAction('颜色配置', async () => {
         await this.setAlertInput(
@@ -488,7 +502,7 @@ class Widget extends DmYY {
             inner2: '语音进度条底圈颜色',
           },
           );
-      });
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/colorSet.png');
       this.registerAction('尺寸设置', async () => {
         await this.setAlertInput(
           `${this.name}尺寸设置`,
@@ -503,23 +517,23 @@ class Widget extends DmYY {
             padding: '中尺寸组件边距，缺省：10',
           },
           );
-      });
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/resize.png');
       this.registerAction('账号设置', async () => {
         await this.setAlertInput(
           `${this.name}账号`,
-          '读取 BoxJS 缓存信息\n请勿在此处输入cookie',
-            widgetInitConfig,
+          '读取 BoxJS 缓存信息',
+            {cookie: 'cookie'},
           );
-      });
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/account.png');
       this.registerAction('代理缓存', async () => {
         await this.setCacheBoxJSData(widgetInitConfig);
-      });
-      this.registerAction('基础设置', this.setWidgetConfig);
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/boxjs.png');
+      this.registerAction('基础设置', this.setWidgetConfig, 'https://gitee.com/anker1209/image/raw/master/jd/preferences.png');
     }
 
     try {
       const {
-        loginheader,
+        cookie,
         step1,
         step2,
         inner1,
@@ -533,7 +547,7 @@ class Widget extends DmYY {
         padding,
         gradient,
       } = this.settings;
-      this.cookie = loginheader ? JSON.parse(loginheader)['Cookie'] : this.cookie;
+      this.cookie = cookie ? cookie : this.cookie;
       this.gradient = gradient === 'true' ? true : this.gradient;
       this.flowColorHex = step1 ? step1 : this.flowColorHex;
       this.voiceColorHex = step2 ? step2 : this.voiceColorHex;
