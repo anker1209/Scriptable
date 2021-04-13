@@ -29,7 +29,7 @@
     "name": "数据问题",
     "item": [{
         "question": "▶ 为什么京豆总数、京享值都变成0了？",
-        "answer": "若出现京豆总数、京享值为0，未知用户，执行以下操作：“文件”app —> iCloud 云盘 —> scriptable，删除里面的JD_in_one文件夹。tips：请勿使用多设备在该组件里使用同一cookie",
+        "answer": "若出现京豆总数、京享值为0，未知用户，执行以下操作：“文件”app —> iCloud 云盘 —> scriptable，删除里面的JD_in_one文件夹。tips：请勿使用多设备在该组件里使用同一cookie。",
         "height": "108"
       },
       {
