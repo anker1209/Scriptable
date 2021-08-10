@@ -1,0 +1,32 @@
+name: anker1209-sync
+on:
+  push:
+      branches:
+        - main
+  schedule:
+    #  每三小时的01分开始执行
+    - cron: '1 */3 * * *'
+  workflow_dispatch:
+  watch:
+    types: started
+  repository_dispatch:
+    types: sync-anker1209
+jobs:
+  repo-sync:
+    env:
+      PAT: ${{ secrets.PAT }} 
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: sync anker1209
+        uses: repo-sync/github-sync@v2
+        if: env.PAT
+        with:
+          source_repo: "https://github.com/anker1209/Scriptable.git"
+          source_branch: "main"
+          destination_branch: "anker1209"
+          github_token: ${{ secrets.PAT }}
