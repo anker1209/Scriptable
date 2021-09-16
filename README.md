@@ -102,7 +102,7 @@ cookie获取方法：
 hostname = e.189.cn
 
 [rewrite_local]
-^https?:\/\/e.189.cn\/store\/user\/package_detail.do url script-request-body https://raw.githubusercontent.com/Sunert/Scripts/master/Task/telecomInfinity.js
+^https?:\/\/e\.189\.cn\/store\/user\/package_detail\.do url script-request-body https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomInfinity.js
 ```
 
 #### Surge：
@@ -115,7 +115,7 @@ hostname = e.189.cn
 Rewrite: CTCC = script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/telecomInfinity.js,type=http-request,pattern=https?:\/\/e\.189\.cn\/store\/user\/package_detail\.do
 ```
 > Boxjs添加Sunert大佬订阅链接：
-https://raw.githubusercontent.com/Sunert/Scripts/master/Task/sunert.boxjs.json
+https://raw.githubusercontent.com/Sunert/Script/master/Task/sunert.boxjs.json
 
 > 打开天翼账号中心，获取cookie；
 
