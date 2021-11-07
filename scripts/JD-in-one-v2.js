@@ -416,12 +416,12 @@ class Widget extends DmYY {
     tipStack.addSpacer();
     let signIcon = SFSymbol.named('checkmark.circle.fill');
     const signItem = tipStack.addImage(signIcon.image);
-    signItem.imageSize = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale);
+    signItem.imageSize = new Size(16 * this.basicSetting.scale, 16 * this.basicSetting.scale);
     if (this.package.number > 0) {
       tipStack.addSpacer(3 * this.basicSetting.scale);
       const packageIcon = SFSymbol.named(this.package.number + '.circle.fill');
       const packageItem = tipStack.addImage(packageIcon.image);
-      packageItem.imageSize = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale);
+      packageItem.imageSize = new Size(16 * this.basicSetting.scale, 16 * this.basicSetting.scale);
     }
     tipStack.addSpacer();
     userStack.addSpacer();
