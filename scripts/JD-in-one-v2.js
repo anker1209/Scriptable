@@ -86,7 +86,7 @@ class Widget extends DmYY {
     desc: '',
   };
   redPackage = {
-    title: '通用红包',
+    title: '红包',
     number: 0,
     desc: '今日无过期',
   };
