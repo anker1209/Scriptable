@@ -415,9 +415,13 @@ class Widget extends DmYY {
     const tipStack = userStack.addStack();
     tipStack.addSpacer();
     if (this.package.number > 0) {
+      tipStack.addSpacer(3 * this.basicSetting.scale);
       const packageIcon = SFSymbol.named(this.package.number + '.circle.fill');
       const packageItem = tipStack.addImage(packageIcon.image);
       packageItem.imageSize = new Size(15 * this.basicSetting.scale, 15 * this.basicSetting.scale);
+    } else {
+      const signItem = tipStack.addImage(await this.getImageByUrl(this.signImg, 'signImg.png'));
+      signItem.imageSize = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale);
     }
     tipStack.addSpacer();
     userStack.addSpacer();
