@@ -34,7 +34,7 @@ class Widget extends DmYY {
   userImage = 'https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png';
   signImg = 'https://pic.imgdb.cn/item/618784b42ab3f51d91703e82.png';
   nameImg = 'https://pic.imgdb.cn/item/618796a52ab3f51d918c0f07.png';
-  tagImg = 'https://pic.imgdb.cn/item/618797222ab3f51d918cd64f.png';
+  tagImg = 'https://pic.imgdb.cn/item/6187a7fb2ab3f51d91a78d45.png';
 
   // 请勿在此修改参数值
 
@@ -414,14 +414,14 @@ class Widget extends DmYY {
     // 物流提示
     const tipStack = userStack.addStack();
     tipStack.addSpacer();
+    let signIcon = SFSymbol.named('checkmark.circle.fill');
+    const signItem = tipStack.addImage(signIcon.image);
+    signItem.imageSize = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale);
     if (this.package.number > 0) {
       tipStack.addSpacer(3 * this.basicSetting.scale);
       const packageIcon = SFSymbol.named(this.package.number + '.circle.fill');
       const packageItem = tipStack.addImage(packageIcon.image);
-      packageItem.imageSize = new Size(15 * this.basicSetting.scale, 15 * this.basicSetting.scale);
-    } else {
-      const signItem = tipStack.addImage(await this.getImageByUrl(this.signImg, 'signImg.png'));
-      signItem.imageSize = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale);
+      packageItem.imageSize = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale);
     }
     tipStack.addSpacer();
     userStack.addSpacer();
