@@ -4,8 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.2.4
-// update:2021/11/07
+// version:2.2.5
+// update:2021/11/08
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -38,7 +38,7 @@ class Widget extends DmYY {
 
   // 请勿在此修改参数值
 
-  version = '2.2.4';
+  version = '2.2.5';
   basicSetting = {
     scale: 1.00,
     logo: 30,
@@ -70,6 +70,7 @@ class Widget extends DmYY {
   funcSetting = {
     showBaitiao: '打开',
     showPackage: '关闭',
+    showFruit: '打开',
     logable: '关闭',
     alwaysRefreshChart: '打开',
   };
@@ -113,6 +114,7 @@ class Widget extends DmYY {
   maxDays = 6;
   rangeTimer = {};
   timerKeys = [];
+  fruitState = "😢";
   
   doubleDate = this.getDay(1);
   doubleDay = Object.keys(this.doubleDate);
@@ -414,14 +416,40 @@ class Widget extends DmYY {
     // 物流提示
     const tipStack = userStack.addStack();
     tipStack.addSpacer();
-    let signIcon = SFSymbol.named('checkmark.circle.fill');
-    const signItem = tipStack.addImage(signIcon.image);
-    signItem.imageSize = new Size(16 * this.basicSetting.scale, 16 * this.basicSetting.scale);
+    const signStack = tipStack.addStack();
+    signStack.size = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale)
+    signStack.backgroundColor = new Color('0dD6A0');
+    signStack.cornerRadius = 14 * this.basicSetting.scale / 2;
+    signStack.centerAlignContent();
+    let signIcon = SFSymbol.named('checkmark');
+    const signItem = signStack.addImage(signIcon.image);
+    signItem.imageSize = new Size(8 * this.basicSetting.scale, 8 * this.basicSetting.scale);
+    signItem.tintColor = new Color('FFFFFF');
     if (this.package.number > 0) {
       tipStack.addSpacer(3 * this.basicSetting.scale);
-      const packageIcon = SFSymbol.named(this.package.number + '.circle.fill');
-      const packageItem = tipStack.addImage(packageIcon.image);
-      packageItem.imageSize = new Size(16 * this.basicSetting.scale, 16 * this.basicSetting.scale);
+      const packageStack = tipStack.addStack();
+      packageStack.size = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale)
+      packageStack.backgroundColor = new Color('FC8600');
+      packageStack.cornerRadius = 14 * this.basicSetting.scale / 2;
+      packageStack.centerAlignContent();
+      packageStack.setPadding(1 * this.basicSetting.scale, 2 * this.basicSetting.scale, 1 * this.basicSetting.scale, 2 * this.basicSetting.scale);
+      let packageNum = packageStack.addText(this.package.number.toString());
+      packageNum.font = Font.mediumSystemFont(15 * this.basicSetting.scale);
+      packageNum.textColor = new Color('FFFFFF');
+      packageNum.minimumScaleFactor = 0.1;
+    }
+    if (this.funcSetting.showFruit === '打开') {
+      tipStack.addSpacer(3 * this.basicSetting.scale);
+      const fruitStack = tipStack.addStack();
+      fruitStack.size = new Size(14 * this.basicSetting.scale, 14 * this.basicSetting.scale)
+      fruitStack.backgroundColor = new Color('118AB2');
+      fruitStack.cornerRadius = 14 * this.basicSetting.scale / 2;
+      fruitStack.centerAlignContent();
+      fruitStack.setPadding(1 * this.basicSetting.scale, 2 * this.basicSetting.scale, 1 * this.basicSetting.scale, 2 * this.basicSetting.scale);
+      let fruitText = fruitStack.addText(this.fruitState);
+      fruitText.font = Font.mediumSystemFont(15 * this.basicSetting.scale);
+      fruitText.textColor = new Color('FFFFFF');
+      fruitText.minimumScaleFactor = 0.1;
     }
     tipStack.addSpacer();
     userStack.addSpacer();
@@ -999,6 +1027,36 @@ class Widget extends DmYY {
       console.log(e);
     }
   }
+
+  getFruitData = async () => {
+    const dataName = '东东农场';
+    const url = 'https://api.m.jd.com/client.action?functionId=initForFarm';
+    const options = {
+      body: 'body=version:4&appid=wh5&clientVersion=9.1.0',
+      headers: {
+        'User-Agent': 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'cookie': this.cookie,
+      },
+    };
+    try {
+      const data = await this.httpRequest(dataName, url, true, options, 'FruitData', 'POST', false);
+      if (data.msg && data.msg == 'not login') {
+        this.fruitState = "X";
+      }
+      else if (data.farmUserPro.treeState == 2 || data.farmUserPro.treeState == 3) {
+        this.fruitState = "100";
+      }
+      else if (data.farmUserPro.treeState == 0) {
+        this.fruitState = "X";
+      }
+      else {
+        this.fruitState = Math.floor((data.farmUserPro.treeEnergy / data.farmUserPro.treeTotalEnergy) * 100).toString();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
   
   getImageByUrl = async(url, cacheKey, useCache = true, logable = true) => {
     if (this.CACHES.indexOf(cacheKey) < 0) {
@@ -1248,7 +1306,7 @@ class Widget extends DmYY {
       {type: 'text', title: '左侧栏宽度', desc: '左侧用户信息栏整体宽度\n\n缺省值：103', option: {userStack: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/userStack.png'},
       {type: 'text', title: '左右栏间距', desc: '左侧用户信息栏与右侧京豆数据间距\n\n缺省值：25', option: {division: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/division.png'},
       {type: 'text', title: '缓存时间', desc: '数据请求间隔时间\n请设置合适时间，避免频繁访问接口数据以及加载缓慢。单位：分钟\n\n缺省值：10', option: {interval: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/interval.png'},
-      {type: 'menu', title: '缓存位置', desc: '将缓存保存在Local或者iCloud。\n\n缺省值：Local', option: {directory: ''}, menu: ['Local', 'iCloud'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/walletShowType.png'},
+      {type: 'menu', title: '缓存位置', desc: '将缓存保存在Local或者iCloud。\n\n缺省值：Local', option: {directory: ''}, menu: ['Local', 'iCloud'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/directory.png'},
       {type: 'text', title: '自定义昵称', desc: '自定义用户信息栏的昵称名称，\n留空将显示京东账号昵称。\n\n注意：单脚本多账户若使用自定义昵称，所有账户将同时显示此昵称，如需单独自定义昵称，请复制脚本单独设置。', option: {customizeName: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/customizeName.png'},
       {type: 'text', title: '自定义头像', desc: '自定义用户信息栏的头像，\n留空将显示京东APP头像。\n\n注意：单脚本多账户若使用自定义头像，所有账户将同时显示此头像，如需单独自定义头像，请复制脚本单独设置。', option: {customizeAvatar: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/customizeAvatar.png'},
       {type: 'menu', title: '小组件显示内容', desc: '\n缺省值：京豆、钱包数据', option: {smallShowType: ''}, menu: ['京豆、钱包数据', '个人信息'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/smallShowType.png'},
@@ -1272,6 +1330,7 @@ class Widget extends DmYY {
     const func = [
       {type: 'menu', title: '白条信息', desc: '关闭或者打开后无待还白条的情况下，\n会显示基础设置里选择的钱包内容。\n\n缺省值：打开', option: {showBaitiao: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/showBaitiao.png'},
       {type: 'menu', title: '包裹信息', desc: '只有中组件显示一条物流信息，\n若无物流信息会显示图表设置里选择的图表类型。\n\n缺省值：关闭', option: {showPackage: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/showPackage.png'},
+      {type: 'menu', title: '农场进度', desc: '显示东东农场种植进度。\n\n缺省值：打开', option: {showFruit: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/showFruit.png'},
       {type: 'menu', title: '运行日志', desc: '出现数据异常请将此值设为true，\n查看运行日志。\n\n⚠️注意：\n查看运行日志需将缓存时间更改为0。\n\n缺省值：关闭', option: {logable: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/logable.png'},
       {type: 'menu', title: '刷新图表', desc: '打开，每次刷新组件会随机刷新图表颜色（仅柱状图表和曲线面积图）；关闭，则只有在京豆数据有变化的情况下刷新图表颜色及数据。建议在排版调整没有问题后，设置为关闭。设置为打开会加长数据载入时间。\n\n⚠️注意：图表设置选项里修改图表高度、颜色、文字大小、顶边距需打开此选项以查看即时反馈。\n\n缺省值：打开', option: {alwaysRefreshChart: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/alwaysRefreshChart.png'},
     ];
@@ -1592,6 +1651,7 @@ class Widget extends DmYY {
     await this.init();
     await this.getPackageData();
     if (this.funcSetting.showBaitiao === '打开') await this.getBaitiaoData();
+    if (this.funcSetting.showFruit === '打开') await this.getFruitData();
     if (this.funcSetting.logable === '打开') console.log(this.rangeTimer);
     const widget = new ListWidget();
     const padding = 14 * this.basicSetting.scale;
