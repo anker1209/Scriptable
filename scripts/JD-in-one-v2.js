@@ -32,9 +32,8 @@ class Widget extends DmYY {
   jingtieImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/16a7038e-6082-4ad8-b17f-fdd08266fb22.png';
   gangbengImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/9704e332-9e7f-47e8-b09a-1f1991d4aa84.png';
   userImage = 'https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png';
-  signImg = 'https://pic.imgdb.cn/item/618784b42ab3f51d91703e82.png';
-  nameImg = 'https://pic.imgdb.cn/item/618796a52ab3f51d918c0f07.png';
-  tagImg = 'https://pic.imgdb.cn/item/6187a7fb2ab3f51d91a78d45.png';
+  nameImg = 'https://pic.imgdb.cn/item/6188bfb62ab3f51d91bca276.png';
+  tagImg = 'https://pic.imgdb.cn/item/6188bfc72ab3f51d91bcbcb0.png';
 
   // 请勿在此修改参数值
 
