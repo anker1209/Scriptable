@@ -1512,34 +1512,7 @@ class Widget extends DmYY {
       this.funcSetting[key] = this.settings['funcSetting'][key];
     });
 
-    let _md5 = this.md5(filename + this.en);
-
-    if (this.funcSetting.logable === '打开') console.log('当前配置内容：' + JSON.stringify(this.settings));
-
-    this.JDindex =
-      typeof args.widgetParameter === "string"
-        ? parseInt(args.widgetParameter)
-        : false;
-    try {
-      let cookieData = this.settings.cookieData ? this.settings.cookieData : [];
-      if (this.JDindex !== false && cookieData[this.JDindex]) {
-        this.cookie = cookieData[this.JDindex]["cookie"];
-        this.userName = cookieData[this.JDindex]["userName"];
-      } else {
-        this.userName = this.settings.username;
-        this.cookie = this.settings.cookie;
-      }
-      if (!this.cookie) throw "京东 CK 获取失败";
-      this.userName = decodeURI(this.userName);
-      this.CACHE_KEY = `cache_${_md5}_` + this.userName;
-      this.settings.CACHE_KEY = this.CACHE_KEY;
-      this.saveSettings(false);
-
-      return true;
-    } catch (e) {
-      this.notify("错误提示", e);
-      return false;
-    }
+   
   };
 
   jdWebView = async () => {
@@ -1642,7 +1615,42 @@ class Widget extends DmYY {
     }
   }
 
+
+  async getCookie() {
+    this.JDindex =
+      typeof args.widgetParameter === 'string'
+        ? parseInt(args.widgetParameter)
+        : false;
+   let _md5 = this.md5(module.filename + this.en);
+    if (this.funcSetting.logable === '打开') console.log('当前配置内容：' + JSON.stringify(this.settings));
+    await this._loadJDCk();
+    this.JDindex =
+      typeof args.widgetParameter === "string"
+        ? parseInt(args.widgetParameter)
+        : false;
+    try {
+      if (this.JDindex !== false && this.JDindex + 1 > 0) {
+        this.cookie = this.CookiesData[this.JDindex]['cookie'];
+        this.userName =this.CookiesData[this.JDindex]["userName"];
+      } else {
+        const cacheCookie = this.CookiesData.find(item=>item.userName === this.settings.username) || {};
+        this.userName = cacheCookie.userName;
+        this.cookie = cacheCookie.cookie;
+      }
+      if (!this.cookie) throw "京东 CK 获取失败";
+      this.userName = decodeURI(this.userName);
+      this.CACHE_KEY = `cache_${_md5}_` + this.userName;
+      this.settings.CACHE_KEY = this.CACHE_KEY;
+      this.saveSettings(false);
+      return true;
+    } catch (e) {
+      this.notify("错误提示", e);
+      return false;
+    }
+  }
+
   async render() {
+    await this.getCookie();
     if (!this.cookie || !this.userName) {
       this.notify(this.name, 'cookie或用户名未设置');
       return;
