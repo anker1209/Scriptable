@@ -1615,7 +1615,6 @@ class Widget extends DmYY {
     }
   }
 
-
   async getCookie() {
     this.JDindex =
       typeof args.widgetParameter === 'string'
