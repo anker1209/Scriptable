@@ -4,8 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.2.5
-// update:2021/11/08
+// version:2.2.6
+// update:2021/12/30
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -37,7 +37,7 @@ class Widget extends DmYY {
 
   // 请勿在此修改参数值
 
-  version = '2.2.5';
+  version = '2.2.6';
   basicSetting = {
     scale: 1.00,
     logo: 30,
