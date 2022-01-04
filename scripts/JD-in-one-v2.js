@@ -1632,9 +1632,8 @@ class Widget extends DmYY {
         this.cookie = this.CookiesData[this.JDindex]['cookie'];
         this.userName =this.CookiesData[this.JDindex]["userName"];
       } else {
-        const cacheCookie = this.CookiesData.find(item=>item.userName === this.settings.username) || {};
-        this.userName = cacheCookie.userName;
-        this.cookie = cacheCookie.cookie;
+        this.userName = this.settings.username;
+        this.cookie = this.settings.cookie;
       }
       if (!this.cookie) throw "京东 CK 获取失败";
       this.userName = decodeURI(this.userName);
