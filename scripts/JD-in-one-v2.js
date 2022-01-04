@@ -1627,6 +1627,7 @@ class Widget extends DmYY {
       typeof args.widgetParameter === "string"
         ? parseInt(args.widgetParameter)
         : false;
+        
     try {
       if (this.JDindex !== false && this.JDindex + 1 > 0) {
         this.cookie = this.CookiesData[this.JDindex]['cookie'];
