@@ -784,7 +784,7 @@ class Widget extends DmYY {
       console.log(`第${page}页：${result ? '请求成功' : '请求失败'}`);
       if (response.code === '3') {
         i = 1;
-        this.notify(this.name, response.message)
+        // this.notify(this.name, response.message)
         console.log(response);
       }
       if (response && result) {
@@ -867,7 +867,7 @@ class Widget extends DmYY {
       if (response['user']) {
         this.jValue = response.user.uclass.replace(/[^0-9]/ig, '');
       } else {
-        this.notify(this.name, response.msg);
+        // this.notify(this.name, response.msg);
         console.log('微信数据：获取失败，' + response.msg)
       }
     } catch (e) {
@@ -922,7 +922,7 @@ class Widget extends DmYY {
       if (JTData.resultCode === 0) {
         this.extra.jingtie = JTData.resultData.data['balance'];
       } else {
-        this.notify(this.name, JTdata.resultMsg);
+        // this.notify(this.name, JTdata.resultMsg);
         console.log('金贴数据：获取失败，' + JTdata.resultMsg);
       };
       if (GBData.gbBalance) this.extra.gangbeng = GBData.gbBalance;
@@ -977,7 +977,7 @@ class Widget extends DmYY {
         this.redPackage.number = data.data.balance ? data.data.balance : 0;
         if (data.data.expiredBalance && data.data.expiredBalance !== '') this.redPackage.desc = `即将过期${data.data.expiredBalance}`;
       } else {
-        this.notify(this.name, data.msg);
+        // this.notify(this.name, data.msg);
         console.log('红包数据：获取失败，' + data.msg);
       }
     } catch (e) {
@@ -1017,7 +1017,8 @@ class Widget extends DmYY {
     try {
       const data = await this.httpRequest(dataName, url, true, options, 'baitiaoData', 'POST', false);
       if (data.resultCode !== 0) {
-        return this.notify(this.name, data['resultMsg']);
+        //  this.notify(this.name, data['resultMsg']);
+         return
       }
       this.baitiao.title = data['resultData']['data']['bill']['title'];
       this.baitiao.number = data['resultData']['data']['bill']['amount'].replace(/,/g, '');
@@ -1119,15 +1120,17 @@ class Widget extends DmYY {
       this.settings.CACHES = this.CACHES;
       this.saveSettings(false);
     }
-    const localCache = this.loadStringCache(cacheKey);
+    let localCache = this.loadStringCache(cacheKey);
     const lastCacheTime = this.getCacheModificationDate(cacheKey);
     const timeInterval = Math.floor((this.getCurrentTimeStamp() - lastCacheTime) / 60);
-    console.log(
-      `${dataName}：缓存${timeInterval}分钟前，有效期${this.basicSetting.interval}分钟，${localCache.length}`);
+    
+    console.log(`${dataName}：缓存${timeInterval}分钟前，有效期${this.basicSetting.interval}分钟，${localCache.length}`);
+
     if (timeInterval < this.basicSetting.interval && localCache != null && localCache.length > 0) {
       console.log(`${dataName}：读取缓存`);
       return json ? JSON.parse(localCache) : localCache;
     }
+
     let data = null;
     try {
       console.log(`${dataName}：在线请求`);
@@ -1137,14 +1140,24 @@ class Widget extends DmYY {
         req[key] = options[key];
       });
       data = await (json ? req.loadJSON() : req.loadString());
+      if (
+        data.errCode === '0' ||
+        data.msg === 'success' ||
+        data.resultCode === 0
+      ) {
+        this.saveStringCache(cacheKey, json ? JSON.stringify(data) : data)
+      }
     } catch (e) {
       console.error(`${dataName}：请求失败：${e}`);
     }
+
+    localCache = this.loadStringCache(cacheKey);
+
     if (!data && localCache != null && localCache.length > 0) {
       console.log(`${dataName}：获取失败，读取缓存`);
       return json ? JSON.parse(localCache) : localCache;
     }
-    this.saveStringCache(cacheKey, json ? JSON.stringify(data) : data);
+    
     if (logable) {
       console.log(`${dataName}：在线请求响应数据：${JSON.stringify(data)}`);
     }
@@ -1606,12 +1619,7 @@ class Widget extends DmYY {
       this.notify(this.name, body);
       table.present(false);
     } catch (e) {
-      this.notify(
-        this.name,
-        '',
-        'BoxJS 数据读取失败，请点击通知查看教程',
-        'https://chavyleung.gitbook.io/boxjs/awesome/videos',
-      );
+      console.log(e);
     }
   }
 
@@ -1622,13 +1630,14 @@ class Widget extends DmYY {
         : false;
    let _md5 = this.md5(module.filename + this.en);
     if (this.funcSetting.logable === '打开') console.log('当前配置内容：' + JSON.stringify(this.settings));
-    await this._loadJDCk();
-    this.JDindex =
-      typeof args.widgetParameter === "string"
-        ? parseInt(args.widgetParameter)
-        : false;
 
+    this.settings.cookieData
+    if (!(await this._loadJDCk())) {
+      this.CookiesData = this.settings.cookieData
+    }
+  
     try {
+      
       if (this.JDindex !== false && this.JDindex + 1 > 0) {
         this.cookie = this.CookiesData[this.JDindex]['cookie'];
         this.userName =this.CookiesData[this.JDindex]["userName"];
