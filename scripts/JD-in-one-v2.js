@@ -1630,15 +1630,11 @@ class Widget extends DmYY {
         : false;
    let _md5 = this.md5(module.filename + this.en);
     if (this.funcSetting.logable === '打开') console.log('当前配置内容：' + JSON.stringify(this.settings));
-
-    this.settings.cookieData
-    if (!(await this._loadJDCk())) {
-      this.CookiesData = this.settings.cookieData
-    }
-  
     try {
-      
       if (this.JDindex !== false && this.JDindex + 1 > 0) {
+        
+        if (!(await this._loadJDCk()))this.CookiesData = this.settings.cookieData
+
         this.cookie = this.CookiesData[this.JDindex]['cookie'];
         this.userName =this.CookiesData[this.JDindex]["userName"];
       } else {
