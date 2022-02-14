@@ -1565,27 +1565,11 @@ class Widget extends DmYY {
 
   _loadJDCk = async () => {
     try {
-      const CookiesData = await this.getCache('CookiesJD');
-      if (CookiesData) {
-        this.CookiesData = this.transforJSON(CookiesData);
-      }
-      const CookieJD = await this.getCache('CookieJD');
-      if (CookieJD) {
-        const userName = CookieJD.match(/pt_pin=(.+?);/)[1];
-        const ck1 = {
-          cookie: CookieJD,
-          userName,
-        };
-        this.CookiesData.push(ck1);
-      }
-      const Cookie2JD = await this.getCache('CookieJD2');
-      if (Cookie2JD) {
-        const userName = Cookie2JD.match(/pt_pin=(.+?);/)[1];
-        const ck2 = {
-          cookie: Cookie2JD,
-          userName,
-        };
-        this.CookiesData.push(ck2);
+      this.CookiesData = await this.getCache('CookiesJD', false)
+      if (this.CookiesData) {
+        this.CookiesData = this.transforJSON(this.CookiesData)
+      } else {
+        throw "未获取到数据"
       }
       return true;
     } catch (e) {
@@ -1620,21 +1604,23 @@ class Widget extends DmYY {
       table.present(false);
     } catch (e) {
       console.log(e);
+      await this.notify(
+        `${this.name} - BoxJS 数据读取失败`,
+        '请检查 BoxJS 域名是否为代理复写的域名，如（boxjs.net 或 boxjs.com）。\n若没有配置 BoxJS 相关模块，请点击通知查看教程',
+        'https://chavyleung.gitbook.io/boxjs/awesome/videos'
+      )
     }
   }
 
   async getCookie() {
-    this.JDindex =
-      typeof args.widgetParameter === 'string'
-        ? parseInt(args.widgetParameter)
-        : false;
+    this.JDindex =1;
    let _md5 = this.md5(module.filename + this.en);
     if (this.funcSetting.logable === '打开') console.log('当前配置内容：' + JSON.stringify(this.settings));
     try {
       if (this.JDindex !== false && this.JDindex + 1 > 0) {
         
-        if (!(await this._loadJDCk()))this.CookiesData = this.settings.cookieData
-
+        if (!(await this._loadJDCk())) this.CookiesData = this.settings.cookieData
+        
         this.cookie = this.CookiesData[this.JDindex]['cookie'];
         this.userName =this.CookiesData[this.JDindex]["userName"];
       } else {
