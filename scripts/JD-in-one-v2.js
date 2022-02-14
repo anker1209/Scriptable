@@ -1613,7 +1613,9 @@ class Widget extends DmYY {
   }
 
   async getCookie() {
-    this.JDindex =1;
+    this.JDindex = typeof args.widgetParameter === 'string'
+    ? parseInt(args.widgetParameter)
+    : false;
    let _md5 = this.md5(module.filename + this.en);
     if (this.funcSetting.logable === '打开') console.log('当前配置内容：' + JSON.stringify(this.settings));
     try {
