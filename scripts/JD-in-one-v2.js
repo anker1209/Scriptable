@@ -830,7 +830,7 @@ class Widget extends DmYY {
   TotalBean = async () => {
     const dataName = '京豆数据';
     let userCache = `beanData${this.isSmall()}`;
-    const url = 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion';
+    const url = 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?isLogin=1';
     const options = {
       headers: {
         cookie: this.cookie,
@@ -856,7 +856,7 @@ class Widget extends DmYY {
   wxData = async () => {
     const dataName = '微信数据';
     let userCache = `wxData${this.isSmall()}`;
-    const url = 'https://wxapp.m.jd.com/kwxhome/myJd/home.json?&useGuideModule=0&bizId=&brandId=&fromType=wxapp';
+    const url = 'https://wxapp.m.jd.com/kwxhome/myJd/home.json?&useGuideModule=0&bizId=&brandId=&fromType=wxapp&isLogin=1';
     const options = {
       headers: {
         cookie: this.cookie,
