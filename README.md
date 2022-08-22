@@ -93,29 +93,31 @@ https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.json
 
 - [BoxJs 教程视频](https://youtu.be/eIpBrRxiy0w)
 
-cookie获取方法：
+cookie获取方法（也可以参考[作者Sunert的教程](https://github.com/Sunert/Script/tree/master/TaskConf/dianxin)）：
 
 #### QuanX：
 
 ```ini
 [mitm]
-hostname = e.189.cn
+hostname = e.189.cn, mkt.21cn.com
 
 [rewrite_local]
-^https?:\/\/e.189.cn\/store\/user\/package_detail.do url script-request-body https://raw.githubusercontent.com/Sunert/Scripts/master/Task/telecomInfinity.js
+^https?:\/\/e\.189\.cn\/store\/user\/package_detail\.do url script-request-header https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
+https:\/\/mkt\.21cn\.com\/mkt\/api\/user\/queryActivityInfo\.do\?activityId=\d+ url script-request-header https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
 ```
 
 #### Surge：
 
 ```ini
 [mitm]
-hostname = e.189.cn
+hostname = e.189.cn, mkt.21cn.com
 
 [Script]
-Rewrite: CTCC = script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/telecomInfinity.js,type=http-request,pattern=https?:\/\/e\.189\.cn\/store\/user\/package_detail\.do
+电信天翼套餐 = type=http-request,pattern=https:\/\/mkt\.21cn\.com\/mkt\/api\/user\/queryActivityInfo\.do\?activityId=\d+,script-path=https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
+电信天翼套餐 = type=http-request,pattern=^https?:\/\/e\.189\.cn\/store\/user\/package_detail\.do,script-path=https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
 ```
 > Boxjs添加Sunert大佬订阅链接：
-https://raw.githubusercontent.com/Sunert/Scripts/master/Task/sunert.boxjs.json
+https://raw.githubusercontent.com/Sunert/Script/master/Task/sunert.boxjs.json
 
 > 打开天翼账号中心，获取cookie；
 
