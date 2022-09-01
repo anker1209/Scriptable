@@ -16,8 +16,8 @@ class Widget extends DmYY {
     super(arg);
     this.name = '中国电信';
     this.en = 'ChinaTelecom_2021';
-    this.logo = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/fe69a7a3-a0e2-4bf4-bab2-f11fd4b91d7d.png';
-    this.smallLogo = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/0b27cf6d-6b15-42bd-9f66-1b2c668ec5eb.png';
+    this.logo = 'https://pic.imgdb.cn/item/630ec97116f2c2beb175c0f2.png';
+    this.smallLogo = 'https://pic.imgdb.cn/item/630ecb8916f2c2beb176cdc7.png';
     this.Run();
   }
   cookie = ''; // 推荐使用Boxjs代理缓存，若无请自行手动抓包后在此输入中国电信cookie数据或运行脚本-->账号设置-->手动输入。
