@@ -5,8 +5,8 @@
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:2.1.0
-// update:2021/04/02
+// version:2.1.1
+// update:2022/09/01
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -16,8 +16,8 @@ class Widget extends DmYY {
     super(arg);
     this.name = '中国联通';
     this.en = 'ChinaUnicom_2021';
-    this.logo = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/cbbfab2c-790c-4308-b11f-299ae4311c07.png';
-    this.verticalLogo = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/00010042-8cc7-4931-afe2-b65ee49f6374.png';
+    this.logo = 'https://pic.imgdb.cn/item/630ec91116f2c2beb17590da.png';
+    this.verticalLogo = 'https://pic.imgdb.cn/item/630ecac516f2c2beb1766cd4.png';
     this.Run();
   }
 
