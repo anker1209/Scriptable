@@ -22,18 +22,22 @@ hostname = act.10010.com, m.client.10010.com
 
 [rewrite_local]
 # 获取联通cookie
-^https:\/\/m\.client\.10010\.com\/mobileserviceimportant\/smart\/smartwisdomCommon  url script-request-header https://raw.githubusercontent.com/dompling/Script/master/10010/index.js
+^https:\/\/m\.client\.10010\.com\/serviceimportantbusiness\/smart\/smartwisdomCommonNew  url script-request-header https://raw.githubusercontent.com/dompling/Script/master/10010/index.js
 ```
 
 #### Surge：
 
+- 手动添加:
 ```ini
 [MITM]
 hostname = act.10010.com, m.client.10010.com
 
 [Script]
-Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/m\.client\.10010\.com\/mobileserviceimportant\/smart\/smartwisdomCommon,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/dompling/Script/master/10010/index.js,script-update-interval=0
+Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/m\.client\.10010\.com\/serviceimportantbusiness\/smart\/smartwisdomCommonNew,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/dompling/Script/master/10010/index.js,script-update-interval=0
 ```
+
+- 引入模块
+https://github.com/anker1209/Scriptable/tree/main/module/10010.sgmodule?raw=true
 
 > Boxjs添加YaYa美女订阅链接（感谢YaYa辛苦付出~）：
 https://raw.githubusercontent.com/dompling/Script/master/dompling.boxjs.json

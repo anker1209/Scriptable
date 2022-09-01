@@ -1,0 +1,9 @@
+#!name=获取联通 cookie
+#!desc=获取联通 cookie
+#!system=ios
+
+[Script]
+Rewrite: 获取联通cookie = type=http-request,pattern=^https:\/\/m\.client\.10010\.com\/serviceimportantbusiness\/smart\/smartwisdomCommonNew,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/dompling/Script/master/10010/index.js,script-update-interval=0
+
+[MITM]
+hostname = %APPEND% act.10010.com, m.client.10010.com
