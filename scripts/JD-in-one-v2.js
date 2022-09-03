@@ -4,8 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.2.7
-// update:2022/01/04
+// version:2.2.8
+// update:2022/09/03
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -22,15 +22,15 @@ class Widget extends DmYY {
   cachePath = null;
 
   logo = 'https://pic.imgdb.cn/item/6187994b2ab3f51d919028cc.png';
-  JDImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/43300bf7-61a2-4bd1-94a1-bf2faa2ed9e8.png';
-  beanImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/7ea91cf8-6dea-477c-ae72-cb4d3f646c34.png';
-  plusFG = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/cd0d2b80-0857-4202-8d12-af4eb7d241d6.png';
-  plusBG = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/24fc5a14-edea-4b1b-8e30-bdcc1a27a037.png';
-  baitiaoImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/30c40f5b-7428-46c3-a2c0-d81b2b95ec41.png';
-  plusIcon = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/06f78540-a5a4-462e-b8c5-98cb8059efc1.png';
-  walletImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/cd89ceec-7895-41ee-a1a3-3d3e7223035f.png';
-  jingtieImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/16a7038e-6082-4ad8-b17f-fdd08266fb22.png';
-  gangbengImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/9704e332-9e7f-47e8-b09a-1f1991d4aa84.png';
+  JDImg = 'https://pic.imgdb.cn/item/63132fbf16f2c2beb1f33a97.png';
+  beanImg = 'https://pic.imgdb.cn/item/63132fda16f2c2beb1f35611.png';
+  plusFG = 'https://pic.imgdb.cn/item/63132ff216f2c2beb1f36c7f.png';
+  plusBG = 'https://pic.imgdb.cn/item/6313300016f2c2beb1f379da.png';
+  baitiaoImg = 'https://pic.imgdb.cn/item/6313300f16f2c2beb1f387f0.png';
+  plusIcon = 'https://pic.imgdb.cn/item/6313302416f2c2beb1f39a04.png';
+  walletImg = 'https://pic.imgdb.cn/item/6313303716f2c2beb1f3ace2.png';
+  jingtieImg = 'https://pic.imgdb.cn/item/6313312416f2c2beb1f48141.png';
+  gangbengImg = 'https://pic.imgdb.cn/item/6313313516f2c2beb1f4905d.png';
   userImage = 'https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png';
   nameImg = 'https://pic.imgdb.cn/item/6188bfb62ab3f51d91bca276.png';
   tagImg = 'https://pic.imgdb.cn/item/6188bfc72ab3f51d91bcbcb0.png';
