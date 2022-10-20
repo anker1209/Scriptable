@@ -5,8 +5,8 @@
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:1.1.0
-// update:2021/04/02
+// version:1.1.1
+// update:2022/10/20
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -550,7 +550,7 @@ class Widget extends DmYY {
             inner2: '语音进度条底圈颜色',
           },
           );
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/colorSet.png');
+      }, 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27363.png');
       this.registerAction('尺寸设置', async () => {
         await this.setAlertInput(
           `${this.name}尺寸设置`,
@@ -565,7 +565,7 @@ class Widget extends DmYY {
             padding: '中尺寸组件边距，缺省：10',
           },
           );
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/resize.png');
+      }, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28726.png');
       this.registerAction('流量设置', async () => {
         await this.setAlertInput(
           `${this.name}流量设置`,
@@ -575,7 +575,7 @@ class Widget extends DmYY {
             maxFlow: '实际流量或超限流量(GB)，缺省：40',
           },
           );
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/flow.png');
+      }, 'https://pic1.imgdb.cn/item/63315c2216f2c2beb1a27888.png');
       this.registerAction("账号设置", async () => {
         const index = await this.generateAlert("设置账号信息", [
           "网站登录",
@@ -588,11 +588,11 @@ class Widget extends DmYY {
             cookie: 'cookie',
           });
         }
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/account.png');
+      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25252.png');
       this.registerAction('代理缓存', async () => {
         await this.setCacheBoxJSData(widgetInitConfig);
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/boxjs.png');
-      this.registerAction('基础设置', this.setWidgetConfig, 'https://gitee.com/anker1209/image/raw/master/jd/preferences.png');
+      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25272.png');
+      this.registerAction('基础设置', this.setWidgetConfig, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28714.png');
     }
 
     try {
