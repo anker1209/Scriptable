@@ -5,7 +5,7 @@
   "repo": "https://github.com/anker1209/Scriptable",
   "apps": [
     {
-      "version": "2.2.8",
+      "version": "2.2.9",
       "author": "脑瓜",
       "description": "显示京东用户信息、物流信息、白条还款信息、京豆K线图、金豆收支、钢镚、金贴、红包信息",
       "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/JD-in-one-v2.js",
@@ -23,6 +23,8 @@
         "<br/>",
         "<br/>",
         "<h4 align=\"center\">更新说明</h4>",
+        "v2.2.9",
+        "<li>修复设置页面图片不显示的问题</li>",
         "v2.2.8",
         "<li>修复图片不显示的问题</li>",
         "v2.2.7",
