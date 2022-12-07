@@ -4,7 +4,7 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.2.9
+// version:2.3.0
 // update:2022/10/20
 
 if (typeof require === 'undefined') require = importModule;
@@ -37,7 +37,7 @@ class Widget extends DmYY {
 
   // 请勿在此修改参数值
 
-  version = '2.2.9';
+  version = '2.3.0';
   basicSetting = {
     scale: 1.00,
     logo: 30,
@@ -742,7 +742,7 @@ class Widget extends DmYY {
       let beanCacheData = !this.loadStringCache(beanCacheKey) ? {} : JSON.parse(this.loadStringCache(beanCacheKey));
       let beanCache = beanCacheData.data ? beanCacheData.data.assetInfo.beanNum : 0;
       await this.TotalBean();
-      await this.wxData();
+      await this.getJValue();
       console.log(`京豆数据：${beanCache}`);
       console.log(`京豆数据：${this.beanCount}`);
 
@@ -987,7 +987,7 @@ class Widget extends DmYY {
 
   getJValue = async () => {
     const dataName = '京享数据';
-    const url = 'https://vip.m.jd.com/scoreDetail/current';
+    const url = "https://api.m.jd.com/?functionId=pg_channel_page_data&appid=vip_h5&body=%7BparamData:%7Btoken:%20'60143dce-1cde-44de-8130-a6e5579e1567'%7D%7D";
     const options = {
       headers: {
         cookie: this.cookie,
@@ -995,8 +995,8 @@ class Widget extends DmYY {
     };
     try {
       const data = await this.httpRequest(dataName, url, true, options, 'JValue');
-      if (data.code === 0) {
-        this.jValue = data.model.scoreDescription.userScore.score;
+      if (data['success'] === true) {
+        this.jValue = data.data.floorInfoList[0].floorData.jxScoreInfo.jxScore;
       } else {
         console.log('京享数据：获取失败');
       };
