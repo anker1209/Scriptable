@@ -4,8 +4,8 @@
 // Author: 脑瓜
 // 电报群: https://t.me/Scriptable_JS @anker1209
 // 采用了2Ya美女的京豆收支脚本及DmYY依赖 https://github.com/dompling/Scriptable/tree/master/Scripts
-// version:2.3.0
-// update:2022/12/07
+// version:2.2.8
+// update:2022/01/04
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -22,22 +22,22 @@ class Widget extends DmYY {
   cachePath = null;
 
   logo = 'https://pic.imgdb.cn/item/6187994b2ab3f51d919028cc.png';
-  JDImg = 'https://pic.imgdb.cn/item/63132fbf16f2c2beb1f33a97.png';
-  beanImg = 'https://pic.imgdb.cn/item/63132fda16f2c2beb1f35611.png';
-  plusFG = 'https://pic.imgdb.cn/item/63132ff216f2c2beb1f36c7f.png';
-  plusBG = 'https://pic.imgdb.cn/item/6313300016f2c2beb1f379da.png';
-  baitiaoImg = 'https://pic.imgdb.cn/item/6313300f16f2c2beb1f387f0.png';
-  plusIcon = 'https://pic.imgdb.cn/item/6313302416f2c2beb1f39a04.png';
-  walletImg = 'https://pic.imgdb.cn/item/6313303716f2c2beb1f3ace2.png';
-  jingtieImg = 'https://pic.imgdb.cn/item/6313312416f2c2beb1f48141.png';
-  gangbengImg = 'https://pic.imgdb.cn/item/6313313516f2c2beb1f4905d.png';
+  JDImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/43300bf7-61a2-4bd1-94a1-bf2faa2ed9e8.png';
+  beanImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-imgbed/7ea91cf8-6dea-477c-ae72-cb4d3f646c34.png';
+  plusFG = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/cd0d2b80-0857-4202-8d12-af4eb7d241d6.png';
+  plusBG = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/24fc5a14-edea-4b1b-8e30-bdcc1a27a037.png';
+  baitiaoImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/30c40f5b-7428-46c3-a2c0-d81b2b95ec41.png';
+  plusIcon = 'https://img12.360buyimg.com/img/s115x118_jfs/t1/127010/39/7866/7131/5f18f9afE8e5c1d37/1713cb8c5a329d3f.png';
+  walletImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/cd89ceec-7895-41ee-a1a3-3d3e7223035f.png';
+  jingtieImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/16a7038e-6082-4ad8-b17f-fdd08266fb22.png';
+  gangbengImg = 'https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/9704e332-9e7f-47e8-b09a-1f1991d4aa84.png';
   userImage = 'https://img11.360buyimg.com/jdphoto/s120x120_jfs/t21160/90/706848746/2813/d1060df5/5b163ef9N4a3d7aa6.png';
   nameImg = 'https://pic.imgdb.cn/item/6188bfb62ab3f51d91bca276.png';
   tagImg = 'https://pic.imgdb.cn/item/6188bfc72ab3f51d91bcbcb0.png';
 
   // 请勿在此修改参数值
 
-  version = '2.3.0';
+  version = '2.2.6';
   basicSetting = {
     scale: 1.00,
     logo: 30,
@@ -742,7 +742,7 @@ class Widget extends DmYY {
       let beanCacheData = !this.loadStringCache(beanCacheKey) ? {} : JSON.parse(this.loadStringCache(beanCacheKey));
       let beanCache = beanCacheData.data ? beanCacheData.data.assetInfo.beanNum : 0;
       await this.TotalBean();
-      await this.getJValue();
+      await this.wxData();
       console.log(`京豆数据：${beanCache}`);
       console.log(`京豆数据：${this.beanCount}`);
 
@@ -987,7 +987,7 @@ class Widget extends DmYY {
 
   getJValue = async () => {
     const dataName = '京享数据';
-    const url = "https://api.m.jd.com/?functionId=pg_channel_page_data&appid=vip_h5&body=%7BparamData:%7Btoken:%20'60143dce-1cde-44de-8130-a6e5579e1567'%7D%7D";
+    const url = 'https://vip.m.jd.com/scoreDetail/current';
     const options = {
       headers: {
         cookie: this.cookie,
@@ -995,8 +995,8 @@ class Widget extends DmYY {
     };
     try {
       const data = await this.httpRequest(dataName, url, true, options, 'JValue');
-      if (data['success'] === true) {
-        this.jValue = data.data.floorInfoList[0].floorData.jxScoreInfo.jxScore;
+      if (data.code === 0) {
+        this.jValue = data.model.scoreDescription.userScore.score;
       } else {
         console.log('京享数据：获取失败');
       };
@@ -1312,39 +1312,39 @@ class Widget extends DmYY {
 
   async tableContent(table) {
     const basic = [
-      {type: 'text', title: '全局缩放比例', desc: '排版溢出、显示不全的请优先调低此数，建议递减0.05调整，如0.95、0.90……\n\n缺省值：1.00', option: {scale: ''}, icon: 'https://pic1.imgdb.cn/item/63315c3116f2c2beb1a28cfd.png'},
-      {type: 'text', title: '京东标志大小', desc: '京东logo（形象狗）大小\n\n缺省值：30', option: {logo: ''}, icon: 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a286f1.png'},
-      {type: 'text', title: '用户头像大小', desc: '⚠️注意：若要修改头像，请在京东app上传后将缓存清除再运行脚本。\n\n缺省值：69', option: {userImage: ''}, icon: 'https://pic1.imgdb.cn/item/63315c3a16f2c2beb1a29a07.png'},
-      {type: 'text', title: '左侧栏宽度', desc: '左侧用户信息栏整体宽度\n\n缺省值：103', option: {userStack: ''}, icon: 'https://pic1.imgdb.cn/item/63315c3a16f2c2beb1a29a1d.png'},
-      {type: 'text', title: '左右栏间距', desc: '左侧用户信息栏与右侧京豆数据间距\n\n缺省值：25', option: {division: ''}, icon: 'https://pic1.imgdb.cn/item/63315c2216f2c2beb1a27870.png'},
-      {type: 'text', title: '缓存时间', desc: '数据请求间隔时间\n请设置合适时间，避免频繁访问接口数据以及加载缓慢。单位：分钟\n\n缺省值：10', option: {interval: ''}, icon: 'https://pic1.imgdb.cn/item/63315c2716f2c2beb1a27f10.png'},
-      {type: 'menu', title: '缓存位置', desc: '将缓存保存在Local或者iCloud。\n\n缺省值：Local', option: {directory: ''}, menu: ['Local', 'iCloud'], icon: 'https://pic1.imgdb.cn/item/63315c2216f2c2beb1a27868.png'},
-      {type: 'text', title: '自定义昵称', desc: '自定义用户信息栏的昵称名称，\n留空将显示京东账号昵称。\n\n注意：单脚本多账户若使用自定义昵称，所有账户将同时显示此昵称，如需单独自定义昵称，请复制脚本单独设置。', option: {customizeName: ''}, icon: 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a2734a.png'},
-      {type: 'text', title: '自定义头像', desc: '自定义用户信息栏的头像，\n留空将显示京东APP头像。\n\n注意：单脚本多账户若使用自定义头像，所有账户将同时显示此头像，如需单独自定义头像，请复制脚本单独设置。', option: {customizeAvatar: ''}, icon: 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27341.png'},
-      {type: 'menu', title: '小组件显示内容', desc: '\n缺省值：京豆、钱包数据', option: {smallShowType: ''}, menu: ['京豆、钱包数据', '个人信息'], icon: 'https://pic1.imgdb.cn/item/63315c3616f2c2beb1a29323.png'},
-      {type: 'menu', title: '钱包显示类型', desc: '若要显示钱包内容，白条需关闭或者白条打开的情况下无待还白条。\n\n缺省值：红包', option: {walletShowType: ''}, menu: ['红包', '钢镚和金贴'], icon: 'https://pic1.imgdb.cn/item/63315c3a16f2c2beb1a299f3.png'},
+      {type: 'text', title: '全局缩放比例', desc: '排版溢出、显示不全的请优先调低此数，建议递减0.05调整，如0.95、0.90……\n\n缺省值：1.00', option: {scale: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/scale.png'},
+      {type: 'text', title: '京东标志大小', desc: '京东logo（形象狗）大小\n\n缺省值：30', option: {logo: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/logo.png'},
+      {type: 'text', title: '用户头像大小', desc: '⚠️注意：若要修改头像，请在京东app上传后将缓存清除再运行脚本。\n\n缺省值：69', option: {userImage: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/userImage.png'},
+      {type: 'text', title: '左侧栏宽度', desc: '左侧用户信息栏整体宽度\n\n缺省值：103', option: {userStack: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/userStack.png'},
+      {type: 'text', title: '左右栏间距', desc: '左侧用户信息栏与右侧京豆数据间距\n\n缺省值：25', option: {division: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/division.png'},
+      {type: 'text', title: '缓存时间', desc: '数据请求间隔时间\n请设置合适时间，避免频繁访问接口数据以及加载缓慢。单位：分钟\n\n缺省值：10', option: {interval: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/interval.png'},
+      {type: 'menu', title: '缓存位置', desc: '将缓存保存在Local或者iCloud。\n\n缺省值：Local', option: {directory: ''}, menu: ['Local', 'iCloud'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/directory.png'},
+      {type: 'text', title: '自定义昵称', desc: '自定义用户信息栏的昵称名称，\n留空将显示京东账号昵称。\n\n注意：单脚本多账户若使用自定义昵称，所有账户将同时显示此昵称，如需单独自定义昵称，请复制脚本单独设置。', option: {customizeName: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/customizeName.png'},
+      {type: 'text', title: '自定义头像', desc: '自定义用户信息栏的头像，\n留空将显示京东APP头像。\n\n注意：单脚本多账户若使用自定义头像，所有账户将同时显示此头像，如需单独自定义头像，请复制脚本单独设置。', option: {customizeAvatar: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/customizeAvatar.png'},
+      {type: 'menu', title: '小组件显示内容', desc: '\n缺省值：京豆、钱包数据', option: {smallShowType: ''}, menu: ['京豆、钱包数据', '个人信息'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/smallShowType.png'},
+      {type: 'menu', title: '钱包显示类型', desc: '若要显示钱包内容，白条需关闭或者白条打开的情况下无待还白条。\n\n缺省值：红包', option: {walletShowType: ''}, menu: ['红包', '钢镚和金贴'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/walletShowType.png'},
     ];
     const chart = [
-      {type: 'text', title: '图表高度', desc: '京豆数据未与日期对齐的，\n请调低此数值\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：130', option: {height: ''}, icon: 'https://pic1.imgdb.cn/item/63315c2216f2c2beb1a27858.png'},
-      {type: 'text', title: '日期文字大小', desc: '京豆图表底部日期文字大小\n\n缺省值：9', option: {daySize: ''}, icon: 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27355.png'},
-      {type: 'text', title: '日期文字后缀', desc: '京豆图表底部日期文字后缀', option: {dayText: ''}, icon: 'https://pic1.imgdb.cn/item/63315c2216f2c2beb1a2785e.png'},
-      {type: 'text', title: '京豆数文字大小', desc: '京豆图表数据文字大小\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：18', option: {textSize: ''}, icon: 'https://pic1.imgdb.cn/item/63315c3a16f2c2beb1a29a00.png'},
-      {type: 'text', title: '京豆数白天颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textDayColor: ''}, icon: 'https://pic1.imgdb.cn/item/63315c3616f2c2beb1a29310.png'},
-      {type: 'text', title: '京豆数晚上颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textNightColor: ''}, icon: 'https://pic1.imgdb.cn/item/63315c3a16f2c2beb1a299f8.png'},
-      {type: 'text', title: '折线图线条颜色', desc: '支持渐变色，每个颜色之间以英文逗号分隔，颜色值必须带“#”。\n\n缺省值：#FA6859', option: {lineColor: ''}, icon: 'https://pic1.imgdb.cn/item/63315c2716f2c2beb1a27f2e.png'},
-      {type: 'text', title: '折线图表顶边距', desc: '京豆折线图顶边距\n京豆数据在顶部被剪切显示不全的，\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：15', option: {linePadding: ''}, icon: 'https://pic1.imgdb.cn/item/63315c2716f2c2beb1a27f3a.png'},
-      {type: 'text', title: '柱状图表顶边距', desc: '京豆柱状图和曲线面积图顶边距\n京豆数据在顶部被剪切显示不全的,\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：5', option: {barPadding: ''}, icon: 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25263.png'},
-      {type: 'menu', title: '小组件图表类型', desc: '\n缺省值：双日视图', option: {smallShowType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图'], icon: 'https://pic1.imgdb.cn/item/63315c3616f2c2beb1a29330.png'},
-      {type: 'menu', title: '中组件图表类型', desc: '\n缺省值：双日视图', option: {showType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图'], icon: 'https://pic1.imgdb.cn/item/63315c3616f2c2beb1a29315.png'},
-      {type: 'menu', title: '每日京豆数计算', desc: '\n缺省值：收入-支出', option: {countBean: ''}, menu: ['收入-支出', '收入'], icon: 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27376.png'},
-      {type: 'menu', title: '多彩柱状图', desc: '设置为打开时仅对柱状图表生效\n\n缺省值：关闭', option: {colorful: ''}, menu: ['打开', '关闭'], icon: 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a2524a.png'},
+      {type: 'text', title: '图表高度', desc: '京豆数据未与日期对齐的，\n请调低此数值\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：130', option: {height: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/height.png'},
+      {type: 'text', title: '日期文字大小', desc: '京豆图表底部日期文字大小\n\n缺省值：9', option: {daySize: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/daySize.png'},
+      {type: 'text', title: '日期文字后缀', desc: '京豆图表底部日期文字后缀', option: {dayText: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/dayText.png'},
+      {type: 'text', title: '京豆数文字大小', desc: '京豆图表数据文字大小\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：18', option: {textSize: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/textSize.png'},
+      {type: 'text', title: '京豆数白天颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textDayColor: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/textDayColor.png'},
+      {type: 'text', title: '京豆数晚上颜色', desc: '⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：999999', option: {textNightColor: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/textNightColor.png'},
+      {type: 'text', title: '折线图线条颜色', desc: '支持渐变色，每个颜色之间以英文逗号分隔，颜色值必须带“#”。\n\n缺省值：#FA6859', option: {lineColor: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/lineColor.png'},
+      {type: 'text', title: '折线图表顶边距', desc: '京豆折线图顶边距\n京豆数据在顶部被剪切显示不全的，\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：15', option: {linePadding: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/linePadding.png'},
+      {type: 'text', title: '柱状图表顶边距', desc: '京豆柱状图和曲线面积图顶边距\n京豆数据在顶部被剪切显示不全的,\n请调高此数值。\n\n⚠️如需即时查看调整效果，\n[功能设置]-->刷新图表 需打开。\n\n缺省值：5', option: {barPadding: ''}, icon: 'https://gitee.com/anker1209/image/raw/master/jd/barPadding.png'},
+      {type: 'menu', title: '小组件图表类型', desc: '\n缺省值：双日视图', option: {smallShowType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/smallShowType2.png'},
+      {type: 'menu', title: '中组件图表类型', desc: '\n缺省值：双日视图', option: {showType: ''}, menu: ['双日视图', '折线图表', '柱状图表', '曲线面积图'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/showType.png'},
+      {type: 'menu', title: '每日京豆数计算', desc: '\n缺省值：收入-支出', option: {countBean: ''}, menu: ['收入-支出', '收入'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/countBean.png'},
+      {type: 'menu', title: '多彩柱状图', desc: '设置为打开时仅对柱状图表生效\n\n缺省值：关闭', option: {colorful: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/colorful.png'},
     ];
     const func = [
-      {type: 'menu', title: '白条信息', desc: '关闭或者打开后无待还白条的情况下，\n会显示基础设置里选择的钱包内容。\n\n缺省值：打开', option: {showBaitiao: ''}, menu: ['打开', '关闭'], icon: 'https://pic1.imgdb.cn/item/63315c3116f2c2beb1a28d19.png'},
-      {type: 'menu', title: '包裹信息', desc: '只有中组件显示一条物流信息，\n若无物流信息会显示图表设置里选择的图表类型。\n\n缺省值：关闭', option: {showPackage: ''}, menu: ['打开', '关闭'], icon: 'https://pic1.imgdb.cn/item/63315c3016f2c2beb1a28cf8.png'},
-      {type: 'menu', title: '农场进度', desc: '显示东东农场种植进度。\n\n缺省值：打开', option: {showFruit: ''}, menu: ['打开', '关闭'], icon: 'https://pic1.imgdb.cn/item/63315c3116f2c2beb1a28d24.png'},
-      {type: 'menu', title: '运行日志', desc: '出现数据异常请将此值设为true，\n查看运行日志。\n\n⚠️注意：\n查看运行日志需将缓存时间更改为0。\n\n缺省值：关闭', option: {logable: ''}, menu: ['打开', '关闭'], icon: 'https://pic1.imgdb.cn/item/63315c2716f2c2beb1a27f0a.png'},
-      {type: 'menu', title: '刷新图表', desc: '打开，每次刷新组件会随机刷新图表颜色（仅柱状图表和曲线面积图）；关闭，则只有在京豆数据有变化的情况下刷新图表颜色及数据。建议在排版调整没有问题后，设置为关闭。设置为打开会加长数据载入时间。\n\n⚠️注意：图表设置选项里修改图表高度、颜色、文字大小、顶边距需打开此选项以查看即时反馈。\n\n缺省值：打开', option: {alwaysRefreshChart: ''}, menu: ['打开', '关闭'], icon: 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25259.png'},
+      {type: 'menu', title: '白条信息', desc: '关闭或者打开后无待还白条的情况下，\n会显示基础设置里选择的钱包内容。\n\n缺省值：打开', option: {showBaitiao: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/showBaitiao.png'},
+      {type: 'menu', title: '包裹信息', desc: '只有中组件显示一条物流信息，\n若无物流信息会显示图表设置里选择的图表类型。\n\n缺省值：关闭', option: {showPackage: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/showPackage.png'},
+      {type: 'menu', title: '农场进度', desc: '显示东东农场种植进度。\n\n缺省值：打开', option: {showFruit: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/showFruit.png'},
+      {type: 'menu', title: '运行日志', desc: '出现数据异常请将此值设为true，\n查看运行日志。\n\n⚠️注意：\n查看运行日志需将缓存时间更改为0。\n\n缺省值：关闭', option: {logable: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/logable.png'},
+      {type: 'menu', title: '刷新图表', desc: '打开，每次刷新组件会随机刷新图表颜色（仅柱状图表和曲线面积图）；关闭，则只有在京豆数据有变化的情况下刷新图表颜色及数据。建议在排版调整没有问题后，设置为关闭。设置为打开会加长数据载入时间。\n\n⚠️注意：图表设置选项里修改图表高度、颜色、文字大小、顶边距需打开此选项以查看即时反馈。\n\n缺省值：打开', option: {alwaysRefreshChart: ''}, menu: ['打开', '关闭'], icon: 'https://gitee.com/anker1209/image/raw/master/jd/alwaysRefreshChart.png'},
     ];
     table.removeAllRows();
     let topRow = new UITableRow();
@@ -1489,7 +1489,7 @@ class Widget extends DmYY {
     this.cachePath = this.fm.joinPath(this.fm.documentsDirectory(), this.CACHE_FOLDER);
 
     if (config.runsInApp) {
-      this.registerAction('参数配置', this.editSettings, 'https://pic1.imgdb.cn/item/63315c3116f2c2beb1a28d03.png');
+      this.registerAction('参数配置', this.editSettings, 'https://gitee.com/anker1209/image/raw/master/jd/setting.png');
       this.registerAction('账号设置', async () => {
         const index = await this.generateAlert('设置账号信息', [
           '网站登录',
@@ -1503,9 +1503,9 @@ class Widget extends DmYY {
             cookie: 'Cookie',
           });
         }
-      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25252.png');
-      this.registerAction('代理缓存', this.actionSettings, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25272.png');
-      this.registerAction('基础设置', this.setWidgetConfig, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28714.png');
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/account.png');
+      this.registerAction('代理缓存', this.actionSettings, 'https://gitee.com/anker1209/image/raw/master/jd/boxjs.png');
+      this.registerAction('基础设置', this.setWidgetConfig, 'https://gitee.com/anker1209/image/raw/master/jd/preferences.png');
     }
     Object.keys(this.settings['basicSetting']).forEach((key) => {
       if (key == 'customizeName' || key == 'customizeAvatar' || key == 'smallShowType' || key == 'walletShowType' || key == 'directory') {

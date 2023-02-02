@@ -1,12 +1,12 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
-// icon-color: red; icon-glyph: mobile-alt; share-sheet-inputs: file-url, url;
+// icon-color: red; icon-glyph: mobile-alt;
 // Author: 脑瓜
 // 电报群：https://t.me/Scriptable_JS @anker1209
 // 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
 // 渐变进度条为试验性功能，默认关闭
-// version:2.1.2
-// update:2022/10/20
+// version:2.1.1
+// update:2021/04/02
 
 if (typeof require === 'undefined') require = importModule;
 const {DmYY, Runing} = require('./DmYY');
@@ -16,8 +16,8 @@ class Widget extends DmYY {
     super(arg);
     this.name = '中国联通';
     this.en = 'ChinaUnicom_2021';
-    this.logo = 'https://pic.imgdb.cn/item/630ec91116f2c2beb17590da.png';
-    this.verticalLogo = 'https://pic.imgdb.cn/item/630ecac516f2c2beb1766cd4.png';
+    this.logo = 'https://raw.githubusercontent.com/anker1209/icon/main/zglt-big.png';
+    this.verticalLogo = 'https://raw.githubusercontent.com/anker1209/icon/main/zglt.png';
     this.Run();
   }
 
@@ -363,7 +363,7 @@ tempStack2.addSpacer()
   }
 
   arrColor() {
-    let colorArr = [['#FFF000', '#E62490'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#F072B6'], ['#FCCF31', '#F55555'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#FFFF1C', '#00C3FF'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#FFC371', '#FF5F6D'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FFC600', '#FD6E6A'], ['#FFC600', '#FD6E6A'], ['#92FE9D', '#00C9FF'], ['#FFDDE1', '#EE9CA7'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#F9D423', '#FF4E50'], ['#00EAFF', '#3C8CE7'], ['#FCFF00', '#FFA8A8'], ['#FF96F9', '#C32BAC'], ['#FFDD94', '#FA897B'], ['#FFCC4B', '#FF7D58'], ['#D0E6A5', '#86E3CE'], ['#F0D5B6', '#F16238'], ['#C4E86B', '#00BCB4'], ['#FFC446', '#FA0874'], ['#E1EE32', '#FFB547'], ['#E9A6D2', '#E9037B'], ['#F8EC70', '#49E2F6'], ['#A2F8CD', '#00C3FF'], ['#FDEFE2', '#FE214F'], ['#FFB7D1', '#E4B7FF'], ['#D0E6A5', '#86E3CE'], ['#E8E965', '#64C5C7']];
+    let colorArr = [['#FFF000', '#E62490'], ['#ABDCFF', '#0396FF'], ['#FEB692', '#EA5455'], ['#FEB692', '#EA5455'], ['#CE9FFC', '#7367F0'], ['#90F7EC', '#32CCBC'], ['#FFF6B7', '#F6416C'], ['#E2B0FF', '#9F44D3'], ['#F97794', '#F072B6'], ['#FCCF31', '#F55555'], ['#5EFCE8', '#736EFE'], ['#FAD7A1', '#E96D71'], ['#FFFF1C', '#00C3FF'], ['#FEC163', '#DE4313'], ['#F6CEEC', '#D939CD'], ['#FDD819', '#E80505'], ['#FFF3B0', '#CA26FF'], ['#EECDA3', '#EF629F'], ['#C2E59C', '#64B3F4'], ['#FFF886', '#F072B6'], ['#F5CBFF', '#C346C2'], ['#FFF720', '#3CD500'], ['#FFC371', '#FF5F6D'], ['#FFD3A5', '#FD6585'], ['#C2FFD8', '#465EFB'], ['#FFC600', '#FD6E6A'], ['#FFC600', '#FD6E6A'], ['#92FE9D', '#00C9FF'], ['#FFDDE1', '#EE9CA7'], ['#F0FF00', '#58CFFB'], ['#FFE985', '#FA742B'], ['#72EDF2', '#5151E5'], ['#F6D242', '#FF52E5'], ['#F9D423', '#FF4E50'], ['#00EAFF', '#3C8CE7'], ['#FCFF00', '#FFA8A8'], ['#FF96F9', '#C32BAC'], ['#FFDD94', '#FA897B'], ['#FFCC4B', '#FF7D58'], ['#D0E6A5', '#86E3CE'], ['#F0D5B6', '#F16238'], ['#C4E86B', '#00BCB4'], ['#FFC446', '#FA0874'], ['#E1EE32', '#FFB547'], ['#FFD804', '#2ACCC8'], ['#E9A6D2', '#E9037B'], ['#F8EC70', '#49E2F6'], ['#A2F8CD', '#A2F852'], ['#A2F8CD', '#00C3FF'], ['#FDEFE2', '#FE214F'], ['#F8EC70', '#A2F8CD'], ['#F8EC70', '#49E2F6'], ['#FFB7D1', '#E4B7FF'], ['#D0E6A5', '#86E3CE'], ['#E8E965', '#64C5C7']];
     let colors = colorArr[Math.floor(Math.random() * colorArr.length)];
     return colors;
   }
@@ -502,7 +502,7 @@ tempStack2.addSpacer()
             inner2: '语音进度条底圈颜色',
           },
           );
-      }, 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27363.png');
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/colorSet.png');
       this.registerAction('尺寸设置', async () => {
         await this.setAlertInput(
           `${this.name}尺寸设置`,
@@ -517,18 +517,18 @@ tempStack2.addSpacer()
             padding: '中尺寸组件边距，缺省：10',
           },
           );
-      }, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28726.png');
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/resize.png');
       this.registerAction('账号设置', async () => {
         await this.setAlertInput(
           `${this.name}账号`,
           '读取 BoxJS 缓存信息',
             {cookie: 'cookie'},
           );
-      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25252.png');
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/account.png');
       this.registerAction('代理缓存', async () => {
         await this.setCacheBoxJSData(widgetInitConfig);
-      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25272.png');
-      this.registerAction('基础设置', this.setWidgetConfig, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28714.png');
+      }, 'https://gitee.com/anker1209/image/raw/master/jd/boxjs.png');
+      this.registerAction('基础设置', this.setWidgetConfig, 'https://gitee.com/anker1209/image/raw/master/jd/preferences.png');
     }
 
     try {
