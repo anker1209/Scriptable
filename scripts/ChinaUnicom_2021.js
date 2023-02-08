@@ -502,7 +502,7 @@ tempStack2.addSpacer()
             inner2: '语音进度条底圈颜色',
           },
           );
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/colorSet.png');
+      }, 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27363.png');
       this.registerAction('尺寸设置', async () => {
         await this.setAlertInput(
           `${this.name}尺寸设置`,
@@ -517,18 +517,18 @@ tempStack2.addSpacer()
             padding: '中尺寸组件边距，缺省：10',
           },
           );
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/resize.png');
+      }, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28726.png');
       this.registerAction('账号设置', async () => {
         await this.setAlertInput(
           `${this.name}账号`,
           '读取 BoxJS 缓存信息',
             {cookie: 'cookie'},
           );
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/account.png');
+      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25252.png');
       this.registerAction('代理缓存', async () => {
         await this.setCacheBoxJSData(widgetInitConfig);
-      }, 'https://gitee.com/anker1209/image/raw/master/jd/boxjs.png');
-      this.registerAction('基础设置', this.setWidgetConfig, 'https://gitee.com/anker1209/image/raw/master/jd/preferences.png');
+      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25272.png');
+      this.registerAction('基础设置', this.setWidgetConfig, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28714.png');
     }
 
     try {
