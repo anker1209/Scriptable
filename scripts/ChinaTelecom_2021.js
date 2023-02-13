@@ -585,11 +585,11 @@ class Widget extends DmYY {
             cookie: 'cookie',
           });
         }
-      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25252.png');
+      }, 'https://raw.githubusercontent.com/githubdulong/Script/master/Images/account.png');
       this.registerAction('代理缓存', async () => {
         await this.setCacheBoxJSData(widgetInitConfig);
-      }, 'https://pic1.imgdb.cn/item/63315c0816f2c2beb1a25272.png');
-      this.registerAction('基础设置', this.setWidgetConfig, 'https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28714.png');
+      }, 'https://raw.githubusercontent.com/githubdulong/Script/master/Images/boxjs.png');
+      this.registerAction('基础设置', this.setWidgetConfig, 'https://raw.githubusercontent.com/githubdulong/Script/master/Images/preferences.png');
     }
 
     try {
