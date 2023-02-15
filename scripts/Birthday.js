@@ -38,7 +38,7 @@ class Widget extends DmYY {
     this.defaultData = {
       username: this.settings.nickname || '', // 姓名
       time: this.settings.birthday || today, // 生日日期
-      nongli: this.settings.nongli || '', // 农历生日
+      nongli: this.settings.nongli === 'true' || '', // 农历生日
       eday: this.settings.eday || today, //相识
       bless: this.settings.bless || '',
       isLeapMonth: false, //如果是农历闰月第四个参数赋值true即可
@@ -270,7 +270,7 @@ class Widget extends DmYY {
     response.nextBirthday = response.birthdayText[0];
 
     var solarData;
-    if (nongli === 'true') {
+    if (nongli) {
       solarData = this.$.lunar2solar(opt.year, opt.month, opt.day, isLeapMonth);
     } else {
       solarData = this.$.solar2lunar(opt.year, opt.month, opt.day);
