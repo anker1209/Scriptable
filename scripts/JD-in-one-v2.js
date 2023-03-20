@@ -2035,7 +2035,7 @@ class Widget extends DmYY {
         },
       ].map((item) => {
         item.menu.map((menuItem) => {
-          menuItem.defaultValue = this.settings[item.key][menuItem.name];
+          menuItem.defaultValue = this.settings?.[item.key]?.[menuItem.name];
           if (menuItem.type === 'input') {
             menuItem.onClick = baseSettingOnClick(item.key);
           }
