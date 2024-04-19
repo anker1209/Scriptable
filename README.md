@@ -99,27 +99,39 @@ https://raw.githubusercontent.com/chavyleung/scripts/master/box/chavy.boxjs.json
 
 cookie获取方法（也可以参考[作者Sunert的教程](https://github.com/Sunert/Script/tree/master/TaskConf/dianxin)）：
 
+> 登录功能脚本修改自 [@95du丶茅台]特别在此感谢
+
 #### QuanX：
 
 ```ini
 [mitm]
-hostname = e.189.cn, mkt.21cn.com
+hostname = e.dlife.cn
 
 [rewrite_local]
-^https?:\/\/e\.189\.cn\/store\/user\/package_detail\.do url script-request-header https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
-https:\/\/mkt\.21cn\.com\/mkt\/api\/user\/queryActivityInfo\.do\?activityId=\d+ url script-request-header https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
+^https:\/\/e\.dlife\.cn\/user\/loginMiddle  url script-request-header https://raw.githubusercontent.com/dompling/Script/master/10000/index.js
 ```
 
 #### Surge：
 
 ```ini
-[mitm]
-hostname = e.189.cn, mkt.21cn.com
+[MITM]
+hostname = e.dlife.cn
 
 [Script]
-电信天翼套餐 = type=http-request,pattern=https:\/\/mkt\.21cn\.com\/mkt\/api\/user\/queryActivityInfo\.do\?activityId=\d+,script-path=https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
-电信天翼套餐 = type=http-request,pattern=^https?:\/\/e\.189\.cn\/store\/user\/package_detail\.do,script-path=https://raw.githubusercontent.com/Sunert/Script/master/Task/telecomSky.js
+电信登录地址 = type=http-request,pattern=^https:\/\/e\.dlife\.cn\/user\/loginMiddle,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/dompling/Script/master/10000/index.js,script-update-interval=0
+
 ```
+
+#### Loon:
+```ini
+[mitm]
+hostname = e.dlife.cn
+
+[Script]
+http-request ^https:\/\/e\.dlife\.cn\/user\/loginMiddle tag=电信登录地址, script-path=https://raw.githubusercontent.com/dompling/Script/master/10000/index.js
+
+```
+
 > Boxjs添加Sunert大佬订阅链接：
 https://raw.githubusercontent.com/Sunert/Script/master/Task/sunert.boxjs.json
 

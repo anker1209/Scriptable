@@ -116,12 +116,12 @@
       ]
     },
     {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": "脑瓜",
       "description": "中国电信小组件，两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式",
-      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaTelecom_2021.js",
-      "thumb": "https://vkceyugu.cdn.bspapp.com/VKCEYUGU-b1ebbd3c-ca49-405b-957b-effe60782276/f12609b2-bf20-4993-be0f-99572d70d1b2.png",
-      "name": "ChinaTelecom_2021",
+      "scriptURL": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaTelecom_2024.js",
+      "thumb": "https://raw.githubusercontent.com/Orz-3/mini/master/Color/10000.png",
+      "name": "ChinaTelecom_2024",
       "title": "中国电信",
       "depend": [
         {
@@ -138,6 +138,8 @@
         "<h4 align=\"center\">更新说明</h4>",
         "v1.1.0",
         "<li>更新设置页面图标</li>",
+        "v1.2.0",
+        "<li>更新自动登录相关（修改自@95du丶茅台）</li>",
         "<br/>"
       ],
       "images": [
