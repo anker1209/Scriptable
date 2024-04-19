@@ -147,7 +147,7 @@ class Widget extends DmYY {
       const cookie = req.response.headers["Set-Cookie"];
       if (cookie) {
         this.settings.cookie = cookie;
-        this.saveSettings();
+        this.saveSettings(false);
       }
     }
   };
@@ -210,7 +210,7 @@ class Widget extends DmYY {
       voice: this.voice,
       flow: this.flow,
     };
-    this.saveBaseSettings();
+    this.saveSettings(false);
   };
 
   async smallHeader(stack) {
