@@ -106,7 +106,7 @@ class Widget extends DmYY {
       await this.getData();
     } else {
       Object.keys(this.settings.dataSource).forEach((key) => {
-        this[key] = this.settings.dataSource[key];
+        this[key] = { ...this[key], ...this.settings.dataSource[key] };
       });
       this.getData();
     }
@@ -206,9 +206,19 @@ class Widget extends DmYY {
     this.fee.number = balance.totalBalanceAvailable / 100;
 
     this.settings.dataSource = {
-      fee: this.fee,
-      voice: this.voice,
-      flow: this.flow,
+      fee: {
+        number: this.fee.number,
+      },
+      voice: {
+        number: this.voice.number,
+        percent: this.voice.percent,
+      },
+      flow: {
+        en: this.flow.en,
+        number: this.flow.number,
+        unit: this.flow.unit,
+        percent: this.flow.percent,
+      },
     };
     this.saveSettings(false);
   };
