@@ -164,17 +164,41 @@ class Widget extends DmYY {
       },
     });
 
-    this.flow.percent = ((detail.balance / detail.total) * 100).toFixed(2);
-    const flow = this.formatFlow(detail.balance);
+    let flows = {
+        balanceAmount: 0,
+        usageAmount: 0,
+        ratableAmount: 0,
+      },
+      voice = {
+        balanceAmount: 0,
+        usageAmount: 0,
+        ratableAmount: 0,
+      };
+
+    detail.items?.forEach((data) => {
+      data.items.forEach((item) => {
+        if (item.balanceAmount != "999999999999" && item.unitTypeId === "3") {
+          Object.keys(flows).forEach((key) => {
+            flows[key] += Number(item[key]);
+          });
+        }
+        if (item.unitTypeId === "1") {
+          Object.keys(voice).forEach((key) => {
+            voice[key] += Number(item[key]);
+          });
+        }
+      });
+    });
+
+    this.flow.percent = (
+      (flows.balanceAmount / flows.ratableAmount) *
+      100
+    ).toFixed(2);
+    const flow = this.formatFlow(flows.balanceAmount);
     this.flow.number = flow.count;
     this.flow.unit = flow.unit;
     this.flow.en = flow.unit;
 
-    let voice;
-
-    detail.items?.forEach((data) => {
-      voice = data?.items?.find((item) => item.unitTypeId === "1");
-    });
     if (voice) {
       this.voice.percent = (
         (Number(voice.balanceAmount) / Number(voice.ratableAmount)) *
