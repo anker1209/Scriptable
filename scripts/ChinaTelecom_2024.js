@@ -217,16 +217,16 @@ class Widget extends DmYY {
 
     balance.totalBalanceAvailable = Number(balance.totalBalanceAvailable);
 
-    const bill = await this.http({
-      url: this.fetchUrl.bill,
-      headers: { Cookie: this.settings.cookie },
-    });
+    // const bill = await this.http({
+    //   url: this.fetchUrl.bill,
+    //   headers: { Cookie: this.settings.cookie },
+    // });
 
-    const billData = bill?.items?.[0] || { sumCharge: 0 };
-    let total = Number(billData.sumCharge);
-    if (balance.totalBalanceAvailable > total) {
-      total = Math.ceil(total / balance.totalBalanceAvailable) * total;
-    }
+    // const billData = bill?.items?.[0] || { sumCharge: 0 };
+    // let total = Number(billData.sumCharge);
+    // if (balance.totalBalanceAvailable > total) {
+    //   total = Math.ceil(total / balance.totalBalanceAvailable) * total;
+    // }
     this.fee.number = balance.totalBalanceAvailable / 100;
 
     this.settings.dataSource = {
