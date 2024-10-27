@@ -142,11 +142,3 @@ https://raw.githubusercontent.com/Sunert/Script/master/Task/sunert.boxjs.json
 > 无代理缓存的，请使用Stream类抓包APP进行手动抓包，获取cookie后填入脚本内注释位置或运行脚本——>账户设置——>手动输入；
 
 > 脚本内提供网站登录获取cookie，无代理缓存的可尝试网站登录获取cookie
-
-## JD_in_one
-
-![JD_in_one 图片](https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7150.png "JD_in_one")
-![JD_in_one 图片](https://raw.githubusercontent.com/anker1209/Scriptable/main/image/IMG_7151.png "JD_in_one")
-
-# 赞赏码
-<img src="https://raw.githubusercontent.com/anker1209/Scriptable/main/image/anker.JPG"  width="300" height="300" align="bottom" />
