@@ -1,12 +1,9 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: teal; icon-glyph: bolt;
 /*
  * Author: 脑瓜
  * Telegram: @anker1209
  * Telegram group: https://t.me/+ViT7uEUrIUV0B_iy 
- * version: 1.0.0
- * update: 2024/10/26
+ * version: 1.0.1
+ * update: 2024/10/28
  * 使用该脚本需DmYY依赖及添加重写: https://raw.githubusercontent.com/dompling/Script/master/wsgw/index.js
 */
 
@@ -16,7 +13,7 @@ const {DmYY, Runing} = require('./DmYY');
 class Widget extends DmYY {
   constructor(arg) {
     super(arg);
-    this.name = '网上国网';
+    this.name = '国家电网';
     this.en = 'wsgw_ng';
     this.index = 0;
     this.data = null;
@@ -36,8 +33,8 @@ class Widget extends DmYY {
   dayFee = 0;
   SCALE = 1;
   update = Date.now();
+  smallStackColor = '#0db38e';
   
-  Billdata = {};
   dayElePq = [];
   monthElePq = [];
   
@@ -92,7 +89,7 @@ class Widget extends DmYY {
       default:
       return;
     }
-  }
+  };
   //  
   stackModule(stack, key, right = false){
     const bodyStack = stack.addStack();
@@ -115,7 +112,7 @@ class Widget extends DmYY {
       case '近日电费':
       const arr = this.dayElePq.map((item) => item.value).reverse();
       this.dayFee = arr[arr.length - 1];
-      this.stackContent(bodyStack, '近日电费', `${this.dayFee}`, true, right);
+      this.stackContent(bodyStack, '近日用电', `${this.dayFee}`, false, right);
       break;
       case '日用电图表':
       const dayOpt = this.dayElePq.map((item) => item.value).reverse();
@@ -123,7 +120,7 @@ class Widget extends DmYY {
       dayChart.imageSize = new Size(80 * scale, 50 * scale);
       break;
       case '月用电图表':
-      const monthAmount = parseFloat(this.settings.monthAmount);
+      const monthAmount = parseFloat(this.settings.monthAmount) || 5;
       const monthOpt = this.monthElePq.map((item) => item.cost);
       const monthChart = bodyStack.addImage(this.chart(monthOpt, monthAmount));
       monthChart.imageSize = new Size((monthAmount * 18 - 10) * scale, 50 * scale);
@@ -133,8 +130,7 @@ class Widget extends DmYY {
       default:
       return;
     }
-
-  }
+  };
   //  
   addStack(stack, leftText, rightText) {
     stack.layoutVertically();
@@ -152,7 +148,6 @@ class Widget extends DmYY {
       t.textOpacity = 0.5
       });
   };
-  
   //  
   stackContent(stack, upText, downText, fee = false, right = false) {
     const titleStack = stack.addStack();
@@ -167,7 +162,7 @@ class Widget extends DmYY {
     smallText.textOpacity = 0.5;
     bigText.textColor = this.widgetColor;
     bigText.font = Font.mediumRoundedSystemFont(this.size.bigFont)
-  }
+  };
   //  单位
   unit(stack, text, spacer) {
     stack.addSpacer(1);
@@ -197,7 +192,7 @@ class Widget extends DmYY {
       step = "2档·" + (this.yearUsage / this.wsgw.step_3 * 100).toFixed(2) + "%"
     }
     return step;
-  }
+  };
   //
   fillRect(drawing, x, y, width, height, cornerradio, color) {
     let path = new Path();
@@ -230,18 +225,18 @@ class Widget extends DmYY {
     this.fillRect(drawing, 0, 7, progress > 200? 200 : progress, 6, 3, new Color(this.settings.barColor || '#0db38e', 1));
     this.fillRect(drawing, circle > 188? 188 : circle, 4, 12, 12, 6, new Color(this.settings.pointerColor || '#0db38e', 1));
     return drawing.getImage();
-  }
+  };
   //
   smallStackBar() {
     const width = 200;
     const height = 42;
     const progress = this.yearUsage / this.wsgw.step_3 * width;
     const drawing = this.makeCanvas(width, height);
-    this.drawLine(drawing, this.wsgw.step_2 / this.wsgw.step_3 * width, height, this.wsgw.step_2 / this.wsgw.step_3 * width, 0, new Color(this.settings.smallStackColor || '#0db38e', 0.3), 2);
-    this.fillRect(drawing, 0, 0, width, height, 6, new Color(this.settings.smallStackColor || '#0db38e', 0.3));
-    this.fillRect(drawing, 0, 0, progress > width? width : progress, height, 6, new Color(this.settings.smallStackColor || '#0db38e', 1));
+    this.drawLine(drawing, this.wsgw.step_2 / this.wsgw.step_3 * width, height, this.wsgw.step_2 / this.wsgw.step_3 * width, 0, new Color(this.smallStackColor, 0.3), 2);
+    this.fillRect(drawing, 0, 0, width, height, 6, new Color(this.smallStackColor, 0.3));
+    this.fillRect(drawing, 0, 0, progress > width? width : progress, height, 6, new Color(this.smallStackColor, 1));
     return drawing.getImage();
-  }
+  };
   //  图表
   chart (opt, n) {
     let chartColor = new Color(this.settings.chartColor || '#0db38e', 1);
@@ -268,47 +263,47 @@ class Widget extends DmYY {
       this.fillRect(drawing, i * 18, 50 - temp, 8, temp, 4, chartColor)
     }
     return drawing.getImage();
-  }
-  //  小组件
-  renderSmall = async (w) => {
-    w.setPadding(15, 15, 15, 15);
-    const bodyStack = w.addStack();
-    const smallColor = new      Color(this.settings.smallStackColor || '#0db38e');
-    bodyStack.layoutVertically();
-    const nameStack = bodyStack.addStack();
+  };
+  
+  setTitle (stack, iconColor, nameColor) {
+    const nameStack = stack.addStack();
     const iconSFS = SFSymbol.named('house.fill');
     iconSFS.applyHeavyWeight();
     let icon = nameStack.addImage(iconSFS.image);
     icon.imageSize = new Size(20, 20);
-    icon.tintColor = smallColor;
+    icon.tintColor = iconColor;
     nameStack.addSpacer(2);
-    let name = nameStack.addText(this.settings.name || '国家电网');
+    let name = nameStack.addText(this.name || '国家电网');
     name.font = Font.mediumSystemFont(16.5);
-    name.textColor = smallColor;
-    nameStack.addSpacer();
-    
+    name.textColor = nameColor;
+  };
+  //  小组件
+  renderSmall = async (w) => {
+    w.setPadding(15, 15, 15, 15);
+    const bodyStack = w.addStack();
+    const smallColor = new Color(this.smallStackColor);
+    bodyStack.layoutVertically();
+    //  标题
+    this.setTitle(bodyStack, smallColor, smallColor);
     bodyStack.addSpacer();
-    
+    //  进度条
     bodyStack.addImage(this.smallStackBar());
     const yearStack = bodyStack.addStack();
     const yearFee = yearStack.addText(`${this.yearUsage}`);
-    
     yearStack.addSpacer();
     const yearUsage = yearStack.addText(`¥ ${this.yearFee}`);
     ;[yearFee, yearUsage].map(t => {
       t.textColor = smallColor;
-      t.font = Font.regularRoundedSystemFont(15 * this.SCALE);
+      t.font = Font.regularRoundedSystemFont(14 * this.SCALE);
     });
-    
     bodyStack.addSpacer();
-    
+    //  余额
     const lastRow = bodyStack.addStack();
     const titleStack = lastRow.addStack();
     titleStack.layoutVertically();
-    
     const smallText = titleStack.addText(this.isOverdue ? "欠费" : "余额");
     const valueStack = titleStack.addStack();
-    const bigText = valueStack.addText(this.balance);
+    const bigText = valueStack.addText((this.balance).toString());
     valueStack.addSpacer(1);
     const unitStack = valueStack.addStack();
     unitStack.layoutVertically();
@@ -316,16 +311,16 @@ class Widget extends DmYY {
     const unitTitle = unitStack.addText('元');
     unitTitle.font = Font.semiboldRoundedSystemFont(10);
     unitTitle.textColor = smallColor;
-    unitTitle.textOpacity = 0.5;
+    unitTitle.textOpacity = 0.4;
     smallText.textColor = smallColor;
     smallText.font = Font.semiboldSystemFont(14 * this.SCALE);
-    smallText.textOpacity = 0.5;
+    smallText.textOpacity = 0.4;
     bigText.textColor = smallColor;
     bigText.font = Font.semiboldRoundedSystemFont(20 * this.SCALE);
-    
     lastRow.addSpacer();
+    //  LOGO
     var logo;
-    if (this.settings.logoImg ==='铁塔' || !this.settings.logoImg || !this.settings.customizeUrl) {
+    if (this.settings.logoImg === '铁塔' || !this.settings.logoImg || !this.settings.customizeUrl) {
       logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw2.png', 'tower.png');
     } else {
       logo = await this.getImageByUrl(this.settings.customizeUrl, 'customize.png');
@@ -333,8 +328,9 @@ class Widget extends DmYY {
     let wsgw = lastRow.addImage(logo);
     wsgw.tintColor = smallColor;
     wsgw.imageSize = new Size(36 * this.SCALE, 36 * this.SCALE);
+
     return w;
-  }
+  };
   //  中组件
   renderMedium = async (w) => {
     w.setPadding(0, 0, 0, 0);
@@ -347,22 +343,26 @@ class Widget extends DmYY {
     leftStack.setPadding(0, 15, 0, 15);
     leftStack.size = new Size(this.size.leftStack, 0);
     leftStack.backgroundColor = Color.dynamic(new Color(this.settings.leftDayColor || "#F2F2F7"), new Color(this.settings.leftNightColor || "#1C1C1E"));
-    leftStack.addSpacer();
-    //  LOGO
-    const logoStack = leftStack.addStack();
-    logoStack.addSpacer();
-    var logo;
-    if (this.settings.logoImg ==='铁塔') {
-      logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw2.png', 'tower.png');
-    } else if (this.settings.logoImg ==='国家电网' || !this.settings.logoImg || !this.settings.customizeUrl) {
-      logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw.png', 'wsgw.png');
+    //  标题及LOGO
+    if (this.settings.enableName === 'true')  {
+      leftStack.addSpacer(15);
+      this.setTitle(leftStack, new Color('#0db38e'), this.widgetColor);
     } else {
-      logo = await this.getImageByUrl(this.settings.customizeUrl, 'customize.png');
+      leftStack.addSpacer();
+      const logoStack = leftStack.addStack();
+      logoStack.addSpacer();
+      var logo;
+      if (this.settings.logoImg ==='铁塔') {
+        logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw2.png', 'tower.png');
+      } else if (this.settings.logoImg ==='国家电网' || !this.settings.logoImg || !this.settings.customizeUrl) {
+        logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw.png', 'wsgw.png');
+      } else {
+        logo = await this.getImageByUrl(this.settings.customizeUrl, 'customize.png');
+      };
+      let wsgw = logoStack.addImage(logo);
+      wsgw.imageSize = new Size(this.size.logo, this.size.logo);
+      logoStack.addSpacer();
     };
-    let wsgw = logoStack.addImage(logo);
-    wsgw.imageSize = new Size(this.size.logo, this.size.logo);
-    logoStack.addSpacer();
-    
     leftStack.addSpacer();
     //  更新时间
     const updateStack = leftStack.addStack();
@@ -378,14 +378,12 @@ class Widget extends DmYY {
     updateText.font = Font.mediumSystemFont(10);
     updateText.textColor = new Color("#2F6E6B", 0.5);
     updateStack.addSpacer();
-    
     leftStack.addSpacer(2);
     //  左侧底部Stack
     const lbStack = leftStack.addStack();
     lbStack.layoutVertically();
     lbStack.cornerRadius = 10;
     lbStack.backgroundColor = Color.dynamic(new Color(this.settings.rightDayColor || "#E2E2E7"), new Color(this.settings.rightNightColor || "#2C2C2F"));
-    
     lbStack.addSpacer(8 * this.SCALE);
     //  余额Stack
     const balanceStack = lbStack.addStack();
@@ -397,7 +395,6 @@ class Widget extends DmYY {
     balance.textColor = this.widgetColor;
     this.unit(balanceStack, "元", 5 * this.SCALE);
     balanceStack.addSpacer();
-
     lbStack.addSpacer(3 * this.SCALE);
     //  余额标题Stack
     const balanceTitleStack = lbStack.addStack();
@@ -405,33 +402,24 @@ class Widget extends DmYY {
     balanceTitleStack.addSpacer();
     const balanceTitle = balanceTitleStack.addText(this.isOverdue ? "电费欠费" : "电费余额");
     balanceTitleStack.addSpacer();
-    
     lbStack.addSpacer(8 * this.SCALE);
-
     leftStack.addSpacer(15);
     this.split(bodyStack, 0.2, 0, true);
-    
-    // 右侧widget
+    //  右侧Stack
     const rightStack = bodyStack.addStack();
     rightStack.setPadding(15, 15, 15, 15);
     rightStack.layoutVertically();
-    
-    // 右侧子widget
-    this.settings.firstRow ? this.setRow(rightStack, this.settings.firstRow) : this.setRow(rightStack, '组合一')
-    
+    //  右侧RowStack
+    this.setRow(rightStack, this.settings.firstRow || '组合一');
     rightStack.addSpacer();
     this.split(rightStack, 0, 0.5);
     rightStack.addSpacer();
-    
-    this.settings.secondRow ? this.setRow(rightStack, this.settings.secondRow) : this.setRow(rightStack, '组合二')
-    
+    this.setRow(rightStack, this.settings.secondRow || '组合二');
     rightStack.addSpacer();
     this.split(rightStack, 0, 0.5);
     rightStack.addSpacer();
-    
-    this.settings.thirdRow ? this.setRow(rightStack, this.settings.thirdRow) : this.setRow(rightStack, '阶梯电量')
-    
-    // 字体样式
+    this.setRow(rightStack, this.settings.thirdRow || '阶梯电量');
+    //  字体样式
     balanceTitle.textColor = this.widgetColor;
     balanceTitle.font = Font.semiboldSystemFont(this.size.smallFont);
     balanceTitle.textOpacity = 0.5;
@@ -476,7 +464,7 @@ class Widget extends DmYY {
       console.log(`${dataName}：在线请求响应数据：${JSON.stringify(data)}`);
     
     return data;
-  }
+  };
 
   loadStringCache(cacheKey) {
     const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
@@ -486,7 +474,7 @@ class Widget extends DmYY {
       cacheString = this.fm.readString(cacheFile);
     }
     return cacheString;
-  }
+  };
 
   saveStringCache(cacheKey, content) {
     if (!this.fm.fileExists(this.cachePath)) {
@@ -494,7 +482,7 @@ class Widget extends DmYY {
     };
     const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
     this.fm.writeString(cacheFile, content);
-  }
+  };
 
   getCacheModificationDate(cacheKey) {
     const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
@@ -504,11 +492,11 @@ class Widget extends DmYY {
     } else {
       return 0;
     }
-  }
+  };
 
   getCurrentTimeStamp() {
     return new Date().getTime() / 1000;
-  }
+  };
 
   getImageByUrl = async(url, cacheKey) => {
     const cacheImg = this.loadImgCache(cacheKey);
@@ -538,15 +526,7 @@ class Widget extends DmYY {
       ctx.fillRect(new Rect(0, 0, 80, 80));
       return await ctx.getImage();
     }
-  }
-
-  saveImgCache(cacheKey, img) {
-    if (!this.fm.fileExists(this.cachePath)) {
-      this.fm.createDirectory(this.cachePath, true);
-    };
-    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
-    this.fm.writeImage(cacheFile, img);
-  }
+  };
 
   loadImgCache(cacheKey) {
     const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
@@ -557,23 +537,18 @@ class Widget extends DmYY {
       img = Image.fromFile(cacheFile);
     }
     return img;
-  }
+  };
 
-  async getData() {
-    this.updateIndex();
-    
-    return this.data?.[this.index];
-  }
+  saveImgCache(cacheKey, img) {
+    if (!this.fm.fileExists(this.cachePath)) {
+      this.fm.createDirectory(this.cachePath, true);
+    };
+    const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
+    this.fm.writeImage(cacheFile, img);
+  };
 
-  updateIndex() {
-    const i = args.widgetParameter;
-    if (!i) return;
-    if (!this.data[i]) throw new Error("户号不存在");
-    this.index = i;
-  }
-
-  last = (data = [], index = 1) => {
-    return data[data.length - index];
+  init = async () => {
+    await this.getBillData();
   };
 
   getBillData = async () => {
@@ -607,10 +582,35 @@ class Widget extends DmYY {
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
-  init = async () => {
-    await this.getBillData();
+  async getData() {
+    this.updateIndex();
+    return this.data?.[this.index];
+  };
+
+  updateIndex() {
+    const i = args.widgetParameter;
+    if (i == 0 || !i || i == null) {
+        this.name = this.settings.name;
+        this.smallStackColor = this.settings.smallStackColor || this.smallStackColor;
+        return;
+    }
+
+    if (!this.data[i]) throw new Error("户号不存在");
+
+    if (i == 1) {
+        this.name = this.settings.name_1;
+        this.smallStackColor = this.settings.smallStackColor_1 || this.smallStackColor;
+    } else if (i == 2) {
+        this.name = this.settings.name_2;
+        this.smallStackColor = this.settings.smallStackColor_2 || this.smallStackColor;
+    } 
+    this.index = i;
+  };
+
+  last = (data = [], index = 1) => {
+    return data[data.length - index];
   };
 
   async render() {
@@ -686,17 +686,6 @@ class Widget extends DmYY {
             type: 'color',
             title: '右栏晚上颜色',
             val: 'rightNightColor',
-          },
-        ],
-      },
-      {
-        title: '',
-        menu: [
-          {
-            icon: { name: 'eye.square.fill', color: '#7BCD81' },
-            type: 'color',
-            title: '小尺寸组件主色',
-            val: 'smallStackColor',
           },
         ],
       },
@@ -893,13 +882,13 @@ class Widget extends DmYY {
             title: '月用电图表显示月数',
             options: ['5', '6', '7', '8', '9', '10', '11', '12'],
             val: 'monthAmount',
-          },
+          },/*
           {
             icon: { name: 'chart.line.uptrend.xyaxis', color: '#FF699B' },
             type: 'switch',
-            title: '月/年用电显示增减幅度',
-            val: 'openRange',
-          },
+            title: '隐藏更新时间',
+            val: 'hideUpdateTime',
+          },*/
         ],
       },
       {
@@ -940,15 +929,75 @@ class Widget extends DmYY {
           },
         ],
       },
+    ]).catch((e) => {
+      console.log(e);
+    });
+  };
+
+  setUserConfig = async () => {
+    return this.renderAppView([
       {
         title: '',
         menu: [
           {
-            icon: { name: 'rectangle.inset.topright.filled', color: '#ff8021' },
+            icon: { name: 'person.fill.checkmark', color: '#FF6250' },
+            title: '中组件开启户名显示',
+            type: 'switch',
+            val: 'enableName',
+          },
+        ],
+      },
+      {
+        title: '多户配置',
+        menu: [
+          {
+            icon: { name: '1.square', color: '#5186E8' },
             type: 'input',
-            title: '小尺寸组件标题',
+            title: '户名一',
             desc: '自定义小尺寸组件标题，替代默认“国家电网”',
             val: 'name',
+          },
+          {
+            icon: { name: 'paintbrush.pointed.fill', color: '#5186E8' },
+            type: 'color',
+            title: '小组件颜色',
+            val: 'smallStackColor',
+          },
+        ],
+      },
+      {
+        title: '',
+        menu: [
+          {
+            icon: { name: '2.square', color: '#FF8021' },
+            type: 'input',
+            title: '户名二',
+            desc: '自定义小尺寸组件标题，替代默认“国家电网”',
+            val: 'name_1',
+          },
+          {
+            icon: { name: 'paintbrush.pointed.fill', color: '#FF8021' },
+            type: 'color',
+            title: '小组件颜色',
+            val: 'smallStackColor_1',
+          },
+        ],
+      },
+      {
+        title: '',
+        menu: [
+          {
+            icon: { name: '3.square', color: '#7BCD81' },
+            type: 'input',
+            title: '户名三',
+            desc: '自定义小尺寸组件标题，替代默认“国家电网”',
+            val: 'name_2',
+          },
+          {
+            icon: { name: 'paintbrush.pointed.fill', color: '#7BCD81' },
+            type: 'color',
+            title: '小组件颜色',
+            val: 'smallStackColor_2',
           },
         ],
       },
@@ -1020,6 +1069,15 @@ class Widget extends DmYY {
               return this.setShowConfig();
             },
           },
+          {
+            name: 'user',
+            icon: { name: 'person.2.fill', color: '#5186E8' },
+            title: '多户配置',
+            type: 'input',
+            onClick: () => {
+              return this.setUserConfig();
+            },
+          },
         ],
       });
 
@@ -1064,7 +1122,7 @@ class Widget extends DmYY {
         this.size[key] = this.size[key] * this.SCALE;
       })
       
-    console.log(this.settings);
+      console.log(this.settings);
 
     } catch (e) {
       console.log(e);
