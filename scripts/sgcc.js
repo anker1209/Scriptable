@@ -2,8 +2,8 @@
  * Author: 脑瓜
  * Telegram: @anker1209
  * Telegram group: https://t.me/+ViT7uEUrIUV0B_iy 
- * version: 1.0.1
- * update: 2024/10/28
+ * version: 1.0.2
+ * update: 2024/10/29
  * 使用该脚本需DmYY依赖及添加重写: https://raw.githubusercontent.com/dompling/Script/master/wsgw/index.js
 */
 
@@ -25,6 +25,7 @@ class Widget extends DmYY {
   cachePath = null;
 
   isOverdue = false;
+  isPostPaid = false;
   balance = 0;
   monthUsage = 0;
   monthFee = 0;
@@ -32,7 +33,7 @@ class Widget extends DmYY {
   yearFee = 0;
   dayFee = 0;
   SCALE = 1;
-  update = Date.now();
+  update = this.formatDate();
   smallStackColor = '#0db38e';
   
   dayElePq = [];
@@ -60,15 +61,21 @@ class Widget extends DmYY {
     drawing.size = new Size(w, h);
     return drawing;
   };
-
+  
   formatDate() {
-    let date = new Date(this.update);
-    let month = ("0" + (date.getMonth() + 1)).slice(-2);
-    let day = ("0" + date.getDate()).slice(-2);
-    let hours = ("0" + date.getHours()).slice(-2);
-    let minutes = ("0" + date.getMinutes()).slice(-2);
-    let formatDate = month + "-" + day + " " + hours  + ":" + minutes;
-    return formatDate;
+    let theDate = Date.now();
+    let dF = new DateFormatter();
+    dF.dateFormat = 'yyyy-MM-dd HH:mm:ss';
+    theDate = new Date(theDate);
+    return dF.string(theDate);
+  };
+
+  getTime = () => {
+    const dateTime = this.update;
+    const parts = dateTime.split(' ');
+    const datePart = parts[0].split('-');
+    const timePart = parts[1].split(':');
+    return `${datePart[1]}-${datePart[2]} ${timePart[0]}:${timePart[1]}`;
   };
   //  显示单元
   setRow(stack, key) {
@@ -111,17 +118,21 @@ class Widget extends DmYY {
       break;
       case '近日电费':
       const arr = this.dayElePq.map((item) => item.value).reverse();
-      this.dayFee = arr[arr.length - 1];
+      this.dayFee = arr[arr.length - 1] || 0;
       this.stackContent(bodyStack, '近日用电', `${this.dayFee}`, false, right);
       break;
       case '日用电图表':
+      if (!this.data[this.index]) return;
       const dayOpt = this.dayElePq.map((item) => item.value).reverse();
+      if (dayOpt.every(num => num === 0)) return;
       const dayChart = bodyStack.addImage(this.chart(dayOpt, 5));
       dayChart.imageSize = new Size(80 * scale, 50 * scale);
       break;
       case '月用电图表':
+      if (!this.data[this.index]) return;
       const monthAmount = parseFloat(this.settings.monthAmount) || 5;
       const monthOpt = this.monthElePq.map((item) => item.cost);
+      if (monthOpt.every(num => num === 0)) return;
       const monthChart = bodyStack.addImage(this.chart(monthOpt, monthAmount));
       monthChart.imageSize = new Size((monthAmount * 18 - 10) * scale, 50 * scale);
       break;
@@ -301,9 +312,9 @@ class Widget extends DmYY {
     const lastRow = bodyStack.addStack();
     const titleStack = lastRow.addStack();
     titleStack.layoutVertically();
-    const smallText = titleStack.addText(this.isOverdue ? "欠费" : "余额");
+    const smallText = titleStack.addText(this.isOverdue ? '欠费' : this.isPostPaid ? '上期电费' : '余额');
     const valueStack = titleStack.addStack();
-    const bigText = valueStack.addText((this.balance).toString());
+    const bigText = valueStack.addText(this.isPostPaid ?  `${this.monthFee}` : `${this.balance}`);
     valueStack.addSpacer(1);
     const unitStack = valueStack.addStack();
     unitStack.layoutVertically();
@@ -374,7 +385,7 @@ class Widget extends DmYY {
     updateImg.tintColor = new Color("#2F6E6B", 0.5);
     updateImg.imageSize = new Size(10, 10);
     updateStack.addSpacer(3);
-    const updateText = updateStack.addText(this.formatDate());
+    const updateText = updateStack.addText(this.getTime());
     updateText.font = Font.mediumSystemFont(10);
     updateText.textColor = new Color("#2F6E6B", 0.5);
     updateStack.addSpacer();
@@ -389,7 +400,7 @@ class Widget extends DmYY {
     const balanceStack = lbStack.addStack();
     balanceStack.centerAlignContent();
     balanceStack.addSpacer();
-    const balance = balanceStack.addText((+this.balance).toFixed(2));
+    const balance = balanceStack.addText(this.settings.pre_show_balance === 'true' ? `${this.balance}` : this.isPostPaid ? `${this.monthFee}` : `${this.balance}`);
     balance.font = Font.semiboldRoundedSystemFont(this.size.balance);
     balance.lineLimit = 1;
     balance.textColor = this.widgetColor;
@@ -400,7 +411,13 @@ class Widget extends DmYY {
     const balanceTitleStack = lbStack.addStack();
     balanceStack.url = "com.wsgw.e.zsdl://platformapi/";
     balanceTitleStack.addSpacer();
-    const balanceTitle = balanceTitleStack.addText(this.isOverdue ? "电费欠费" : "电费余额");
+    let titleText;
+    if (this.settings.pre_show_balance === 'true') {
+      titleText = '电费余额'
+    } else {
+      titleText = this.isOverdue ? '电费欠费' : this.isPostPaid ? '上期电费' : '电费余额';
+    }
+    const balanceTitle = balanceTitleStack.addText(titleText);
     balanceTitleStack.addSpacer();
     lbStack.addSpacer(8 * this.SCALE);
     leftStack.addSpacer(15);
@@ -421,7 +438,7 @@ class Widget extends DmYY {
     this.setRow(rightStack, this.settings.thirdRow || '阶梯电量');
     //  字体样式
     balanceTitle.textColor = this.widgetColor;
-    balanceTitle.font = Font.semiboldSystemFont(this.size.smallFont);
+    balanceTitle.font =  Font.semiboldSystemFont(this.size.smallFont);
     balanceTitle.textOpacity = 0.5;
 
     return w;
@@ -560,12 +577,14 @@ class Widget extends DmYY {
       if (!this.data)  throw new Error("请求失败,请安装模块 检查boxjs配置");
       const billData = await this.getData();
       this.isOverdue = billData.arrearsOfFees;
-      this.balance = billData.eleBill.sumMoney;
+      this.balance = parseFloat(billData.eleBill.sumMoney).toFixed(2);
       this.monthUsage = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleNum);
       this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
       this.yearUsage = parseFloat(billData.monthElecQuantity.dataInfo.totalEleNum);
       this.yearFee = parseFloat(billData.monthElecQuantity.dataInfo.totalEleCost).toFixed(2);
       this.update = billData.eleBill.date;
+      this.isPostPaid = billData.eleBill.hasOwnProperty('accountBalance') ? true : false;
+      if (this.isPostPaid) this.balance = parseFloat(billData.eleBill.accountBalance).toFixed(2);
       
       this.dayElePq = billData.dayElecQuantity.sevenEleList
         .filter((item) => item.dayElePq !== '-')
@@ -882,13 +901,18 @@ class Widget extends DmYY {
             title: '月用电图表显示月数',
             options: ['5', '6', '7', '8', '9', '10', '11', '12'],
             val: 'monthAmount',
-          },/*
+          },
+        ],
+      },
+      {
+        title: '',
+        menu: [
           {
-            icon: { name: 'chart.line.uptrend.xyaxis', color: '#FF699B' },
+            icon: { name: 'yensign', color: '#ff8021' },
             type: 'switch',
-            title: '隐藏更新时间',
-            val: 'hideUpdateTime',
-          },*/
+            title: '后付费用户显示余额',
+            val: 'pre_show_balance',
+          },
         ],
       },
       {
