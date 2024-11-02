@@ -605,7 +605,8 @@ class Widget extends DmYY {
       if (!this.data)  throw new Error("请求失败,请安装模块 检查boxjs配置");
       const billData = await this.getData();
       this.isOverdue = billData.arrearsOfFees;
-      const sumMoney = parseFloat(billData.eleBill.sumMoney).toFixed(2);
+      let sumMoney = parseFloat(billData.eleBill.sumMoney).toFixed(2);
+      sumMoney = sumMoney.replace(/-/g, "");
       this.balance = this.isOverdue ? '-' + sumMoney : sumMoney;
       this.monthUsage = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleNum);
       this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
