@@ -2,8 +2,8 @@
  * Author: 脑瓜
  * Telegram: @anker1209
  * Telegram group: https://t.me/+ViT7uEUrIUV0B_iy 
- * version: 1.0.2
- * update: 2024/10/29
+ * version: 1.0.3
+ * update: 2024/11/02
  * 使用该脚本需DmYY依赖及添加重写: https://raw.githubusercontent.com/dompling/Script/master/wsgw/index.js
 */
 
@@ -26,6 +26,7 @@ class Widget extends DmYY {
 
   isOverdue = false;
   isPostPaid = false;
+  remainFee = 0;
   balance = 0;
   monthUsage = 0;
   monthFee = 0;
@@ -97,6 +98,33 @@ class Widget extends DmYY {
       return;
     }
   };
+  //
+  smallWidgetCustomization(key) {
+    switch (key) {
+      case '上期电费' :
+      return `¥${this.monthFee}`;
+      break;
+      case '上期电量' :
+      return `${this.monthUsage}`;
+      break;
+      case '年度电费':
+      return `¥${this.yearFee}`;
+      break;
+      case '年度电量':
+      return `${this.yearUsage}`;
+      break;
+      case '近日用电':
+      const arr = this.dayElePq.map((item) => item.value).reverse();
+      this.dayFee = arr[arr.length - 1] || 0;
+      return `${this.dayFee}`;
+      break;
+      case '电费余额':
+      return `¥${this.remainFee}`;
+      break;
+      default:
+      return ' ';
+    }
+  };
   //  
   stackModule(stack, key, right = false){
     const bodyStack = stack.addStack();
@@ -116,10 +144,13 @@ class Widget extends DmYY {
       case '年度电量':
       this.stackContent(bodyStack, '年度电量', `${this.yearUsage}`, false, right);
       break;
-      case '近日电费':
+      case '近日用电':
       const arr = this.dayElePq.map((item) => item.value).reverse();
       this.dayFee = arr[arr.length - 1] || 0;
       this.stackContent(bodyStack, '近日用电', `${this.dayFee}`, false, right);
+      break;
+      case '电费余额':
+      this.stackContent(bodyStack, '电费余额', `${this.remainFee}`, true, right);
       break;
       case '日用电图表':
       if (!this.data[this.index]) return;
@@ -175,14 +206,14 @@ class Widget extends DmYY {
     bigText.font = Font.mediumRoundedSystemFont(this.size.bigFont)
   };
   //  单位
-  unit(stack, text, spacer) {
+  unit(stack, text, spacer, overDue = false) {
     stack.addSpacer(1);
     const unitStack = stack.addStack();
     unitStack.layoutVertically();
-    unitStack.addSpacer(this.size.subSpacer);
+    unitStack.addSpacer(spacer);
     const unitTitle = unitStack.addText(text);
     unitTitle.font = Font.semiboldRoundedSystemFont(10 * this.SCALE);
-    unitTitle.textColor = this.widgetColor;
+    unitTitle.textColor = overDue ? new Color('DE2A18') : this.widgetColor;
   };
   //  分栏
   split(stack, width, height, ver = false) {
@@ -300,9 +331,9 @@ class Widget extends DmYY {
     //  进度条
     bodyStack.addImage(this.smallStackBar());
     const yearStack = bodyStack.addStack();
-    const yearFee = yearStack.addText(`${this.yearUsage}`);
+    const yearFee = yearStack.addText(this.smallWidgetCustomization(this.settings.smallLeft) || `${this.yearUsage}`);
     yearStack.addSpacer();
-    const yearUsage = yearStack.addText(`¥ ${this.yearFee}`);
+    const yearUsage = yearStack.addText(this.smallWidgetCustomization(this.settings.smallRight) || `¥${this.yearFee}`);
     ;[yearFee, yearUsage].map(t => {
       t.textColor = smallColor;
       t.font = Font.regularRoundedSystemFont(14 * this.SCALE);
@@ -312,22 +343,23 @@ class Widget extends DmYY {
     const lastRow = bodyStack.addStack();
     const titleStack = lastRow.addStack();
     titleStack.layoutVertically();
-    const smallText = titleStack.addText(this.isOverdue ? '欠费' : this.isPostPaid ? '上期电费' : '余额');
+    let titleText = this.isOverdue ? '欠费' : this.isPostPaid ? '上期电费' : '余额';
+    const smallText = titleStack.addText(titleText);
     const valueStack = titleStack.addStack();
-    const bigText = valueStack.addText(this.isPostPaid ?  `${this.monthFee}` : `${this.balance}`);
+    const bigText = valueStack.addText(`${this.balance}`);
     valueStack.addSpacer(1);
     const unitStack = valueStack.addStack();
     unitStack.layoutVertically();
     unitStack.addSpacer(8.5);
     const unitTitle = unitStack.addText('元');
     unitTitle.font = Font.semiboldRoundedSystemFont(10);
-    unitTitle.textColor = smallColor;
-    unitTitle.textOpacity = 0.4;
-    smallText.textColor = smallColor;
+    unitTitle.textOpacity = 0.5;
     smallText.font = Font.semiboldSystemFont(14 * this.SCALE);
-    smallText.textOpacity = 0.4;
-    bigText.textColor = smallColor;
+    smallText.textOpacity = 0.5;
     bigText.font = Font.semiboldRoundedSystemFont(20 * this.SCALE);
+    ;[unitTitle, smallText, bigText].map(t => {
+      t.textColor = smallColor;
+    });
     lastRow.addSpacer();
     //  LOGO
     var logo;
@@ -338,6 +370,7 @@ class Widget extends DmYY {
     };
     let wsgw = lastRow.addImage(logo);
     wsgw.tintColor = smallColor;
+    wsgw.imageOpacity = 0.5;
     wsgw.imageSize = new Size(36 * this.SCALE, 36 * this.SCALE);
 
     return w;
@@ -400,23 +433,18 @@ class Widget extends DmYY {
     const balanceStack = lbStack.addStack();
     balanceStack.centerAlignContent();
     balanceStack.addSpacer();
-    const balance = balanceStack.addText(this.settings.pre_show_balance === 'true' ? `${this.balance}` : this.isPostPaid ? `${this.monthFee}` : `${this.balance}`);
+    const balance = balanceStack.addText(`${this.balance}`);
     balance.font = Font.semiboldRoundedSystemFont(this.size.balance);
     balance.lineLimit = 1;
-    balance.textColor = this.widgetColor;
-    this.unit(balanceStack, "元", 5 * this.SCALE);
+    balance.textColor = this.isOverdue ? new Color('DE2A18') : this.widgetColor;
+    this.unit(balanceStack, "元", 5 * this.SCALE, this.isOverdue);
     balanceStack.addSpacer();
     lbStack.addSpacer(3 * this.SCALE);
     //  余额标题Stack
     const balanceTitleStack = lbStack.addStack();
     balanceStack.url = "com.wsgw.e.zsdl://platformapi/";
     balanceTitleStack.addSpacer();
-    let titleText;
-    if (this.settings.pre_show_balance === 'true') {
-      titleText = '电费余额'
-    } else {
-      titleText = this.isOverdue ? '电费欠费' : this.isPostPaid ? '上期电费' : '电费余额';
-    }
+    const titleText = this.isOverdue ? '电费欠费' : this.isPostPaid ? '上期电费' : '电费余额';
     const balanceTitle = balanceTitleStack.addText(titleText);
     balanceTitleStack.addSpacer();
     lbStack.addSpacer(8 * this.SCALE);
@@ -437,7 +465,7 @@ class Widget extends DmYY {
     rightStack.addSpacer();
     this.setRow(rightStack, this.settings.thirdRow || '阶梯电量');
     //  字体样式
-    balanceTitle.textColor = this.widgetColor;
+    balanceTitle.textColor =  this.isOverdue ? new Color('DE2A18') : this.widgetColor;
     balanceTitle.font =  Font.semiboldSystemFont(this.size.smallFont);
     balanceTitle.textOpacity = 0.5;
 
@@ -577,14 +605,15 @@ class Widget extends DmYY {
       if (!this.data)  throw new Error("请求失败,请安装模块 检查boxjs配置");
       const billData = await this.getData();
       this.isOverdue = billData.arrearsOfFees;
-      this.balance = parseFloat(billData.eleBill.sumMoney).toFixed(2);
+      const sumMoney = parseFloat(billData.eleBill.sumMoney).toFixed(2);
+      this.balance = this.isOverdue ? '-' + sumMoney : sumMoney;
       this.monthUsage = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleNum);
       this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
       this.yearUsage = parseFloat(billData.monthElecQuantity.dataInfo.totalEleNum);
       this.yearFee = parseFloat(billData.monthElecQuantity.dataInfo.totalEleCost).toFixed(2);
       this.update = billData.eleBill.date;
       this.isPostPaid = billData.eleBill.hasOwnProperty('accountBalance') ? true : false;
-      if (this.isPostPaid) this.balance = parseFloat(billData.eleBill.accountBalance).toFixed(2);
+      this.remainFee = this.isPostPaid ? billData.eleBill.accountBalance : billData.eleBill.sumMoney;
       
       this.dayElePq = billData.dayElecQuantity.sevenEleList
         .filter((item) => item.dayElePq !== '-')
@@ -829,7 +858,7 @@ class Widget extends DmYY {
   setShowConfig = async () => {
     return this.renderAppView([
       {
-        title: '显示设置',
+        title: '中组件显示设置',
         menu: [
           {
             icon: { name: '1.square', color: '#5186E8' },
@@ -861,14 +890,14 @@ class Widget extends DmYY {
             icon: { name: 'rectangle.inset.topleft.filled', color: '#13c2c2' },
             type: 'select',
             title: '组合一左侧显示内容',
-            options: ['上期电费', '上期电量', '年度电费', '年度电量', '日用电图表', '月用电图表', '近日电费', '不显示'],
+            options: ['上期电费', '上期电量', '年度电费', '年度电量', '日用电图表', '月用电图表', '近日用电', '电费余额', '不显示'],
             val: 'group1Left',
           },
           {
             icon: { name: 'rectangle.inset.topright.filled', color: '#ff8021' },
             type: 'select',
             title: '组合一右侧显示内容',
-            options: ['上期电量', '上期电费', '年度电费', '年度电量', '日用电图表', '月用电图表', '近日电费', '不显示'],
+            options: ['上期电量', '上期电费', '年度电费', '年度电量', '日用电图表', '月用电图表', '近日用电', '电费余额', '不显示'],
             val: 'group1Right',
           },
         ],
@@ -880,14 +909,14 @@ class Widget extends DmYY {
             icon: { name: 'rectangle.inset.bottomleft.filled', color: '#64C466' },
             type: 'select',
             title: '组合二左侧显示内容',
-            options: ['年度电费', '年度电量', '上期电费', '上期电量', '日用电图表', '月用电图表', '近日电费', '不显示'],
+            options: ['年度电费', '年度电量', '上期电费', '上期电量', '日用电图表', '月用电图表', '近日用电', '电费余额', '不显示'],
             val: 'group2Left',
           },
           {
             icon: { name: 'rectangle.inset.bottomright.filled', color: '#5186E8' },
             type: 'select',
             title: '组合二右侧显示内容',
-            options: ['年度电量', '年度电费', '上期电费', '上期电量', '日用电图表', '月用电图表', '近日电费', '不显示'],
+            options: ['年度电量', '年度电费', '上期电费', '上期电量', '日用电图表', '月用电图表', '近日用电', '电费余额', '不显示'],
             val: 'group2Right',
           },
         ],
@@ -905,13 +934,21 @@ class Widget extends DmYY {
         ],
       },
       {
-        title: '',
+        title: '小组件显示设置',
         menu: [
           {
-            icon: { name: 'yensign', color: '#ff8021' },
-            type: 'switch',
-            title: '后付费用户显示余额',
-            val: 'pre_show_balance',
+            icon: { name: 'rectangle.inset.bottomleft.filled', color: '#64C466' },
+            type: 'select',
+            title: '小组件左侧显示内容',
+            options: ['年度电量', '年度电费', '上期电费', '上期电量', '近日用电', '电费余额', '不显示'],
+            val: 'smallLeft',
+          },
+          {
+            icon: { name: 'rectangle.inset.bottomright.filled', color: '#5186E8' },
+            type: 'select',
+            title: '小组件右侧显示内容',
+            options: ['年度电费', '年度电量', '上期电费', '上期电量', '近日用电', '电费余额', '不显示'],
+            val: 'smallRight',
           },
         ],
       },
