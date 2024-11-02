@@ -346,7 +346,7 @@ class Widget extends DmYY {
     let titleText = this.isOverdue ? '欠费' : this.isPostPaid ? '上期电费' : '余额';
     const smallText = titleStack.addText(titleText);
     const valueStack = titleStack.addStack();
-    const bigText = valueStack.addText(`${this.balance}`);
+    const bigText = valueStack.addText(this.isOverdue ? `${this.balance}` : this.isPostPaid ? `${this.monthFee}` : `${this.balance}`);
     valueStack.addSpacer(1);
     const unitStack = valueStack.addStack();
     unitStack.layoutVertically();
@@ -433,7 +433,7 @@ class Widget extends DmYY {
     const balanceStack = lbStack.addStack();
     balanceStack.centerAlignContent();
     balanceStack.addSpacer();
-    const balance = balanceStack.addText(`${this.balance}`);
+    const balance = balanceStack.addText(this.isOverdue ? `${this.balance}` : this.isPostPaid ? `${this.monthFee}` : `${this.balance}`);
     balance.font = Font.semiboldRoundedSystemFont(this.size.balance);
     balance.lineLimit = 1;
     balance.textColor = this.isOverdue ? new Color('DE2A18') : this.widgetColor;
@@ -605,8 +605,7 @@ class Widget extends DmYY {
       if (!this.data)  throw new Error("请求失败,请安装模块 检查boxjs配置");
       const billData = await this.getData();
       this.isOverdue = billData.arrearsOfFees;
-      let sumMoney = parseFloat(billData.eleBill.sumMoney).toFixed(2);
-      sumMoney = sumMoney.replace(/-/g, "");
+      const sumMoney = Math.abs(billData.eleBill.sumMoney).toFixed(2);
       this.balance = this.isOverdue ? '-' + sumMoney : sumMoney;
       this.monthUsage = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleNum);
       this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
