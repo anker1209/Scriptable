@@ -1,9 +1,11 @@
-// Script: 2Ya & 脑瓜
-// 电报群：https://t.me/Scriptable_JS @anker1209
-// 该脚本小尺寸组件支持两种模式，默认为圆环进度条模式，主屏幕长按小组件-->编辑小组件-->Parameter，输入1，使用文字模式
-// 渐变进度条为试验性功能，默认关闭
-// version:1.1.1
-// update:2022/10/20
+/*
+* Author: 2Ya&脑瓜
+* Telegram: @anker1209
+* Telegram group：https://t.me/Scriptable_CN
+* Version: 1.2
+* Update: 2024/11/08
+* 电信cookie重写：https://raw.githubusercontent.com/dompling/Script/master/10000/index.js
+*/
 
 if (typeof require === "undefined") require = importModule;
 const { DmYY, Runing } = require("./DmYY");
@@ -19,8 +21,6 @@ class Widget extends DmYY {
       "https://raw.githubusercontent.com/anker1209/icon/main/zgdx.png";
     this.Run();
   }
-  cookie = ""; // 推荐使用Boxjs代理缓存，若无请自行手动抓包后在此输入中国电信cookie数据或运行脚本-->账号设置-->手动输入。
-  widgetParam = args.widgetParameter;
 
   gradient = false;
   usedFlow = false;
@@ -35,10 +35,13 @@ class Widget extends DmYY {
   smallPadding = 16;
   padding = 10;
   logoScale = 0.24;
+  SCALE = 1;
 
   canvSize = 178;
   canvWidth = 18;
   canvRadius = 80;
+  
+  widgetStyle = '1';
 
   format = (str) => {
     return parseInt(str) >= 10 ? str : `0${str}`;
@@ -54,7 +57,9 @@ class Widget extends DmYY {
 
   fee = {
     title: "剩余话费",
+    icon: 'antenna.radiowaves.left.and.right',
     number: 0,
+    iconColor: new Color('0C54D9'),
     unit: "元",
     en: "¥",
   };
@@ -67,7 +72,7 @@ class Widget extends DmYY {
     unit: "MB",
     en: "MB",
     icon: "antenna.radiowaves.left.and.right",
-    iconColor: new Color("1ab6f8"),
+    iconColor: new Color("00B86A"),
     FGColor: new Color(this.flowColorHex),
     BGColor: new Color(this.flowColorHex, 0.2),
     colors: [],
@@ -79,8 +84,8 @@ class Widget extends DmYY {
     number: 0,
     unit: "分钟",
     en: "MIN",
-    icon: "phone.fill",
-    iconColor: new Color("30d15b"),
+    icon: 'phone.badge.waveform.fill',
+    iconColor: new Color("FE366D"),
     FGColor: new Color(this.voiceColorHex),
     BGColor: new Color(this.voiceColorHex, 0.2),
     colors: [],
@@ -214,19 +219,9 @@ class Widget extends DmYY {
         Cookie: this.settings.cookie,
       },
     });
-
+    
     balance.totalBalanceAvailable = Number(balance.totalBalanceAvailable);
 
-    // const bill = await this.http({
-    //   url: this.fetchUrl.bill,
-    //   headers: { Cookie: this.settings.cookie },
-    // });
-
-    // const billData = bill?.items?.[0] || { sumCharge: 0 };
-    // let total = Number(billData.sumCharge);
-    // if (balance.totalBalanceAvailable > total) {
-    //   total = Math.ceil(total / balance.totalBalanceAvailable) * total;
-    // }
     this.fee.number = balance.totalBalanceAvailable / 100;
 
     this.settings.dataSource = {
@@ -247,7 +242,7 @@ class Widget extends DmYY {
     this.saveSettings(false);
   };
 
-  async smallHeader(stack) {
+  async header(stack) {
     const headerStack = stack.addStack();
     headerStack.addSpacer();
     const logo = headerStack.addImage(
@@ -281,6 +276,87 @@ class Widget extends DmYY {
     let number = rowStack.addText(data.number + data.unit);
     [title, number].map((t) => (t.textColor = this.widgetColor));
     [title, number].map((t) => (t.font = Font.systemFont(this.textSize)));
+  }
+  
+  async small(stack, data, logo = false) {
+    const bg = new LinearGradient();
+    bg.locations = [0, 1];
+    bg.endPoint = new Point(1, 0)
+    bg.colors = [
+    new Color(data.iconColor.hex, 0.1),
+    new Color(data.iconColor.hex, 0.03)
+    ];
+    const rowStack = stack.addStack();
+    rowStack.centerAlignContent();
+    rowStack.setPadding(5, 8, 5, 8)
+    rowStack.backgroundGradient = bg;
+    rowStack.cornerRadius = 12;
+    const leftStack = rowStack.addStack();
+    leftStack.layoutVertically();
+    const titleStack = leftStack.addStack();
+    const title = titleStack.addText(data.title);
+    const balanceStack = leftStack.addStack();
+    const balance = balanceStack.addText(`${data.number} ${data.en}`);
+    balance.font = Font.semiboldRoundedSystemFont(16 * this.SCALE);
+    title.textOpacity = 0.5;
+    title.font = Font.mediumSystemFont(11 * this.SCALE);
+     ;[title, balance].map(t => t.textColor = data.iconColor);
+    rowStack.addSpacer();
+    let iconImage;
+    if (logo) {
+      const icon = await this.$request.get(this.smallLogo, 'IMG');
+      iconImage = rowStack.addImage(icon);
+    } else {
+      const icon = SFSymbol.named(data.icon);
+      icon.applyHeavyWeight();
+      iconImage = rowStack.addImage(icon.image);
+    };
+    iconImage.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
+    iconImage.tintColor = data.iconColor;
+  }
+
+  async smallCell(stack, data, logo = false) {
+    const bg = new LinearGradient();
+    const padding = 6 * this.SCALE; 
+    bg.locations = [0, 1];
+    bg.endPoint = new Point(1, 0)
+    bg.colors = [
+    new Color(data.iconColor.hex, 0.03),
+    new Color(data.iconColor.hex, 0.1)
+    ];
+    const rowStack = stack.addStack();
+    rowStack.setPadding(4, 4, 4, 4)
+    rowStack.backgroundGradient = bg;
+    rowStack.cornerRadius = 12;
+    const iconStack = rowStack.addStack();
+    iconStack.backgroundColor = data.iconColor;
+    iconStack.setPadding(padding, padding, padding, padding);
+    iconStack.cornerRadius = 17 * this.SCALE;
+    let iconImage;
+    if (logo) {
+      const icon = await this.$request.get(this.smallLogo, 'IMG');
+      iconImage = iconStack.addImage(icon);
+    } else {
+      const icon = SFSymbol.named(data.icon);
+      icon.applyHeavyWeight();
+      iconImage = iconStack.addImage(icon.image);
+    };
+    iconImage.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
+    iconImage.tintColor = new Color('FFFFFF');
+    rowStack.addSpacer(15);
+    const rightStack = rowStack.addStack();
+    rightStack.layoutVertically();
+    const balanceStack = rightStack.addStack();
+    const balance = balanceStack.addText(`${data.number} ${data.en}`);
+    balance.centerAlignText();
+    balance.font = Font.semiboldRoundedSystemFont(16 * this.SCALE);
+    const titleStack = rightStack.addStack();
+    const title = titleStack.addText(data.title);
+    title.centerAlignText();
+    rowStack.addSpacer();
+    title.textOpacity = 0.5;
+    title.font = Font.mediumSystemFont(11 * this.SCALE);
+     ;[title, balance].map(t => t.textColor = data.iconColor);
   }
 
   async mediumCell(canvas, stack, data, color, fee = false, percent) {
@@ -594,27 +670,41 @@ class Widget extends DmYY {
   }
 
   renderSmall = async (w) => {
-    w.setPadding(
-      this.smallPadding,
-      this.smallPadding,
-      this.smallPadding,
-      this.smallPadding
-    );
-    await this.smallHeader(w);
-    const bodyStack = w.addStack();
-    bodyStack.layoutVertically();
-    if (this.widgetParam == "1") {
-      this.textLayout(bodyStack, this.flow);
-      bodyStack.addSpacer(7);
-      this.textLayout(bodyStack, this.voice);
-      bodyStack.addSpacer(7);
-      this.textLayout(bodyStack, this.point);
-    } else {
+    w.setPadding(this.smallPadding, this.smallPadding, this.smallPadding, this.smallPadding);
+    if (this.widgetStyle == "1"){
+      const bodyStack = w.addStack();
+      bodyStack.layoutVertically();
+      await this.small(bodyStack, this.fee, true);
+      bodyStack.addSpacer(10);
+      await this.small(bodyStack, this.flow);
+      bodyStack.addSpacer(10);
+      await this.small(bodyStack, this.voice);
+    } else if (this.widgetStyle == "2"){
+      const bodyStack = w.addStack();
+      bodyStack.layoutVertically();
+      await this.smallCell(bodyStack, this.fee, true);
+      bodyStack.addSpacer(10);
+      await this.smallCell(bodyStack, this.flow);
+      bodyStack.addSpacer(10);
+      await this.smallCell(bodyStack, this.voice);
+    } else if (this.widgetStyle == "3"){
+      await this.header(w);
+      const bodyStack = w.addStack();
+      bodyStack.layoutVertically();
       const canvas = this.makeCanvas();
       const ringStack = bodyStack.addStack();
       this.imageCell(canvas, ringStack, this.flow);
       ringStack.addSpacer();
       this.imageCell(canvas, ringStack, this.voice);
+    } else {
+      await this.header(w);
+      const bodyStack = w.addStack();
+      bodyStack.layoutVertically();
+      this.textLayout(bodyStack, this.flow);
+      bodyStack.addSpacer(7);
+      this.textLayout(bodyStack, this.voice);
+      bodyStack.addSpacer(7);
+      this.textLayout(bodyStack, this.point);
     }
     return w;
   };
@@ -645,16 +735,211 @@ class Widget extends DmYY {
     return w;
   };
 
-  renderLarge = async (w) => {
-    w.addText("暂不支持");
-    return w;
-  };
-
   renderWebView = async () => {
     const webView = new WebView();
     const url = this.fetchUrl.login;
     await webView.loadURL(url);
     await webView.present(false);
+  };
+  
+  setColorConfig = async () => {
+    return this.renderAppView([
+      {
+        title: '颜色设置',
+        menu: [
+          {
+            icon: { name: 'circle.dotted', color: '#FF6428' },
+            type: 'switch',
+            title: '渐变进度条',
+            desc: '',
+            val: 'gradient',
+          },
+        ],
+      },
+      {
+        menu: [
+          {
+            icon: { name: 'antenna.radiowaves.left.and.right.circle', color: '#448EF7' },
+            type: 'color',
+            title: '流量进度条',
+            desc: '',
+            val: 'step1',
+          },
+          {
+            icon: { name: 'phone.circle', color: '#ff8021' },
+            type: 'color',
+            title: '语音进度条',
+            desc: '',
+            val: 'step2',
+          },
+        ],
+      },
+      {
+        menu: [
+          {
+            icon: { name: 'circle.dashed', color: '#1ab6f8' },
+            type: 'color',
+            title: '流量进度条底圈颜色',
+            desc: '',
+            val: 'inner1',
+          },
+          {
+            icon: { name: 'pencil.tip.crop.circle', color: '#30d15b' },
+            type: 'color',
+            title: '语音进度条底圈颜色',
+            desc: '',
+            val: 'inner2',
+          },
+        ],
+      },
+      {
+        menu: [
+          {
+            icon: { name: 'apple.logo', color: '#F86527' },
+            type: 'color',
+            title: 'LOGO图标颜色',
+            desc: '',
+            val: 'logoColor',
+          },
+          {
+            icon: { name: 'antenna.radiowaves.left.and.right', color: '#1ab6f8' },
+            type: 'color',
+            title: '流量图标颜色',
+            desc: '',
+            val: 'flowIconColor',
+          },
+          {
+            icon: { name: 'phone.fill', color: '#30d15b' },
+            type: 'color',
+            title: '语音图标颜色',
+            desc: '',
+            val: 'voiceIconColor',
+          },
+        ],
+      },
+      {
+        title: '重置颜色',
+        menu: [
+          {
+            icon: { name: 'arrow.circlepath', color: '#FF6250' },
+            title: '重置颜色',
+            desc: '重置当前颜色配置',
+            name: 'reset',
+            val: 'reset',
+            onClick: () => {
+              const propertiesToDelete = ['gradient', 'step1', 'step2', 'inner1', 'inner2', 'logoColor', 'flowIconColor', 'voiceIconColor'];
+              propertiesToDelete.forEach(prop => {
+                delete this.settings[prop];
+              });
+              this.saveSettings();
+              this.reopenScript();
+            },
+          },
+        ],
+      },
+    ]).catch((e) => {
+      console.log(e);
+    });
+  };
+  
+  setSizeConfig = async () => {
+    return this.renderAppView([
+      {
+        title: '尺寸设置',
+        menu: [
+          {
+            icon: { name: 'square.resize.down', color: '#FF6428' },
+            type: 'input',
+            title: '小组件缩放比例',
+            desc: '',
+            placeholder : '1',
+            val: 'SCALE',
+          },
+        ],
+      },
+      {
+        menu: [
+          {
+            icon: { name: 'circle', color: '#448EF7' },
+            type: 'input',
+            title: '圆环大小',
+            placeholder : '61',
+            desc: '',
+            val: 'ringStackSize',
+          },
+          {
+            icon: { name: 'textformat.size', color: '#5ABFC1' },
+            type: 'input',
+            title: '圆环中心文字大小',
+            placeholder : '14',
+            desc: '',
+            val: 'ringTextSize',
+          },
+        ],
+      },
+      {
+        menu: [
+          {
+            icon: { name: 'textformat.size.larger.zh', color: '#ff8021' },
+            type: 'input',
+            title: '话费文字大小',
+            placeholder : '21',
+            desc: '',
+            val: 'feeTextSize',
+          },
+          {
+            icon: { name: 'textformat.size.smaller.zh', color: '#7BCD81' },
+            type: 'input',
+            title: '文字模式下文字大小',
+            placeholder : '13',
+            desc: '',
+            val: 'textSize',
+          },
+        ],
+      },
+      {
+        menu: [
+          {
+            icon: { name: 'dock.arrow.down.rectangle', color: '#4676EE' },
+            type: 'input',
+            title: '小尺寸组件边距',
+            placeholder : '15',
+            desc: '',
+            val: 'smallPadding',
+          },
+          {
+            icon: { name: 'rectangle.lefthalf.inset.fill.arrow.left', color: '#7DD35F' },
+            type: 'input',
+            title: '中尺寸组件边距',
+            placeholder : '10',
+            desc: '',
+            val: 'padding',
+          },
+        ],
+      },
+      {
+        title: '重置尺寸',
+        menu: [
+          {
+            icon: { name: 'arrow.circlepath', color: '#FF6250' },
+            title: '重置尺寸',
+            desc: '重置当前尺寸配置',
+            name: 'reset',
+            val: 'reset',
+            onClick: () => {
+              const propertiesToDelete = ['SCALE', 'ringStackSize', 'ringTextSize', 'feeTextSize', 'textSize', 'smallPadding', 'padding', ];
+              propertiesToDelete.forEach(prop => {
+                delete this.settings[prop];
+              });
+              this.saveSettings();
+              this.reopenScript();
+            },
+          },
+        ],
+      },
+    ]).catch((e) => {
+      console.log(e);
+    });
   };
 
   Run() {
@@ -662,87 +947,117 @@ class Widget extends DmYY {
       const widgetInitConfig = {
         china_telecom_url: "@yy_10000.china_telecom_loginUrl",
       };
-      this.registerAction(
-        "颜色配置",
-        async () => {
-          await this.setAlertInput(
-            `${this.name}颜色配置`,
-            "进度条颜色|底圈颜色\n底圈颜色留空将跟随进度条颜色并淡显",
-            {
-              gradient: "是否开启渐变进度条，缺省：false",
-              step1: "流量进度条颜色",
-              step2: "语音进度条颜色",
-              inner1: "流量进度条底圈颜色",
-              inner2: "语音进度条底圈颜色",
-            }
-          );
-        },
-        "https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27363.png"
-      );
-
-      this.registerAction(
-        "尺寸设置",
-        async () => {
-          await this.setAlertInput(
-            `${this.name}尺寸设置`,
-            "进度条大小|文字大小",
-            {
-              logoScale: "小组件logo缩放，缺省：0.24",
-              ringStackSize: "圆环大小，缺省：61",
-              ringTextSize: "圆环中心文字大小，缺省：14",
-              feeTextSize: "话费文字大小，缺省：21",
-              textSize: "文字模式下文字大小，缺省：13",
-              smallPadding: "小尺寸组件边距，缺省：16",
-              padding: "中尺寸组件边距，缺省：10",
-            }
-          );
-        },
-        "https://pic1.imgdb.cn/item/63315c2c16f2c2beb1a28726.png"
-      );
-
-      this.registerAction(
-        "流量设置",
-        async () => {
-          await this.setAlertInput(
-            `${this.name}流量设置`,
-            "是否显示已用流量\n不限量或伪不限量用户可将此值设为true",
-            {
-              usedFlow: "是否显示已用流量，缺省：false",
-              maxFlow: "实际流量或超限流量(GB)，缺省：40",
-            }
-          );
-        },
-        "https://pic1.imgdb.cn/item/63315c2216f2c2beb1a27888.png"
-      );
-
-      this.registerAction(
-        "网站登录",
-        this.renderWebView,
-        "https://raw.githubusercontent.com/githubdulong/Script/master/Images/account.png"
-      );
-
-      this.registerAction(
-        "登录地址",
-        async () => {
-          const index = await this.generateAlert("设置账号信息", [
-            "BoxJS",
-            "手动输入",
-          ]);
-          if (index === 0) {
-            await this.setCacheBoxJSData(widgetInitConfig);
-          } else {
-            await this.setAlertInput("登录地址", "中国电信", widgetInitConfig);
-          }
-        },
-        "https://raw.githubusercontent.com/githubdulong/Script/master/Images/boxjs.png"
-      );
-
-      this.registerAction(
-        "基础设置",
-        this.setWidgetConfig,
-        "https://raw.githubusercontent.com/githubdulong/Script/master/Images/preferences.png"
-      );
-    }
+      this.registerAction({
+        title: '组件配置',
+        menu: [
+          {
+            icon: { name: 'square.text.square', color: '#FF5D29' },
+            type: 'select',
+            title: '组件样式',
+            options: ['1', '2', '3', '4'],
+            val: 'widgetStyle',
+          },
+        ],
+      });
+      /*
+      this.registerAction({
+        menu: [
+          {
+            icon: { name: 'antenna.radiowaves.left.and.right', color: '#1ab6f8' },
+            type: 'switch',
+            title: '已用流量',
+            desc: '',
+            val: 'usedFlow',
+          },
+          {
+            icon: { name: 'phone.fill', color: '#30d15b' },
+            type: 'input',
+            title: '实际流量',
+            placeholder: '40',
+            desc: '单位GB\n此项及已用流量开关适用于不限量用户及伪不限量用户',
+            val: 'maxFlow',
+          },
+        ],
+      })
+      */
+      this.registerAction({
+        title: '',
+        menu: [
+          {
+            name: 'color',
+            url: 'https://pic1.imgdb.cn/item/63315c1e16f2c2beb1a27363.png',
+            title: '颜色配置',
+            type: 'input',
+            onClick: () => {
+              return this.setColorConfig();
+            },
+          },
+          {
+            name: 'size',
+            icon: { name: 'arrow.down.backward.and.arrow.up.forward.square', color: '#F77F29' },
+            title: '尺寸设置',
+            type: 'input',
+            onClick: () => {
+              return this.setSizeConfig();
+            },
+          },
+        ],
+      });
+      this.registerAction({
+        title: '',
+        menu: [
+          {
+            name: 'login',
+            icon: { name: 'link.badge.plus', color: '#6CCA16' },
+            title: '网站登录',
+            type: 'input',
+            onClick: async () => {
+                return this.renderWebView();
+            },
+          },
+          {
+            name: 'boxjs',
+            url: 'https://raw.githubusercontent.com/githubdulong/Script/master/Images/boxjs.png',
+            title: '登录地址',
+            type: 'input',
+            onClick: async () => {
+              const index = await this.generateAlert("设置账号信息", [
+                "BoxJS",
+                "手动输入",
+              ]);
+              if (index === 0) {
+                await this.setCacheBoxJSData(widgetInitConfig);
+              } else {
+                await this.setAlertInput("登录地址", "中国电信", widgetInitConfig);
+              }
+            },
+          },
+        ],
+      });
+      this.registerAction({
+        title: '',
+        menu: [
+          {
+            name: 'basic',
+            icon: { name: 'gearshape.fill', color: '#FF5656' },
+            title: '基础设置',
+            type: 'input',
+            onClick: () => {
+              return this.setWidgetConfig();
+            },
+          },
+          {
+            name: 'reload',
+            icon: { name: 'goforward', color: '#45C4B0' },
+            title: '重载组件',
+            type: 'input',
+            onClick: () => {
+              this.reopenScript();
+            },
+          },
+        ],
+      });
+    };
 
     try {
       const {
@@ -760,47 +1075,34 @@ class Widget extends DmYY {
         gradient,
         usedFlow,
         maxFlow,
+        widgetStyle,
+        SCALE,
       } = this.settings;
 
       this.gradient = gradient === "true" ? true : this.gradient;
       this.usedFlow = usedFlow === "true" ? true : this.usedFlow;
       this.flowColorHex = step1 ? step1 : this.flowColorHex;
       this.voiceColorHex = step2 ? step2 : this.voiceColorHex;
-      this.flow.BGColor = inner1
-        ? new Color(inner1)
-        : new Color(this.flowColorHex, 0.2);
-      this.voice.BGColor = inner2
-        ? new Color(inner2)
-        : new Color(this.voiceColorHex, 0.2);
+      this.flow.BGColor = inner1 ? new Color(inner1) : new Color(this.flowColorHex, 0.2);
+      this.voice.BGColor = inner2 ? new Color(inner2) : new Color(this.voiceColorHex, 0.2);
       this.flow.FGColor = new Color(this.flowColorHex);
       this.voice.FGColor = new Color(this.voiceColorHex);
+      this.widgetStyle = widgetStyle || this.widgetStyle;
 
       this.flow.max = maxFlow ? parseFloat(maxFlow) : this.flow.max;
-      this.logoScale = logoScale ? parseFloat(logoScale) : this.logoScale;
-      this.ringStackSize = ringStackSize
-        ? parseFloat(ringStackSize)
-        : this.ringStackSize;
-      this.ringTextSize = ringTextSize
-        ? parseFloat(ringTextSize)
-        : this.ringTextSize;
-      this.feeTextSize = feeTextSize
-        ? parseFloat(feeTextSize)
-        : this.feeTextSize;
+      this.SCALE = SCALE ? parseFloat(SCALE) : this.SCALE;
+      this.ringStackSize = ringStackSize ? parseFloat(ringStackSize) : this.ringStackSize;
+      this.ringTextSize = ringTextSize ? parseFloat(ringTextSize) : this.ringTextSize;
+      this.feeTextSize = feeTextSize ? parseFloat(feeTextSize) : this.feeTextSize;
       this.textSize = textSize ? parseFloat(textSize) : this.textSize;
-      this.smallPadding = smallPadding
-        ? parseFloat(smallPadding)
-        : this.smallPadding;
+      this.smallPadding = smallPadding ? parseFloat(smallPadding) : this.smallPadding;
       this.padding = padding ? parseFloat(padding) : this.padding;
 
       if (this.gradient) {
         this.flow.colors = this.arrColor();
         this.voice.colors = this.arrColor();
-        this.flow.BGColor = inner1
-          ? new Color(inner1)
-          : new Color(this.flow.colors[1], 0.2);
-        this.voice.BGColor = inner2
-          ? new Color(inner2)
-          : new Color(this.voice.colors[1], 0.2);
+        this.flow.BGColor = inner1 ? new Color(inner1) : new Color(this.flow.colors[1], 0.2);
+        this.voice.BGColor = inner2 ? new Color(inner2) : new Color(this.voice.colors[1], 0.2);
         this.flow.FGColor = this.gradientColor(this.flow.colors, 360);
         this.voice.FGColor = this.gradientColor(this.voice.colors, 360);
         this.flowColorHex = this.flow.colors[1];
@@ -826,5 +1128,3 @@ class Widget extends DmYY {
 }
 
 await Runing(Widget, args.widgetParameter, false);
-
-//version:1.1.0
