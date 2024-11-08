@@ -507,17 +507,17 @@ class Widget extends DmYY {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
       await this.small(bodyStack, this.fee, true);
-      bodyStack.addSpacer(10);
+      bodyStack.addSpacer();
       await this.small(bodyStack, this.flow);
-      bodyStack.addSpacer(10);
+      bodyStack.addSpacer();
       await this.small(bodyStack, this.voice);
     } else if (this.widgetStyle == "2"){
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
       await this.smallCell(bodyStack, this.fee, true);
-      bodyStack.addSpacer(10);
+      bodyStack.addSpacer();
       await this.smallCell(bodyStack, this.flow);
-      bodyStack.addSpacer(10);
+      bodyStack.addSpacer();
       await this.smallCell(bodyStack, this.voice);
     } else if (this.widgetStyle == "3"){
       await this.header(w);
