@@ -7,13 +7,13 @@
 // update:2021/03/14
 
 // 添加require，是为了vscode中可以正确引入包，以获得自动补全等功能
-if (typeof require === 'undefined') require = importModule;
-const {DmYY, Runing} = require('./DmYY');
-const {Calendar} = require('./Calendar');
+if (typeof require === "undefined") require = importModule;
+const { DmYY, Runing } = require("./DmYY");
+const { Calendar } = require("./Calendar");
 const $ = new Calendar();
 // #####################设置#####################
-const extraTextColor = 'fc8ac3'; //环形进度条中心背景颜色及名字、meetDay颜色
-const ringColor = 'fc5ead'; //环形进度条颜色
+const extraTextColor = "fc8ac3"; //环形进度条中心背景颜色及名字、meetDay颜色
+const ringColor = "fc5ead"; //环形进度条颜色
 const nameTextSize = 15; // 名字大小
 const meetDayTextSize = 25; // meetDay文字大小
 const ringSize = 60; // 环形进度条大小
@@ -21,107 +21,106 @@ const mainTextSize = 13; // 倒数、农历、生日文字大小
 const lineHeight = 8; // 倒数、农历、生日文字行间距大小
 const leftImageSize = 180; // 左侧图片宽度
 //##############################################
-let ringIcon = SFSymbol.named('heart').image;
-let countIcon = SFSymbol.named('hourglass.bottomhalf.fill').image;
-let lunarIcon = SFSymbol.named('25.square.fill').image; // 农历图标数字
-let birthIcon = SFSymbol.named('app.gift.fill').image;
+let ringIcon = SFSymbol.named("heart").image;
+let countIcon = SFSymbol.named("hourglass.bottomhalf.fill").image;
+let lunarIcon = SFSymbol.named("25.square.fill").image; // 农历图标数字
+let birthIcon = SFSymbol.named("app.gift.fill").image;
 const now = new Date();
 const today = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
 
 class Widget extends DmYY {
   constructor(arg) {
     super(arg);
-    this.name = '破壳日';
-    this.en = 'birthday';
-    this.logo = '';
+    this.name = "破壳日";
+    this.en = "birthday";
+    this.logo = "";
     this.LEFT_IMG_KEY = `${this.cacheImage}/avatar`;
-    this.defaultData = {
-      username: this.settings.nickname || '', // 姓名
-      time: this.settings.birthday || today, // 生日日期
-      nongli: this.settings.nongli === 'true' || '', // 农历生日
-      eday: this.settings.eday || today, //相识
-      bless: this.settings.bless || '',
-      isLeapMonth: false, //如果是农历闰月第四个参数赋值true即可
-    };
-
-    console.log(this.settings);
 
     if (config.runsInApp) {
       this.registerAction({
-        icon: {name: 'person.badge.plus', color: '#52c41a'},
-        type: 'img',
-        title: '头像',
-        name: 'avatar',
+        icon: { name: "person.badge.plus", color: "#52c41a" },
+        type: "img",
+        title: "头像",
+        name: "avatar",
         val: this.cacheImage,
       });
 
       this.registerAction({
         icon: {
-          name: 'rectangle.and.pencil.and.ellipsis',
-          color: '#f5222d',
+          name: "rectangle.and.pencil.and.ellipsis",
+          color: "#f5222d",
         },
-        type: 'input',
-        title: '昵称',
-        placeholder: '用户昵称',
-        name: 'nickname',
+        type: "input",
+        title: "昵称",
+        placeholder: "用户昵称",
+        name: "nickname",
       });
 
       this.registerAction({
         icon: {
-          name: 'bubble.left',
-          color: '#faf61c',
+          name: "bubble.left",
+          color: "#faf61c",
         },
-        type: 'input',
-        title: '寄语',
-        name: 'bless',
+        type: "input",
+        title: "寄语",
+        name: "bless",
       });
 
       this.registerAction({
         icon: {
-          name: '25.square.fill',
-          color: '#fa541c',
+          name: "25.square.fill",
+          color: "#fa541c",
         },
-        type: 'switch',
-        title: '农历',
-        name: 'nongli',
+        type: "switch",
+        title: "农历",
+        name: "nongli",
       });
 
       this.registerAction({
         icon: {
-          name: 'calendar',
-          color: '#fa8c16',
+          name: "calendar",
+          color: "#fa8c16",
         },
-        type: 'date',
-        title: '破壳日',
-        name: 'birthday',
+        type: "date",
+        title: "破壳日",
+        name: "birthday",
       });
 
       this.registerAction({
         icon: {
-          name: 'calendar.badge.clock',
-          color: '#8016fa',
+          name: "calendar.badge.clock",
+          color: "#8016fa",
         },
-        type: 'date',
-        title: '相识',
-        name: 'eday',
+        type: "date",
+        title: "相识",
+        name: "eday",
       });
 
-      this.registerAction('基础设置', this.setWidgetConfig);
+      this.registerAction("基础设置", this.setWidgetConfig);
     }
   }
 
   defaultData = {
-    username: '', // 姓名
-    time: '', // 生日日期
-    nongli: '', // 农历生日
-    eday: '', //相识
-    bless: '',
+    username: "", // 姓名
+    time: "", // 生日日期
+    nongli: "", // 农历生日
+    eday: "", //相识
+    bless: "",
     isLeapMonth: false, //如果是农历闰月第四个参数赋值true即可
   };
 
   contentText = {};
 
   init = async () => {
+    this.defaultData = {
+      username: this.settings.nickname || "", // 姓名
+      time: this.settings.birthday || today, // 生日日期
+      nongli: this.settings.nongli === "true" || "", // 农历生日
+      eday: this.settings.eday || today, //相识
+      bless: this.settings.bless || "",
+      isLeapMonth: false, //如果是农历闰月第四个参数赋值true即可
+    };
+    console.log(this.settings);
     try {
       this.getCalendarData();
     } catch (e) {
@@ -135,10 +134,10 @@ class Widget extends DmYY {
     tmpBirth.month = 0;
     tmpBirth.day = 0;
 
-    if (beginStr == null || beginStr == '') {
+    if (beginStr == null || beginStr == "") {
       return;
     }
-    let startDate = new Date(beginStr.replace(/-/g, '/'));
+    let startDate = new Date(beginStr.replace(/-/g, "/"));
     let today = new Date();
 
     let startYear = startDate.getFullYear();
@@ -159,7 +158,7 @@ class Widget extends DmYY {
     for (let i = startYear; i <= endYear; i++) {
       let currYear = 365;
       let yearMonth = 12;
-      if (((i % 4 == 0 && i % 100 !== 0) || i % 400 == 0)) {
+      if ((i % 4 == 0 && i % 100 !== 0) || i % 400 == 0) {
         allDays += 366;
         currYear = 366;
       }
@@ -177,7 +176,7 @@ class Widget extends DmYY {
         if (m == 1 || m == 3 || m == 8 || m == 10 || m == 12) {
           fullDays = 31;
         } else if (m == 2) {
-          if (((i % 4 == 0 && i % 100 !== 0) || i % 400 == 0)) {
+          if ((i % 4 == 0 && i % 100 !== 0) || i % 400 == 0) {
             fullDays = 29;
           } else {
             fullDays = 28;
@@ -208,11 +207,12 @@ class Widget extends DmYY {
       var d1 = allDayArr[0].currDays;
       var d2 = allDayArr[1].currDays;
       //月份天数浮动因子决定准确性
-      let cfDay = allDayArr[0].fullDays >
-      allDayArr[allDayArr.length - 1].fullDays ? allDayArr[allDayArr.length -
-      1].fullDays : allDayArr[0].fullDays;
-      if ((d1 + d2) >= cfDay) {
-        tmpBirth.day = (d1 + d2) - cfDay;
+      let cfDay =
+        allDayArr[0].fullDays > allDayArr[allDayArr.length - 1].fullDays
+          ? allDayArr[allDayArr.length - 1].fullDays
+          : allDayArr[0].fullDays;
+      if (d1 + d2 >= cfDay) {
+        tmpBirth.day = d1 + d2 - cfDay;
         tmpBirth.month += 1;
       } else {
         tmpBirth.day = d1 + d2;
@@ -225,11 +225,12 @@ class Widget extends DmYY {
         sumFullDay += allDayArr[i].fullDays;
       }
       //月份天数浮动因子决定准确性
-      let cfDay = allDayArr[0].fullDays >
-      allDayArr[allDayArr.length - 1].fullDays ? allDayArr[allDayArr.length -
-      1].fullDays : allDayArr[0].fullDays;
-      if ((d1 + d2) >= cfDay) {
-        tmpBirth.day = (d1 + d2) - cfDay;
+      let cfDay =
+        allDayArr[0].fullDays > allDayArr[allDayArr.length - 1].fullDays
+          ? allDayArr[allDayArr.length - 1].fullDays
+          : allDayArr[0].fullDays;
+      if (d1 + d2 >= cfDay) {
+        tmpBirth.day = d1 + d2 - cfDay;
         tmpBirth.month += 1;
       } else {
         tmpBirth.day = d1 + d2;
@@ -238,14 +239,14 @@ class Widget extends DmYY {
 
       if (tmpBirth.month >= 12) {
         tmpBirth.year += Math.floor(tmpBirth.month / 12);
-        tmpBirth.month = tmpBirth.month - (tmpBirth.year * 12);
+        tmpBirth.month = tmpBirth.month - tmpBirth.year * 12;
       }
     }
     return tmpBirth;
   };
 
   getEdayNumber = (date) => {
-    var initDay = date.split('-');
+    var initDay = date.split("-");
     var obj = {
       cYear: parseInt(initDay[0]),
       cMonth: parseInt(initDay[1]),
@@ -255,8 +256,8 @@ class Widget extends DmYY {
   };
 
   getCalendarData = () => {
-    const {time, nongli, isLeapMonth, eday} = this.defaultData;
-    const _data = time.split('-');
+    const { time, nongli, isLeapMonth, eday } = this.defaultData;
+    const _data = time.split("-");
     const opt = {
       year: parseInt(_data[0]),
       month: parseInt(_data[1]),
@@ -277,10 +278,11 @@ class Widget extends DmYY {
     }
     response.gregorian = solarData;
     response.animal = `${this.$.getAnimalZodiacToEmoji(solarData.Animal)}-${
-        solarData.Animal
+      solarData.Animal
     }`;
-    response.astro = `${this.$.getAstroToEmoji(
-        solarData.astro)}-${solarData.astro}`;
+    response.astro = `${this.$.getAstroToEmoji(solarData.astro)}-${
+      solarData.astro
+    }`;
     if (this.$.verifyTime(eday)) {
       response.meetDay = this.getEdayNumber(eday);
     }
@@ -306,8 +308,7 @@ class Widget extends DmYY {
       subWidget.addSpacer(2);
       let dayIcon = subWidget.addImage(dayImage.image);
       dayIcon.imageSize = new Size(mainTextSize + 1, mainTextSize + 1);
-      dayIcon.tintColor = new Color('1ab6f8');
-      ;
+      dayIcon.tintColor = new Color("1ab6f8");
     }
   };
 
@@ -326,16 +327,16 @@ class Widget extends DmYY {
     if (this.defaultData.bless) {
       leftAdd.size = new Size(leftImageSize, 26);
       leftAdd.backgroundColor = new Color(extraTextColor, 0.8);
-      const bless = leftAdd.addText('✿ ' + this.defaultData.bless + ' ✿');
-      bless.textColor = new Color('ffffff', 0.8);
+      const bless = leftAdd.addText("✿ " + this.defaultData.bless + " ✿");
+      bless.textColor = new Color("ffffff", 0.8);
       bless.font = Font.mediumSystemFont(mainTextSize);
     }
     return w;
   };
 
   setRightView = (right) => {
-    const {time, nongli, isLeapMonth} = this.defaultData;
-    const _data = time.split('-');
+    const { time, nongli, isLeapMonth } = this.defaultData;
+    const _data = time.split("-");
     const opt = {
       year: parseInt(_data[0]),
       month: parseInt(_data[1]),
@@ -343,15 +344,9 @@ class Widget extends DmYY {
       nongli,
       isLeapMonth,
     };
-    const {
-      animal,
-      astro,
-      gregorian,
-      nextBirthday,
-      meetDay,
-      birthdayText,
-    } = this.contentText;
-    const {IMonthCn, IDayCn} = gregorian;
+    const { animal, astro, gregorian, nextBirthday, meetDay, birthdayText } =
+      this.contentText;
+    const { IMonthCn, IDayCn } = gregorian;
     const _birth = `${nextBirthday.cYear}-${nextBirthday.cMonth}-${nextBirthday.cDay}`;
     right.layoutVertically();
 
@@ -373,17 +368,25 @@ class Widget extends DmYY {
     var preData;
     if (nongli) {
       preData = this.$.lunar2solar(
-          `${nextBirthday.lYear}` - 1, opt.month, opt.day, isLeapMonth);
+        `${nextBirthday.lYear}` - 1,
+        opt.month,
+        opt.day,
+        isLeapMonth
+      );
       log(preData);
     } else {
       preData = this.$.solar2lunar(
-          `${nextBirthday.cYear}` - 1, opt.month, opt.day);
+        `${nextBirthday.cYear}` - 1,
+        opt.month,
+        opt.day
+      );
       log(preData);
     }
     const today = new Date();
     const thenDate = new Date(
-        `${nextBirthday.cYear}`, `${nextBirthday.cMonth}` - 1,
-        `${nextBirthday.cDay}`,
+      `${nextBirthday.cYear}`,
+      `${nextBirthday.cMonth}` - 1,
+      `${nextBirthday.cDay}`
     );
     log(thenDate);
     const passDate = new Date(preData.cYear, preData.cMonth - 1, preData.cDay);
@@ -396,14 +399,14 @@ class Widget extends DmYY {
     const cbgColor = new Color(ringColor, 0.2);
     const cfgColor = new Color(ringColor);
     const centerColor = new Color(extraTextColor);
-    const cfontColor = new Color('ffffff');
+    const cfontColor = new Color("ffffff");
     canvas.size = new Size(canvSize, canvSize);
     canvas.opaque = false;
     canvas.respectScreenScale = true;
 
     const gap = today.getTime() - passDate.getTime();
     const gap2 = thenDate.getTime() - passDate.getTime();
-    const deg = Math.floor(gap / gap2 * 100 * 3.6);
+    const deg = Math.floor((gap / gap2) * 100 * 3.6);
 
     let ctr = new Point(canvSize / 2, canvSize / 2);
     const bgx = ctr.x - canvRadius;
@@ -417,18 +420,18 @@ class Widget extends DmYY {
     canvas.strokeEllipse(bgr);
 
     for (let t = 0; t < deg; t++) {
-      const rect_x = ctr.x + canvRadius * Math.sin((t * Math.PI) / 180) -
-          canvWidth / 2;
-      const rect_y = ctr.y - canvRadius * Math.cos((t * Math.PI) / 180) -
-          canvWidth / 2;
+      const rect_x =
+        ctr.x + canvRadius * Math.sin((t * Math.PI) / 180) - canvWidth / 2;
+      const rect_y =
+        ctr.y - canvRadius * Math.cos((t * Math.PI) / 180) - canvWidth / 2;
       const rect_r = new Rect(rect_x, rect_y, canvWidth, canvWidth);
       canvas.fillEllipse(rect_r);
     }
-    ;
-
     const ringBG = new Rect(
-        bgx + canvWidth / 2 + 8, bgy + canvWidth / 2 + 8,
-        canvRadius * 2 - canvWidth - 16, canvRadius * 2 - canvWidth - 16,
+      bgx + canvWidth / 2 + 8,
+      bgy + canvWidth / 2 + 8,
+      canvRadius * 2 - canvWidth - 16,
+      canvRadius * 2 - canvWidth - 16
     );
     canvas.setFillColor(centerColor);
     canvas.setLineWidth(0);
@@ -436,7 +439,11 @@ class Widget extends DmYY {
     canvas.drawImageInRect(ringIcon, ringBG);
 
     const canvTextRect = new Rect(
-        0, 100 - canvTextSize / 2 - 10, canvSize, canvTextSize);
+      0,
+      100 - canvTextSize / 2 - 10,
+      canvSize,
+      canvTextSize
+    );
     canvas.setTextAlignedCenter();
     canvas.setTextColor(cfontColor);
     canvas.setFont(Font.mediumRoundedSystemFont(canvTextSize));
@@ -448,29 +455,40 @@ class Widget extends DmYY {
     imageContent.addImage(canvas.getImage());
 
     const tmpBirth = this.getAge(this.defaultData.eday);
-    let ageYear = tmpBirth.year > 0 ? `${tmpBirth.year}岁` : '';
-    let ageMonth = tmpBirth.month > 0 ? `${tmpBirth.month}月` : '';
-    let ageDay = tmpBirth.day > 0 ? `${tmpBirth.day}天` : '';
+    let ageYear = tmpBirth.year > 0 ? `${tmpBirth.year}岁` : "";
+    let ageMonth = tmpBirth.month > 0 ? `${tmpBirth.month}月` : "";
+    let ageDay = tmpBirth.day > 0 ? `${tmpBirth.day}天` : "";
     const age = ageYear + ageMonth + ageDay;
-    const dayIcon = SFSymbol.named(tmpBirth.day + '.circle.fill');
+    const dayIcon = SFSymbol.named(tmpBirth.day + ".circle.fill");
 
     if (tmpBirth.year > 0 && tmpBirth.month > 0 && tmpBirth.day > 0) {
       this.setRightCell(
-          right, countIcon, '1ab6f8', '年龄', ageYear + ageMonth, dayIcon);
+        right,
+        countIcon,
+        "1ab6f8",
+        "年龄",
+        ageYear + ageMonth,
+        dayIcon
+      );
     } else {
-      this.setRightCell(right, countIcon, '1ab6f8', '年龄', age);
+      this.setRightCell(right, countIcon, "1ab6f8", "年龄", age);
     }
     right.addSpacer(lineHeight);
     this.setRightCell(
-        right, lunarIcon, '30d15b', '农历', `${IMonthCn}${IDayCn}`);
+      right,
+      lunarIcon,
+      "30d15b",
+      "农历",
+      `${IMonthCn}${IDayCn}`
+    );
     right.addSpacer(lineHeight);
-    this.setRightCell(right, birthIcon, 'fc6d6d', '生日', _birth);
+    this.setRightCell(right, birthIcon, "fc6d6d", "生日", _birth);
     return right;
   };
 
   fetch = async () => {
     const response = await this.$request.get(
-        'https://api.uomg.com/api/rand.qinghua?format=json',
+      "https://api.uomg.com/api/rand.qinghua?format=json"
     );
     return response.content;
   };
@@ -530,9 +548,9 @@ class Widget extends DmYY {
     await this.init();
     const widget = new ListWidget();
     await this.getWidgetBackgroundImage(widget);
-    if (this.widgetFamily === 'medium') {
+    if (this.widgetFamily === "medium") {
       await this.renderMedium(widget);
-    } else if (this.widgetFamily === 'large') {
+    } else if (this.widgetFamily === "large") {
       await this.renderLarge(widget);
     } else {
       await this.renderSmall(widget);
@@ -541,4 +559,4 @@ class Widget extends DmYY {
   }
 }
 
-await Runing(Widget, '', false, {$});
+await Runing(Widget, "", false, { $ });
