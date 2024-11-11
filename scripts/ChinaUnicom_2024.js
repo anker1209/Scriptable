@@ -13,6 +13,16 @@
 if (typeof require === "undefined") require = importModule;
 const { DmYY, Runing } = require("./DmYY");
 
+const named = SFSymbol.named;
+SFSymbol.named = (str) => {
+  const current = named(str);
+  if (!current) {
+    console.log(`图标异常,请在文中搜索并替换图标：${str}`);
+    return named("photo");
+  }
+  return current;
+};
+
 class Widget extends DmYY {
   constructor(arg) {
     super(arg);
