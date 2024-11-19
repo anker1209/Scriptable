@@ -1,6 +1,3 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: deep-green; icon-glyph: mobile-alt;
 /*
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
@@ -9,7 +6,7 @@
  * update: 2024/11/18
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，参数获取及重写作者@Yuheng0101
- * 参数获取及boxjs订阅(浏览器打开查看): https://github.com/ChinaTelecomOperators/ChinaMobile/releases/tag/Prerelease-Alpha
+ * 参数获取及boxjs订阅: https://github.com/ChinaTelecomOperators/ChinaMobile/releases/tag/Prerelease-Alpha
  * 重写: https://raw.githubusercontent.com/Yuheng0101/X/main/Scripts/ChinaMobile/scripable.qx.conf
  * 依赖: https://raw.githubusercontent.com/dompling/Scriptable/master/Scripts/DmYY.js
  * boxjs填写手机号码
@@ -185,7 +182,7 @@ class Widget extends DmYY {
       this.data = await this.httpRequest(dataName, url, true, {}, 'balanceData.json');
       if (!this.data)  throw new Error("请求失败,请安装模块,检查boxjs配置");
 
-      this.fee.number = this.data.fee.curFeeTotal;
+      this.fee.number = this.data.fee.curFee;
       const flow = this.handleFlow(this.data.plan.planRemianFlowListRes);
       const voice = this.handleVoice(this.data.plan.planRemianVoiceListRes);
 
@@ -390,7 +387,7 @@ class Widget extends DmYY {
         flowNum = Number((parseFloat(value) / 1024).toFixed(2));
         flowUnit = 'GB';
       } else {
-        flowNum = Number(value.toFixed(2));
+        flowNum = Number(value).toFixed(2);
         flowUnit = 'MB';
       }
     } else if (unit === '04') { // Assuming '04' represents GB
