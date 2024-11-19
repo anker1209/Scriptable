@@ -9,7 +9,7 @@
  * update: 2024/11/18
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，参数获取及重写作者@Yuheng0101
- * 参数获取及boxjs订阅: https://github.com/ChinaTelecomOperators/ChinaMobile/releases/tag/Prerelease-Alpha
+ * 参数获取及boxjs订阅(浏览器打开查看): https://github.com/ChinaTelecomOperators/ChinaMobile/releases/tag/Prerelease-Alpha
  * 重写: https://raw.githubusercontent.com/Yuheng0101/X/main/Scripts/ChinaMobile/scripable.qx.conf
  * 依赖: https://raw.githubusercontent.com/dompling/Scriptable/master/Scripts/DmYY.js
  * boxjs填写手机号码
