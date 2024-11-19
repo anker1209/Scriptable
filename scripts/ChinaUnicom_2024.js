@@ -155,6 +155,7 @@ class Widget extends DmYY {
 
       for (const key of sizeSettings) {
         this[key] = this.settings[key] ? parseFloat(this.settings[key]) : this[key];
+        this[key] = this[key] * this.SCALE;
       }
 
       // 圆环渐变效果颜色属性
