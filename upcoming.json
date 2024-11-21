@@ -1,5 +1,6 @@
 {
   "version":"2.3.0",
   "date": "2022.12.07",
-  "notes": "\n- 修复京享值"
+  "notes": "\n- 修复京享值",
+  "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaMobile_2024.js"
 }
