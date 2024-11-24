@@ -1145,6 +1145,7 @@ class Widget extends DmYY {
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/ringStackSize.png',
             title: '圆环大小',
+            type: 'input',
             placeholder : '61',
             desc: '',
             val: 'ringStackSize',
