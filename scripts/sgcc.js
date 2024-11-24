@@ -2,8 +2,8 @@
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.0
- * update: 2024/11/18
+ * version: 2.1
+ * update: 2024/11/20
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，重写修改自作者@Yuheng0101
  * 重写: https://raw.githubusercontent.com/dompling/Script/master/wsgw/index.js
@@ -23,6 +23,8 @@ class Widget extends DmYY {
     this.Run();
   };
 
+  version = '2.1';
+
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
   cachePath = null;
@@ -36,11 +38,13 @@ class Widget extends DmYY {
   yearUsage = 0;
   yearFee = 0;
   dayFee = 0;
+  stepEle = 0;
   currentMonthEle = 0;
   SCALE = 1;
   barHeight = 12;
   update = this.formatDate();
-  smallStackColor = '#0db38e';
+  smallStackColor = '#00CC99';
+  endColor = '#006666';
   widgetStyle = '1';
   
   dayElePq = [];
@@ -73,6 +77,11 @@ class Widget extends DmYY {
       this.rowUnit(itemStack, this.settings.group2Left || '年度电费');
       itemStack.addSpacer();
       this.rowUnit(itemStack, this.settings.group2Right || '年度电量', true);
+      break;
+      case '组合三' :
+      this.rowUnit(itemStack, this.settings.group3Left || '近日用电');
+      itemStack.addSpacer();
+      this.rowUnit(itemStack, this.settings.group3Right || '本月电量', true);
       break;
       case '阶梯电量':
       this.stepEleStack(itemStack);
@@ -229,7 +238,7 @@ class Widget extends DmYY {
     const isMonthly = this.settings.stepMode === '月';
 
     const currentUsage = parseFloat(this.currentMonthEle);
-    const totalUsage = parseFloat(this.yearUsage);
+    const totalUsage = parseFloat(this.stepEle);
 
     const per_step_1 = isMonthly
       ? ((currentUsage / this.wsgw.step_2) * 100).toFixed(2)
@@ -449,7 +458,7 @@ class Widget extends DmYY {
   progressBar() {
     const W = 200, H = this.barHeight , r = 6, h = 6;
     const drawing = this.makeCanvas(W, H);
-    const progress = this.settings.stepMode === '月' ? this.currentMonthEle / this.wsgw.step_3 * W : parseFloat(this.yearUsage) / this.wsgw.step_3 * W;
+    const progress = this.settings.stepMode === '月' ? this.currentMonthEle / this.wsgw.step_3 * W : parseFloat(this.stepEle) / this.wsgw.step_3 * W;
     const circle = progress - 2 * r;
     const fgColor = new Color(this.settings.barColor || '#0db38e', 1);
     const bgColor = new Color(this.settings.barColor || '#0db38e', 0.3);
@@ -458,15 +467,15 @@ class Widget extends DmYY {
     this.drawLine(drawing, W - r, H, W - r, 0, bgColor, 2);
     this.drawLine(drawing, this.wsgw.step_2 / this.wsgw.step_3 * W, H, this.wsgw.step_2 / this.wsgw.step_3 * W, 0, bgColor, 2);
     this.fillRect(drawing, 0, (H - h) / 2, W, h, h / 2, bgColor);
-    this.fillRect(drawing, 0, (H - h) / 2, progress > W ? W : progress, h, h / 2, fgColor);
-    this.fillRect(drawing, circle > W - r * 2 ? W - r * 2 : circle, H / 2 - r, r * 2, r * 2, r, pointerColor);
+    this.fillRect(drawing, 0, (H - h) / 2, progress > W ? W : progress < r * 2 ? r * 2 : progress, h, h / 2, fgColor);
+    this.fillRect(drawing, circle > W - r * 2 ? W - r * 2 : circle < 0 ? 0 : circle, H / 2 - r, r * 2, r * 2, r, pointerColor);
     return drawing.getImage();
   };
   
   wideProgressBar() {
     const width = 200;
     const height = 42;
-    const progress = this.settings.stepMode === '月' ? this.currentMonthEle / this.wsgw.step_3 * width : parseFloat(this.yearUsage) / this.wsgw.step_3 * width;
+    const progress = this.settings.stepMode === '月' ? this.currentMonthEle / this.wsgw.step_3 * width : parseFloat(this.stepEle) / this.wsgw.step_3 * width;
     const drawing = this.makeCanvas(width, height);
     this.drawLine(drawing, this.wsgw.step_2 / this.wsgw.step_3 * width, height, this.wsgw.step_2 / this.wsgw.step_3 * width, 0, new Color(this.smallStackColor, 0.3), 2);
     this.fillRect(drawing, 0, 0, width, height, 6, new Color(this.smallStackColor, 0.3));
@@ -479,7 +488,7 @@ class Widget extends DmYY {
     const drawing = this.makeCanvas(n * 18 - 10, 50);
     let data = opt;
     if (data.length > n) {
-      data = data.splice(0, data.length - n);
+      data = data.slice(data.length - n);
     }
     const max = Math.max(...data);
     const min = max / 2;
@@ -517,7 +526,7 @@ class Widget extends DmYY {
     const fillColor = new Color(this.smallStackColor, 0.1);
     const tickColor = new Color(this.smallStackColor, 0.3);
     const lineWidth = circleRadius * 2;
-    let progress = this.settings.stepMode === '月' ? this.currentMonthEle / this.wsgw.step_3 : parseFloat(this.yearUsage) / this.wsgw.step_3;
+    let progress = this.settings.stepMode === '月' ? this.currentMonthEle / this.wsgw.step_3 : parseFloat(this.stepEle) / this.wsgw.step_3;
     progress = progress > 1 ? 1 : progress;
 
     this.drawArc(drawing, center, radius, startBgAngle, angleAt50 - gapAngle / 2, segments / 2, fillColor, lineWidth);
@@ -529,7 +538,7 @@ class Widget extends DmYY {
     this.drawTickMarks(radius, tickColor, startBgAngle, totalBgAngle, center, drawing);
 
     const startColor = new Color(this.smallStackColor);
-    const endColor = new Color(this.getDarkerHexColor(this.smallStackColor));
+    const endColor = new Color(this.endColor);
 
     let totalProgressAngle = totalBgAngle * progress;
     for (let i = 0; i < segments * progress; i++) {
@@ -565,17 +574,18 @@ class Widget extends DmYY {
   getWidgetScaleFactor() {
     const referenceScreenSize = { width: 430, height: 932, widgetSize: 170 };
     const screenData = [
-      { width: 440, height: 956, widgetSize: 170 }, 
-      { width: 430, height: 932, widgetSize: 170 }, 
-      { width: 428, height: 926, widgetSize: 170 },
-      { width: 414, height: 896, widgetSize: 169 },
-      { width: 414, height: 736, widgetSize: 159 },
-      { width: 393, height: 852, widgetSize: 158 },
-      { width: 390, height: 844, widgetSize: 158 },
-      { width: 375, height: 812, widgetSize: 155 },
-      { width: 375, height: 667, widgetSize: 148 },
-      { width: 360, height: 780, widgetSize: 155 },
-      { width: 320, height: 568, widgetSize: 141 }
+      { width: 440, height: 956, widgetSize: 170 }, // 16 Pro Max
+      { width: 430, height: 932, widgetSize: 170 }, // 16 Plus, 15 Plus, 15 Pro Max, 14 Pro Max
+      { width: 428, height: 926, widgetSize: 170 }, // 14 Plus, 13 Pro Max, 12 Pro Max
+      { width: 414, height: 896, widgetSize: 169 }, // 11 Pro Max, XS Max, 11, XR
+      { width: 402, height: 874, widgetSize: 162 }, // 16 Pro
+      { width: 414, height: 736, widgetSize: 159 }, // Home button Plus phones
+      { width: 393, height: 852, widgetSize: 158 }, // 16, 15, 15 Pro, 14 Pro
+      { width: 390, height: 844, widgetSize: 158 }, // 14, 13, 13 Pro, 12, 12 Pro
+      { width: 375, height: 812, widgetSize: 155 }, // 13 mini, 12 mini / 11 Pro, XS, X
+      { width: 375, height: 667, widgetSize: 148 }, // SE3, SE2, Home button Plus in Display Zoom mode
+      { width: 360, height: 780, widgetSize: 155 }, // 11 and XR in Display Zoom mode
+      { width: 320, height: 568, widgetSize: 141 } // SE1
     ];
 
     const deviceScreenWidth = Device.screenSize().width;
@@ -800,6 +810,50 @@ class Widget extends DmYY {
     const cacheFile = this.fm.joinPath(this.cachePath, cacheKey);
     this.fm.writeImage(cacheFile, img);
   };
+
+  async checkAndUpdateScript() {
+    const updateUrl = "https://raw.githubusercontent.com/anker1209/Scriptable/main/upcoming.json";
+    const scriptName = Script.name() + '.js'
+    
+    const request = new Request(updateUrl);
+    const response = await request.loadJSON();
+    const latestVersion = response.find(i => i.name === "sgcc").version;
+    const downloadUrl = response.downloadUrl;
+    const isUpdateAvailable = this.version !== latestVersion;
+
+    if (isUpdateAvailable) {
+      const alert = new Alert();
+      alert.title = "检测到新版本";
+      alert.message = `新版本：${latestVersion}，是否更新？`;
+      alert.addAction("更新");
+      alert.addCancelAction("取消");
+
+      const response = await alert.presentAlert();
+      if (response === 0) {
+        const updateRequest = new Request(downloadUrl);
+        const newScriptContent = await updateRequest.loadString();
+
+        const fm = FileManager[
+          module.filename.includes('Documents/iCloud~') ? 'iCloud' : 'local'
+        ]();
+        const scriptPath = fm.documentsDirectory() + `/${scriptName}`;
+        fm.writeString(scriptPath, newScriptContent);
+
+        const successAlert = new Alert();
+        successAlert.title = "更新成功";
+        successAlert.message = "脚本已更新，请关闭本脚本后重新打开!";
+        successAlert.addAction("确定");
+        await successAlert.present();
+        this.reopenScript();
+      }
+    } else {
+      const noUpdateAlert = new Alert();
+      noUpdateAlert.title = "无需更新";
+      noUpdateAlert.message = "当前已是最新版本。";
+      noUpdateAlert.addAction("确定");
+      await noUpdateAlert.present();
+    }
+  }
   // ######################################
   // ######################################
   // 获取当月电量
@@ -873,7 +927,8 @@ class Widget extends DmYY {
       this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
       this.yearUsage = parseFloat(billData.monthElecQuantity.dataInfo.totalEleNum) + Math.round(this.currentMonthEle);
       this.yearFee = parseFloat(billData.monthElecQuantity.dataInfo.totalEleCost).toFixed(2);
-      
+      this.stepEle = parseFloat(billData.stepElecQuantity[0].electricParticulars.totalYearPq || 0) + Math.round(this.currentMonthEle);
+
     } catch (e) {
       console.log(e);
     }
@@ -903,6 +958,7 @@ class Widget extends DmYY {
         this.name = this.settings.name;
         this.smallStackColor = this.settings.smallStackColor || this.smallStackColor;
         this.widgetStyle = this.settings.widgetStyle || this.widgetStyle;
+        this.endColor = this.settings.endColor || this.endColor;
         return;
     }
 
@@ -912,10 +968,12 @@ class Widget extends DmYY {
         this.name = this.settings.name_1;
         this.smallStackColor = this.settings.smallStackColor_1 || this.smallStackColor;
         this.widgetStyle = this.settings.widgetStyle_1 || this.widgetStyle;
+        this.endColor = this.settings.endColor_1 || this.endColor;
     } else if (i == 2) {
         this.name = this.settings.name_2;
         this.smallStackColor = this.settings.smallStackColor_2 || this.smallStackColor;
         this.widgetStyle = this.settings.widgetStyle_2 || this.widgetStyle;
+        this.endColor = this.settings.endColor_2 || this.endColor;
     } 
     this.index = i;
   };
@@ -1237,7 +1295,7 @@ class Widget extends DmYY {
         title: '重置颜色',
         menu: [
           {
-            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/reset.png',
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/clear.png',
             title: '重置颜色',
             desc: '重置当前颜色配置',
             name: 'reset',
@@ -1337,7 +1395,7 @@ class Widget extends DmYY {
         title: '重置尺寸',
         menu: [
           {
-            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/reset.png',
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/clear.png',
             title: '重置尺寸',
             desc: '重置当前尺寸配置',
             name: 'reset',
@@ -1367,27 +1425,27 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/firstRow.png',
             type: 'select',
             title: '第一栏显示内容',
-            options: ['组合一', '组合二', '阶梯电量'],
+            options: ['组合一', '组合二', '组合三', '阶梯电量'],
             val: 'firstRow',
           },
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/secondRow.png',
             type: 'select',
             title: '第二栏显示内容',
-            options: ['组合二', '组合一', '阶梯电量'],
+            options: ['组合二', '组合一', '组合三', '阶梯电量'],
             val: 'secondRow',
           },
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/thirdRow.png',
             type: 'select',
             title: '第三栏显示内容',
-            options: ['阶梯电量', '组合一', '组合二'],
+            options: ['阶梯电量', '组合一', '组合二', '组合三'],
             val: 'thirdRow',
           },
         ],
       },
       {
-        title: '',
+        title: '组合一显示内容',
         menu: [
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/group1Left.png',
@@ -1406,7 +1464,7 @@ class Widget extends DmYY {
         ],
       },
       {
-        title: '',
+        title: '组合二显示内容',
         menu: [
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/group2Left.png',
@@ -1421,6 +1479,25 @@ class Widget extends DmYY {
             title: '组合二右侧显示内容',
             options: ['年度电量', '年度电费', '上期电费', '上期电量', '日用电图表', '月用电图表', '近日用电', '本月电量', '电费余额', '不显示'],
             val: 'group2Right',
+          },
+        ],
+      },
+      {
+        title: '组合三显示内容',
+        menu: [
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/group3Left.png',
+            type: 'select',
+            title: '组合三左侧显示内容',
+            options: ['年度电费', '年度电量', '上期电费', '上期电量', '日用电图表', '月用电图表', '近日用电', '本月电量', '电费余额', '不显示'],
+            val: 'group3Left',
+          },
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/group3Right.png',
+            type: 'select',
+            title: '组合三右侧显示内容',
+            options: ['年度电量', '年度电费', '上期电费', '上期电量', '日用电图表', '月用电图表', '近日用电', '本月电量', '电费余额', '不显示'],
+            val: 'group3Right',
           },
         ],
       },
@@ -1576,9 +1653,16 @@ class Widget extends DmYY {
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor.png',
             type: 'color',
-            defaultValue : '#0db38e',
+            defaultValue : '#00CC99',
             title: '小组件颜色',
             val: 'smallStackColor',
+          },
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/endColor.png',
+            type: 'color',
+            defaultValue : '#006666',
+            title: '渐变色颜色',
+            val: 'endColor',
           },
         ],
       },
@@ -1602,9 +1686,16 @@ class Widget extends DmYY {
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor_1.png',
             type: 'color',
-            defaultValue : '#0db38e',
+            defaultValue : '#00CC99',
             title: '小组件颜色',
             val: 'smallStackColor_1',
+          },
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/endColor_1.png',
+            type: 'color',
+            defaultValue : '#006666',
+            title: '渐变色颜色',
+            val: 'endColor_1',
           },
         ],
       },
@@ -1628,9 +1719,16 @@ class Widget extends DmYY {
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor_2.png',
             type: 'color',
-            defaultValue : '#0db38e',
+            defaultValue : '#00CC99',
             title: '小组件颜色',
             val: 'smallStackColor_2',
+          },
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/endColor_2.png',
+            type: 'color',
+            defaultValue : '#006666',
+            title: '渐变色颜色',
+            val: 'endColor_2',
           },
         ],
       },
@@ -1649,6 +1747,15 @@ class Widget extends DmYY {
             type: 'switch',
             title: 'iCloud',
             val: 'useICloud',
+          },
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/update.png',
+            type: 'input',
+            title: '脚本更新',
+            name: 'update',
+            onClick: async () => {
+              await this.checkAndUpdateScript();
+            },
           },
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/interval.png',
