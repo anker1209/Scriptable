@@ -818,7 +818,7 @@ class Widget extends DmYY {
     const request = new Request(updateUrl);
     const response = await request.loadJSON();
     const latestVersion = response.find(i => i.name === "sgcc").version;
-    const downloadUrl = response.downloadUrl;
+    const downloadUrl = response.find(i => i.name === "sgcc").downloadUrl;
     const isUpdateAvailable = this.version !== latestVersion;
 
     if (isUpdateAvailable) {
