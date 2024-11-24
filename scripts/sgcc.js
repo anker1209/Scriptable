@@ -2,7 +2,7 @@
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.1
+ * version: 2.1.1
  * update: 2024/11/20
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，重写修改自作者@Yuheng0101
@@ -23,7 +23,7 @@ class Widget extends DmYY {
     this.Run();
   };
 
-  version = '2.1';
+  version = '2.1.1';
 
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
@@ -927,7 +927,7 @@ class Widget extends DmYY {
       this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
       this.yearUsage = parseFloat(billData.monthElecQuantity.dataInfo.totalEleNum) + Math.round(this.currentMonthEle);
       this.yearFee = parseFloat(billData.monthElecQuantity.dataInfo.totalEleCost).toFixed(2);
-      this.stepEle = parseFloat(billData.stepElecQuantity[0].electricParticulars.totalYearPq || 0) + Math.round(this.currentMonthEle);
+      this.stepEle = parseFloat(billData.stepElecQuantity[0].electricParticulars.totalYearPq || billData.monthElecQuantity.dataInfo.totalEleNum) + Math.round(this.currentMonthEle);
 
     } catch (e) {
       console.log(e);
