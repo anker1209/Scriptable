@@ -1,21 +1,21 @@
 [{
   "name": "sgcc",
-  "version":"2.1",
+  "version":"2.1.1",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/sgcc.js"
 },{
   "name": "ChinaMobile_2024",
-  "version":"2.0",
+  "version":"2.1",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaMobile_2024.js"
 },{
   "name": "ChinaTelecom_2024",
-  "version":"2.0",
+  "version":"2.1",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaTelecom_2024.js"
 },{
   "name": "ChinaUnicom_2024",
-  "version":"2.3",
+  "version":"2.4",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaUnicom_2024.js"
 },
