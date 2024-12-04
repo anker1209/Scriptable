@@ -18,5 +18,10 @@
   "version":"2.4",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaUnicom_2024.js"
+},{
+  "name": "ChinaBroadnet_2024",
+  "version":"1.1",
+  "notes": "",
+  "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaBroadnet_2024.js"
 },
 ]
