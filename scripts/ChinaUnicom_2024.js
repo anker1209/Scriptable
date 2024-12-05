@@ -1,9 +1,12 @@
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+// icon-color: red; icon-glyph: mobile-alt; share-sheet-inputs: file-url, url;
 /*
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.3
- * update: 2024/11/18
+ * version: 2.4
+ * update: 2024/12/02
  * 原创UI，修改套用请注明来源
  * 联通cookie获取方式（任选其一）：
  * 1、小一佬联通余量，教程: https://chinatelecomoperators.notion.site/iOS-6c4fc6433f28452b9e10aab1ed3eddc5
@@ -17,11 +20,13 @@ class Widget extends DmYY {
   constructor(arg) {
     super(arg);
     this.name = '中国联通';
-    this.en = 'ChinaUnicom_2021';
+    this.en = 'ChinaUnicom_2024';
     this.logo = 'https://raw.githubusercontent.com/anker1209/icon/main/zglt-big.png';
-    this.verticalLogo = 'https://raw.githubusercontent.com/anker1209/icon/main/zglt.png';
+    this.smallLogo = 'https://raw.githubusercontent.com/anker1209/icon/main/zglt.png';
     this.Run();
   }
+  
+  version = '2.4';
 
   cookie = '';
 
@@ -60,7 +65,7 @@ class Widget extends DmYY {
   fee = {
     title: '话费剩余',
     icon: 'antenna.radiowaves.left.and.right',
-    number: 0,
+    number: '0',
     iconColor: new Color('#F86527'),
     unit: '元',
     en: '¥',
@@ -69,7 +74,7 @@ class Widget extends DmYY {
   flow = {
     percent: 0,
     title: '已用流量',
-    number: 0,
+    number: '0',
     unit: 'MB',
     en: 'MB',
     icon: 'antenna.radiowaves.left.and.right',
@@ -82,7 +87,7 @@ class Widget extends DmYY {
   voice = {
     percent: 0,
     title: '语音剩余',
-    number: 0,
+    number: '0',
     unit: '分钟',
     en: 'MIN',
     icon: 'phone.badge.waveform.fill',
@@ -238,7 +243,7 @@ class Widget extends DmYY {
       const req = new Request(url);
       req.headers = {'cookie': this.cookie};
       const userInfo = await req.loadJSON();
-
+      
       if (userInfo.code === 'Y') {
         console.log('获取信息成功');
         console.log(userInfo.data);
@@ -257,7 +262,7 @@ class Widget extends DmYY {
             this.flow.unit = item.unit;
             this.flow.en = item.unit;
             this.flow.percent = item.persent ? (100 - item.persent).toFixed(2) : this.settings.flow ? ((this.flow.number / this.settings.flow) * 100).toFixed(2) : 100;
-            this.flow.title = item.remainTitle;
+            this.flow.title = item.remainTitle.replace(/通用/g, "");
           }
           if (item.type === 'voice') {
             this.voice.number = item.number;
@@ -276,25 +281,26 @@ class Widget extends DmYY {
     } catch (e) {
       console.log('获取信息失败：' + e);
     }
-  }
+  };
 
   async header(stack) {
     const headerStack = stack.addStack();
     headerStack.addSpacer();
     const logo = headerStack.addImage(await this.$request.get(this.logo, 'IMG'));
-    logo.imageSize = new Size(415 * this.logoScale, 125 * this.logoScale);
+    logo.imageSize = new Size(415 * this.logoScale * this.SCALE, 125 * this.logoScale * this.SCALE);
     headerStack.addSpacer();
     stack.addSpacer();
 
     const feeStack = stack.addStack();
     feeStack.centerAlignContent();
     feeStack.addSpacer();
-    const feeValue = feeStack.addText("¥" + `${this.fee.number}`);
-    feeValue.font = Font.mediumRoundedSystemFont(this.feeTextSize);
+    const feeValue = feeStack.addText(`${this.fee.number}`);
+    this.unit(feeStack, '元', 5 * this.SCALE, this.widgetColor);
+    feeValue.font = Font.boldRoundedSystemFont(this.feeTextSize * this.SCALE);
     feeValue.textColor = this.widgetColor;
     feeStack.addSpacer();
     stack.addSpacer();
-  }
+  };
 
   textLayout(stack, data) {
     const rowStack = stack.addStack();
@@ -304,15 +310,199 @@ class Widget extends DmYY {
     let iconElement = rowStack.addImage(icon.image);
     iconElement.imageSize = new Size(this.textSize, this.textSize);
     iconElement.tintColor = data.iconColor;
-    rowStack.addSpacer(4);
+    rowStack.addSpacer(4 * this.SCALE);
     let title = rowStack.addText(data.title);
     rowStack.addSpacer();
     let number = rowStack.addText(data.number + data.unit);
     [title, number].map(t => t.textColor = this.widgetColor);
-    [title, number].map(t => t.font = Font.systemFont(this.textSize));
-  }
+    [title, number].map(t => t.font = Font.systemFont(this.textSize * this.SCALE));
+  };
+
+  async setThirdWidget(widget) {
+    const amountStack = widget.addStack();
+    amountStack.centerAlignContent();
+
+    const icon = await this.$request.get(this.smallLogo, 'IMG');
+
+    if (this.settings.builtInColor === 'true') {
+      const iconStack = amountStack.addStack();
+      iconStack.setPadding(3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE);
+      iconStack.backgroundColor = this.fee.iconColor;
+      iconStack.cornerRadius = 12 * this.SCALE;
+      const iconImage = iconStack.addImage(icon);
+      iconImage.imageSize = new Size(18 * this.SCALE, 18 * this.SCALE);
+      iconImage.tintColor = Color.white();
+    } else {
+      const iconImage = amountStack.addImage(icon);
+      iconImage.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
+    }
+
+    amountStack.addSpacer();
+
+    const amountText = amountStack.addText(`${this.fee.number}`);
+    amountText.font = Font.boldRoundedSystemFont(24 * this.SCALE);
+    amountText.minimumScaleFactor = 0.5;
+    amountText.textColor = this.widgetColor;
+    this.unit(amountStack, '元', 7 * this.SCALE);
+
+    widget.addSpacer();
+
+    const mainStack = widget.addStack();
+    this.setRow(mainStack, this.flow, this.flowColorHex);
+    mainStack.addSpacer();
+    this.setRow(mainStack, this.voice, this.voiceColorHex);
+  };
+
+  async setForthWidget(widget) {
+    const bodyStack = widget.addStack();
+    //bodyStack.backgroundColor = Color.dynamic(new Color("#E2E2E7", 0), new Color("#2C2C2F"));
+    bodyStack.cornerRadius = 14 * this.SCALE;
+    bodyStack.layoutVertically();
+    const headerStack = bodyStack.addStack();
+    headerStack.setPadding(8 * this.SCALE, 12 * this.SCALE, 0, 12 * this.SCALE);
+    headerStack.layoutVertically();
+    const title = headerStack.addText(this.fee.title);
+    title.font = Font.systemFont(12 * this.SCALE);
+    title.textColor = this.widgetColor
+    title.textOpacity = 0.7;
+    const balanceStack = headerStack.addStack();
+    const balanceText = balanceStack.addText(`${this.fee.number}`);
+    balanceText.minimumScaleFactor = 0.5;
+    balanceText.font = Font.boldRoundedSystemFont(22 * this.SCALE);
+    const color = this.widgetColor;
+    balanceText.textColor = color;
+    this.unit(balanceStack, '元', 5 * this.SCALE, color);
+    balanceStack.addSpacer();
+    balanceStack.centerAlignContent();
   
-  async small(stack, data, logo = false) {
+    const icon = await this.$request.get(this.smallLogo, 'IMG');
+
+    if (this.settings.builtInColor === 'true') {
+      const iconStack = balanceStack.addStack();
+      iconStack.setPadding(3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE);
+      iconStack.backgroundColor = this.fee.iconColor;
+      iconStack.cornerRadius = 12 * this.SCALE;
+      const iconImage = iconStack.addImage(icon);
+      iconImage.imageSize = new Size(18 * this.SCALE, 18 * this.SCALE);
+      iconImage.tintColor = Color.white();
+    } else {
+      const iconImage = balanceStack.addImage(icon);
+      iconImage.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
+    }
+
+
+    bodyStack.addSpacer();
+    const mainStack = bodyStack.addStack();
+    mainStack.setPadding(8 * this.SCALE, 12 * this.SCALE, 8 * this.SCALE, 12 * this.SCALE);
+    mainStack.cornerRadius = 14 * this.SCALE;
+    mainStack.backgroundColor = Color.dynamic(new Color("#E2E2E7", 0.3), new Color("#2C2C2F", 1));
+    mainStack.layoutVertically();
+
+    this.setList(mainStack, this.flow);
+    mainStack.addSpacer();
+    this.setList(mainStack, this.voice);
+  };
+  
+  setList(stack, data) {
+    const rowStack = stack.addStack();
+    rowStack.centerAlignContent();
+    const lineStack = rowStack.addStack();
+    lineStack.size = new Size(8 * this.SCALE, 30 * this.SCALE); 
+    lineStack.cornerRadius = 4 * this.SCALE;
+    
+    lineStack.backgroundColor = data.iconColor;
+
+    rowStack.addSpacer(10 * this.SCALE);
+
+    const leftStack = rowStack.addStack();
+    leftStack.layoutVertically();
+    leftStack.addSpacer(2 * this.SCALE);
+
+    const titleStack = leftStack.addStack();
+    const title = titleStack.addText(data.title);
+    title.font = Font.systemFont(10 * this.SCALE); 
+    title.textColor = this.widgetColor;
+    title.textOpacity = 0.5;
+
+    const valueStack = leftStack.addStack();
+    valueStack.centerAlignContent();
+    const value = valueStack.addText(`${data.number}`);
+    value.font = Font.semiboldRoundedSystemFont(16 * this.SCALE);
+    value.textColor = this.widgetColor;
+    valueStack.addSpacer();
+
+    const unitStack = valueStack.addStack();
+    unitStack.cornerRadius = 4 * this.SCALE;
+    unitStack.borderWidth = 1;
+    unitStack.borderColor = data.iconColor;
+    unitStack.setPadding(1, 3 * this.SCALE, 1, 3 * this.SCALE);
+    unitStack.size = new Size(30 * this.SCALE, 0)
+    unitStack.backgroundColor = Color.dynamic(data.iconColor, new Color(data.iconColor.hex, 0.3));
+    const unit = unitStack.addText(data.en);
+    unit.font = Font.mediumRoundedSystemFont(10 * this.SCALE);
+    unit.textColor = Color.dynamic(Color.white(), data.iconColor);
+  };
+
+  setRow(stack, data, color) {
+    const stackWidth = 68 * this.SCALE;
+    const rowStack = stack.addStack();
+    rowStack.layoutVertically();
+    rowStack.size = new Size(stackWidth, 0);
+    const image = this.gaugeChart(data, color);
+    const imageStack = rowStack.addStack();
+    imageStack.layoutVertically();
+    imageStack.size = new Size(stackWidth, stackWidth);
+    imageStack.backgroundImage = image;
+    imageStack.addSpacer();
+    const iconStack = imageStack.addStack();
+    iconStack.addSpacer();
+    const sfs = SFSymbol.named(data.icon);
+    sfs.applyHeavyWeight();
+    const icon = iconStack.addImage(sfs.image);
+    icon.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
+    icon.tintColor = new Color(color);
+    iconStack.addSpacer();
+    imageStack.addSpacer(8 * this.SCALE);
+    const unitStack = imageStack.addStack();
+    unitStack.addSpacer();
+    const innerStack = unitStack.addStack();
+    innerStack.size = new Size(32 * this.SCALE, 0);
+    innerStack.setPadding(1, 1, 1, 1);
+    innerStack.backgroundColor = new Color(color);
+    innerStack.cornerRadius = 4 * this.SCALE;
+    const unit = innerStack.addText(data.en);
+    unit.font = Font.semiboldRoundedSystemFont(10 * this.SCALE);
+    unit.textColor = Color.white();
+    unitStack.addSpacer();
+    imageStack.addSpacer(4 * this.SCALE);
+
+    const infoStack = rowStack.addStack();
+    infoStack.cornerRadius = 12 * this.SCALE;
+    infoStack.layoutVertically();
+    let gradient = new LinearGradient();
+        gradient.colors = [new Color(color,0.1), new Color(color,0.01)];
+    gradient.locations = [0, 1];
+        gradient.startPoint = new Point(0, 0);
+        gradient.endPoint = new Point(0, 1);
+    infoStack.backgroundGradient = gradient;
+
+    const valueStack = infoStack.addStack();
+    valueStack.size = new Size(stackWidth, 0);
+    valueStack.setPadding(3 * this.SCALE, 0, 2 * this.SCALE, 0)
+    const value = valueStack.addText(`${data.number}`);
+    value.textColor = this.widgetColor;
+    value.font = Font.semiboldRoundedSystemFont(18 * this.SCALE);
+    value.centerAlignText();
+
+    const titleStack = infoStack.addStack();
+    titleStack.addSpacer();
+    const title = titleStack.addText(data.title);
+    title.font = Font.regularRoundedSystemFont(9 * this.SCALE);
+    title.textOpacity = 0.5;
+    titleStack.addSpacer();
+  };
+  
+  async small(stack, data, logo = false, en = false) {
     const bg = new LinearGradient();
     bg.locations = [0, 1];
     bg.endPoint = new Point(1, 0)
@@ -330,7 +520,10 @@ class Widget extends DmYY {
     const titleStack = leftStack.addStack();
     const title = titleStack.addText(data.title);
     const balanceStack = leftStack.addStack();
-    const balance = balanceStack.addText(`${data.number} ${data.en}`);
+    balanceStack.centerAlignContent();
+    const balanceUnit = en ? data.en : ''
+    const balance = balanceStack.addText(`${data.number} ${balanceUnit}`);
+    if (!en) this.addChineseUnit(balanceStack, data.unit, data.iconColor, 13 * this.SCALE);
     balance.font = Font.semiboldRoundedSystemFont(16 * this.SCALE);
     title.textOpacity = 0.5;
     title.font = Font.mediumSystemFont(11 * this.SCALE);
@@ -338,7 +531,7 @@ class Widget extends DmYY {
     rowStack.addSpacer();
     let iconImage;
     if (logo) {
-      const icon = await this.$request.get(this.verticalLogo, 'IMG');
+      const icon = await this.$request.get(this.smallLogo, 'IMG');
       iconImage = rowStack.addImage(icon);
     } else {
       const icon = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
@@ -347,9 +540,9 @@ class Widget extends DmYY {
     };
     iconImage.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
     iconImage.tintColor = data.iconColor;
-  }
+  };
 
-  async smallCell(stack, data, logo = false) {
+  async smallCell(stack, data, logo = false, en = false) {
     const bg = new LinearGradient();
     const padding = 6 * this.SCALE; 
     bg.locations = [0, 1];
@@ -368,7 +561,7 @@ class Widget extends DmYY {
     iconStack.cornerRadius = 17 * this.SCALE;
     let iconImage;
     if (logo) {
-      const icon = await this.$request.get(this.verticalLogo, 'IMG');
+      const icon = await this.$request.get(this.smallLogo, 'IMG');
       iconImage = iconStack.addImage(icon);
     } else {
       const icon = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
@@ -381,8 +574,10 @@ class Widget extends DmYY {
     const rightStack = rowStack.addStack();
     rightStack.layoutVertically();
     const balanceStack = rightStack.addStack();
-    const balance = balanceStack.addText(`${data.number} ${data.en}`);
-    balance.centerAlignText();
+    balanceStack.centerAlignContent();
+    const balanceUnit = en ? data.en : ''
+    const balance = balanceStack.addText(`${data.number} ${balanceUnit}`);
+    if (!en) this.addChineseUnit(balanceStack, data.unit, data.iconColor, 13 * this.SCALE);
     balance.font = Font.semiboldRoundedSystemFont(16 * this.SCALE);
     const titleStack = rightStack.addStack();
     const title = titleStack.addText(data.title);
@@ -391,7 +586,7 @@ class Widget extends DmYY {
     title.textOpacity = 0.5;
     title.font = Font.mediumSystemFont(11 * this.SCALE);
     [title, balance].map(t => t.textColor = data.iconColor);
-  }
+  };
   
   async mediumCell(canvas, stack, data, color, fee = false, percent) {
     const bg = new LinearGradient();
@@ -447,7 +642,7 @@ class Widget extends DmYY {
 
     dataStack.addSpacer(15);
     [title, number].map(t => t.textColor = new Color(color));
-  }
+  };
 
   async imageCell(canvas, stack, data, fee, percent) {
     const canvaStack = stack.addStack();
@@ -459,12 +654,12 @@ class Widget extends DmYY {
       this.ringContent(canvaStack, data, percent);
     } else {
       canvaStack.addSpacer(10);
-      const smallLogo = await this.$request.get(this.verticalLogo, 'IMG');
+      const smallLogo = await this.$request.get(this.smallLogo, 'IMG');
       const logoStack = canvaStack.addStack();
       logoStack.size = new Size(40, 40);
       logoStack.backgroundImage = smallLogo;
     }
-  }
+  };
 
   ringContent(stack, data, percent = false) {
     const rowIcon = stack.addStack();
@@ -501,23 +696,23 @@ class Widget extends DmYY {
     } else {
       [unit, number].map(t => t.textColor = this.widgetColor);
     }
-  }
+  };
 
-  makeCanvas() {
+  makeCanvas(w = this.canvSize, h = this.canvSize) {
     const canvas = new DrawContext();
     canvas.opaque = false;
     canvas.respectScreenScale = true;
-    canvas.size = new Size(this.canvSize, this.canvSize);
+    canvas.size = new Size(w, h);
     return canvas;
-  }
+  };
 
   sinDeg(deg) {
     return Math.sin((deg * Math.PI) / 180);
-  }
+  };
 
   cosDeg(deg) {
     return Math.cos((deg * Math.PI) / 180);
-  }
+  };
 
   drawArc(canvas, deg, fillColor, strokeColor) {
     let ctr = new Point(this.canvSize / 2, this.canvSize / 2);
@@ -538,7 +733,119 @@ class Widget extends DmYY {
       canvas.setStrokeColor(strokeColor)
       canvas.fillEllipse(rect_r);
     }
-  }
+  };
+  
+  fillRect(drawing, x, y, width, height, cornerradio, color) {
+    let path = new Path();
+    let rect = new Rect(x, y, width, height);
+    path.addRoundedRect(rect, cornerradio, cornerradio);
+    drawing.addPath(path);
+    drawing.setFillColor(color);
+    drawing.fillPath();
+  };
+  
+  progressBar(data) {
+    const W = 60, H = 9 , r = 4.5, h = 3;
+    const drawing = this.makeCanvas(W, H);
+    const progress = data.percent / 100 * W;
+    const circle = progress - 2 * r;
+    const fgColor = data.iconColor;
+    const bgColor = new Color(data.iconColor.hex, 0.3);
+    const pointerColor = data.iconColor;
+    this.fillRect(drawing, 0, (H - h) / 2, W, h, h / 2, bgColor);
+    this.fillRect(drawing, 0, (H - h) / 2, progress > W ? W : progress < r * 2 ? r * 2 : progress, h, h / 2, fgColor);
+    this.fillRect(drawing, circle > W - r * 2 ? W - r * 2 : circle < 0 ? 0 : circle, H / 2 - r, r * 2, r * 2, r, pointerColor);
+    return drawing.getImage();
+  };
+  
+  gaugeChart(data, color) {
+    const drawing = this.makeCanvas();
+    const center = new Point(this.canvSize / 2, this.canvSize / 2);
+    const radius = this.canvSize / 2 - 10;
+    const circleRadius = 8;
+    const startBgAngle = (10 * Math.PI) / 12;
+    const endBgAngle = (26 * Math.PI) / 12;
+    const totalBgAngle = endBgAngle - startBgAngle;
+    const gapAngle = Math.PI / 80;
+    const fillColor = data.BGColor;
+    const lineWidth = circleRadius * 2;
+    let progress = data.percent / 100;
+
+    this.drawLineArc(drawing, center, radius, startBgAngle, endBgAngle, 1, fillColor, lineWidth);
+
+    this.drawHalfCircle(center.x + radius * Math.cos(startBgAngle), center.y + radius * Math.sin(startBgAngle), startBgAngle, circleRadius, drawing, fillColor, -1);
+    this.drawHalfCircle(center.x + radius * Math.cos(endBgAngle), center.y + radius * Math.sin(endBgAngle), endBgAngle, circleRadius, drawing, fillColor, 1);
+
+    let totalProgressAngle = totalBgAngle * progress;
+    for (let i = 0; i < 240 * progress; i++) { 
+      const t = i / 240;
+      const angle = startBgAngle + totalBgAngle * t;
+      const x = center.x + radius * Math.cos(angle);
+      const y = center.y + radius * Math.sin(angle);
+
+      const circleRect = new Rect(x - circleRadius, y - circleRadius, circleRadius * 2, circleRadius * 2);
+      drawing.setFillColor(this.gradient ? new Color(data.FGColor[i]) : data.FGColor);
+      drawing.fillEllipse(circleRect);
+    }
+    return drawing.getImage();
+  };
+
+  drawHalfCircle(centerX, centerY, startAngle, circleRadius, context, fillColor, direction = 1) {
+    const halfCirclePath = new Path();
+    const startX = centerX + circleRadius * Math.cos(startAngle);
+    const startY = centerY + circleRadius * Math.sin(startAngle);
+    halfCirclePath.move(new Point(startX, startY));
+
+    for (let i = 0; i <= 10; i++) {
+        const t = i / 10;
+        const angle = startAngle + direction * Math.PI * t;
+        const x = centerX + circleRadius * Math.cos(angle);
+        const y = centerY + circleRadius * Math.sin(angle);
+        halfCirclePath.addLine(new Point(x, y));
+    }
+
+    context.setFillColor(fillColor);
+    context.addPath(halfCirclePath);
+    context.fillPath();
+  };
+
+  drawLineArc(context, center, radius, startAngle, endAngle, segments, fillColor, lineWidth, dir = 1) {
+    const path = new Path();
+    const startX = center.x + radius * Math.cos(startAngle);
+    const startY = center.y + radius * Math.sin(startAngle);
+    path.move(new Point(startX, startY));
+
+    const steps = 100;
+    for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        const angle = startAngle + (endAngle - startAngle) * t;
+        const x = center.x + radius * Math.cos(angle);
+        const y = center.y + radius * Math.sin(angle);
+        path.addLine(new Point(x, y));
+    }
+
+    context.setStrokeColor(fillColor);
+    context.setLineWidth(lineWidth);
+    context.addPath(path);
+    context.strokePath();
+  };
+  
+  addChineseUnit(stack, text, color, size) {
+    let textElement = stack.addText(text);
+    textElement.textColor = color;
+    textElement.font = Font.semiboldSystemFont(size);
+    return textElement;
+  };
+
+  unit(stack, text, spacer, color = this.widgetColor) {
+    stack.addSpacer(1);
+    const unitStack = stack.addStack();
+    unitStack.layoutVertically();
+    unitStack.addSpacer(spacer);
+    const unitTitle = unitStack.addText(text);
+    unitTitle.font = Font.semiboldRoundedSystemFont(10);
+    unitTitle.textColor = color;
+  };
 
   arrColor() {
     let colorArr = [
@@ -596,7 +903,7 @@ class Widget extends DmYY {
     ];
     let colors = colorArr[Math.floor(Math.random() * colorArr.length)];
     return colors;
-  }
+  };
 
   getIconColorSet() {
     const colors = [
@@ -653,7 +960,7 @@ class Widget extends DmYY {
     ];
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
-  }
+  };
 
   gradientColor(colors, step) {
     var startRGB = this.colorToRgb(colors[0]),
@@ -676,7 +983,7 @@ class Widget extends DmYY {
      colorArr.push(hex);
     }
     return colorArr;
-  }
+  };
 
   colorToRgb(sColor) {
     var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
@@ -731,7 +1038,7 @@ class Widget extends DmYY {
     } else {
       return _this;
     }
-  }
+  };
 
   getWidgetScaleFactor() {
     const referenceScreenSize = { width: 430, height: 932, widgetSize: 170 };
@@ -765,26 +1072,78 @@ class Widget extends DmYY {
 
     return Math.floor(scaleFactor * 100) / 100;
   };
+  
+  async checkAndUpdateScript() {
+    const updateUrl = "https://raw.githubusercontent.com/anker1209/Scriptable/main/upcoming.json";
+    const scriptName = Script.name() + '.js'
+    
+    const request = new Request(updateUrl);
+    const response = await request.loadJSON();
+    const latestVersion = response.find(i => i.name === "ChinaUnicom_2024").version;
+    const downloadUrl = response.find(i => i.name === "ChinaUnicom_2024").downloadUrl;
+    const isUpdateAvailable = this.version !== latestVersion;
+
+    if (isUpdateAvailable) {
+      const alert = new Alert();
+      alert.title = "检测到新版本";
+      alert.message = `新版本：${latestVersion}，是否更新？`;
+      alert.addAction("更新");
+      alert.addCancelAction("取消");
+
+      const response = await alert.presentAlert();
+      if (response === 0) {
+        const updateRequest = new Request(downloadUrl);
+        const newScriptContent = await updateRequest.loadString();
+
+        const fm = FileManager[
+          module.filename.includes('Documents/iCloud~') ? 'iCloud' : 'local'
+        ]();
+        const scriptPath = fm.documentsDirectory() + `/${scriptName}`;
+        fm.writeString(scriptPath, newScriptContent);
+
+        const successAlert = new Alert();
+        successAlert.title = "更新成功";
+        successAlert.message = "脚本已更新，请关闭本脚本后重新打开!";
+        successAlert.addAction("确定");
+        await successAlert.present();
+        this.reopenScript();
+      }
+    } else {
+      const noUpdateAlert = new Alert();
+      noUpdateAlert.title = "无需更新";
+      noUpdateAlert.message = "当前已是最新版本。";
+      noUpdateAlert.addAction("确定");
+      await noUpdateAlert.present();
+    }
+  };
 
   renderSmall = async (w) => {
     w.setPadding(this.smallPadding, this.smallPadding, this.smallPadding, this.smallPadding);
-    if (this.widgetStyle == "1"){
+    if (this.widgetStyle == "1") {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
       await this.small(bodyStack, this.fee, true);
       bodyStack.addSpacer();
-      await this.small(bodyStack, this.flow);
+      await this.small(bodyStack, this.flow, false, true);
       bodyStack.addSpacer();
       await this.small(bodyStack, this.voice);
-    } else if (this.widgetStyle == "2"){
+    } else if (this.widgetStyle == "2") {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
       await this.smallCell(bodyStack, this.fee, true);
       bodyStack.addSpacer();
-      await this.smallCell(bodyStack, this.flow);
+      await this.smallCell(bodyStack, this.flow, false, true);
       bodyStack.addSpacer();
       await this.smallCell(bodyStack, this.voice);
-    } else if (this.widgetStyle == "3"){
+    } else if (this.widgetStyle == "3") {
+      const bodyStack = w.addStack();
+      bodyStack.layoutVertically();
+      await this.setThirdWidget(bodyStack);
+    } else if (this.widgetStyle == "4") {
+      const bodyStack = w.addStack();
+      bodyStack.layoutVertically();
+      await this.setForthWidget(bodyStack);
+    } else if (this.widgetStyle == "5") {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
       await this.header(bodyStack);
@@ -1026,10 +1385,19 @@ class Widget extends DmYY {
         title: '组件配置',
         menu: [
           {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/update.png',
+            type: 'input',
+            title: '脚本更新',
+            name: 'update',
+            onClick: async () => {
+              await this.checkAndUpdateScript();
+            },
+          },
+          {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/widgetStyle.png',
             type: 'select',
             title: '组件样式',
-            options: ['1', '2', '3', '4'],
+            options: ['1', '2', '3', '4', '5', '6'],
             val: 'widgetStyle',
           },
         ],
@@ -1121,7 +1489,7 @@ class Widget extends DmYY {
         ],
       });
     }
-  }
+  };
 
   async render() {
     await this.init();
@@ -1134,7 +1502,7 @@ class Widget extends DmYY {
     } else {
       return await this.renderSmall(widget);
     }
-  }
+  };
 }
 
 await Runing(Widget, args.widgetParameter, false);
