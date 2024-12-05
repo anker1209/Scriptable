@@ -1,9 +1,12 @@
+// Variables used by Scriptable.
+// These must be at the very top of the file. Do not edit.
+// icon-color: cyan; icon-glyph: magic;
 /*
  * @author: 脑瓜
- * @feedback https://t.me/Scriptable_CN
+ * @feedback: https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.1.2
- * update: 2024/12/01
+ * version: 2.2
+ * update: 2024/12/02
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，重写修改自作者@Yuheng0101
  * 重写: https://raw.githubusercontent.com/dompling/Script/master/wsgw/index.js
@@ -23,7 +26,7 @@ class Widget extends DmYY {
     this.Run();
   };
 
-  version = '2.1.2';
+  version = '2.2';
 
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
@@ -43,20 +46,21 @@ class Widget extends DmYY {
   SCALE = 1;
   barHeight = 12;
   update = this.formatDate();
-  smallStackColor = '#00CC99';
-  endColor = '#006666';
+  smallStackColor = '#3A9690';
+  endColor = '#3A9690';
+  lastColor = '#00CC99'
   widgetStyle = '1';
   
   dayElePq = [];
   monthElePq = [];
   
   size = {
-    logo : 48,
-    leftStack : 130,
-    smallFont : 12,
-    bigFont : 18,
-    balance : 20,
-    subSpacer : 6.5,
+    logo : 48 * 0.95,
+    leftStack : 130 * 0.95,
+    smallFont : 12 * 0.95,
+    bigFont : 18 * 0.95,
+    balance : 20 * 0.95,
+    subSpacer : 6.5 * 0.95,
   };
   
   wsgw = {
@@ -90,29 +94,6 @@ class Widget extends DmYY {
     }
   };
 
-  getWidgetValue(key) {
-    switch (key) {
-      case '上期电费' :
-      return `¥${this.monthFee}`;
-      case '上期电量' :
-      return `${this.monthUsage}`;
-      case '年度电费':
-      return `¥${this.yearFee}`;
-      case '年度电量':
-      return `${this.yearUsage}`;
-      case '本月电量':
-      return `${this.currentMonthEle}`;
-      case '近日用电':
-      const arr = this.dayElePq.map((item) => item.value).reverse();
-      this.dayFee = arr[arr.length - 1] || 0;
-      return `${this.dayFee}`;
-      case '电费余额':
-      return `¥${this.remainFee}`;
-      default:
-      return ' ';
-    }
-  };
-
   getWidgetData(key) {
     switch (key) {
       case '上期电费' :
@@ -126,7 +107,7 @@ class Widget extends DmYY {
       case '本月电量':
       return [key, `${this.currentMonthEle}`, '度'];
       case '近日用电':
-      const arr = this.dayElePq.map((item) => item.value).reverse();
+      const arr = this.dayElePq.map((item) => item.elePq).reverse();
       this.dayFee = arr[arr.length - 1] || 0;
       return [key, `${this.dayFee}`, '度'];
       case '电费余额':
@@ -162,7 +143,7 @@ class Widget extends DmYY {
       this.unitContent(bodyStack, '本月电量', `${this.currentMonthEle}`, false, right);
       break;
       case '近日用电':
-      const arr = this.dayElePq.map((item) => item.value).reverse();
+      const arr = this.dayElePq.map((item) => item.elePq).reverse();
       this.dayFee = arr[arr.length - 1] || 0;
       this.unitContent(bodyStack, '近日用电', `${this.dayFee}`, false, right);
       break;
@@ -172,7 +153,7 @@ class Widget extends DmYY {
       case '日用电图表':
       if (!this.data[this.index]) return;
       const dayAmount = parseFloat(this.settings.dayAmount) || 5;
-      const dayOpt = this.dayElePq.map((item) => item.value).reverse();
+      const dayOpt = this.dayElePq.map((item) => item.elePq).reverse();
       if (dayOpt.every(num => num === 0)) return;
       const dayChart = bodyStack.addImage(this.chartBar(dayOpt, dayAmount));
       dayChart.imageSize = new Size((dayAmount * 18 - 10) * scale, 50 * scale);
@@ -207,7 +188,7 @@ class Widget extends DmYY {
     bigText.font = Font.mediumRoundedSystemFont(this.size.bigFont)
   };
 
-  //  阶梯电量Stack
+  // 阶梯电量Stack
   stepEleStack(stack) {
     stack.layoutVertically();
     const textStack = stack.addStack();
@@ -226,15 +207,16 @@ class Widget extends DmYY {
     });
   };
 
-  //  阶梯电量状态文本
+  // 阶梯电量状态文本
   stepEleText() {
     let step = {
       text: '一档·0%',
       color: this.widgetColor,
       progress: 0,
       icon: '1.square',
+      level: 1
     };
-
+    
     const isMonthly = this.settings.stepMode === '月';
 
     const currentUsage = parseFloat(this.currentMonthEle);
@@ -250,31 +232,35 @@ class Widget extends DmYY {
 
     if ((isMonthly && currentUsage < this.wsgw.step_2) || (!isMonthly && totalUsage < this.wsgw.step_2)) {
       step = {
-        text: `一档·${per_step_1}%`,
+        text: `第一阶梯·${per_step_1}%`,
         color: this.widgetColor,
         progress: `${per_step_1}%`,
         icon: '1.square',
+        level: 1
       };
     } else if ((isMonthly && currentUsage > this.wsgw.step_3) || (!isMonthly && totalUsage > this.wsgw.step_3)) {
+      const per_step_3 = (per_step_2 - 100).toFixed(2);
       step = {
-        text: `三档·${per_step_2}%`,
+        text: `第三阶梯·${per_step_3}%`,
         color: new Color('#DE2A18'),
-        progress: `${per_step_2}%`,
+        progress: `${per_step_3}%`,
         icon: '3.square',
+        level: 3
       };
     } else {
       step = {
-        text: `二档·${per_step_2}%`,
+        text: `第二阶梯·${per_step_2}%`,
         color: this.widgetColor,
         progress: `${per_step_2}%`,
         icon: '2.square',
+        level: 2
       };
     }
 
     return step;
   };
 
-  //  单位
+  // 单位
   unit(stack, text, spacer, corlor = this.widgetColor, overDue = false) {
     stack.addSpacer(1);
     const unitStack = stack.addStack();
@@ -285,7 +271,14 @@ class Widget extends DmYY {
     unitTitle.textColor = overDue ? new Color('DE2A18') : corlor;
   };
 
-  //  分栏
+  addChineseUnit(stack, text, color, size) {
+    let textElement = stack.addText(text);
+    textElement.textColor = color;
+    textElement.font = Font.mediumSystemFont(size);
+    return textElement;
+  };
+
+  // 分栏
   split(stack, width, height, ver = false) {
     const splitStack = stack.addStack();
     splitStack.size = new Size(width, height);
@@ -293,7 +286,7 @@ class Widget extends DmYY {
     splitStack.addSpacer();
     splitStack.backgroundColor = Color.dynamic(new Color('#B6B5BA'), new Color('#414144'));
   };
-  //  标题
+  // 标题
   setTitle (stack, iconColor, nameColor) {
     const nameStack = stack.addStack();
     const iconSFS = SFSymbol.named('house.fill');
@@ -307,7 +300,47 @@ class Widget extends DmYY {
     name.textColor = nameColor;
   };
   
-  //  更新时间
+  setList(stack, data, color) {
+    const rowStack = stack.addStack();
+    rowStack.centerAlignContent();
+    const lineStack = rowStack.addStack();
+    lineStack.size = new Size(8 * this.SCALE, 30 * this.SCALE); 
+    lineStack.cornerRadius = 4 * this.SCALE;
+    
+    lineStack.backgroundColor = new Color(color);
+
+    rowStack.addSpacer(10 * this.SCALE);
+
+    const leftStack = rowStack.addStack();
+    leftStack.layoutVertically();
+    leftStack.addSpacer(2 * this.SCALE);
+
+    const titleStack = leftStack.addStack();
+    const title = titleStack.addText(data[0]);
+    title.font = Font.systemFont(10 * this.SCALE); 
+    title.textColor = this.widgetColor;
+    title.textOpacity = 0.5;
+
+    const valueStack = leftStack.addStack();
+    valueStack.centerAlignContent();
+    const value = valueStack.addText(data[1]);
+    value.font = Font.semiboldRoundedSystemFont(16 * this.SCALE);
+    value.textColor = this.widgetColor;
+    valueStack.addSpacer();
+
+    const unitStack = valueStack.addStack();
+    unitStack.cornerRadius = 4 * this.SCALE;
+    unitStack.borderWidth = 1;
+    unitStack.borderColor = new Color(color);
+    unitStack.setPadding(1, 3 * this.SCALE, 1, 3 * this.SCALE);
+    unitStack.size = new Size(30 * this.SCALE, 0)
+    unitStack.backgroundColor = Color.dynamic(new Color(color), new Color(color, 0.3));
+    const unit = unitStack.addText(data[2]);
+    unit.font = Font.mediumRoundedSystemFont(10 * this.SCALE);
+    unit.textColor = Color.dynamic(Color.white(), new Color(color));
+  };
+  
+  // 更新时间
   setUpdateStack (stack, color) {
     const updateStack = stack.addStack();
     updateStack.addSpacer();
@@ -316,15 +349,17 @@ class Widget extends DmYY {
     updataIcon.applyHeavyWeight();
     const updateImg = updateStack.addImage(updataIcon.image);
     updateImg.tintColor = color;
+    updateImg.imageOpacity = 0.5;
     updateImg.imageSize = new Size(10, 10);
     updateStack.addSpacer(3);
     const updateText = updateStack.addText(this.getTime());
     updateText.font = Font.mediumSystemFont(10);
     updateText.textColor = color;
+    updateText.textOpacity = 0.5;
     updateStack.addSpacer();
   };
   
-  //  余额
+  // 余额
   setBalanceStack (stack, color, padding, balanceSize, titleSize, spacer) {
     let balance = this.balance;
     let balanceTitle = this.isOverdue ? '电费欠费' : '电费余额';
@@ -361,6 +396,18 @@ class Widget extends DmYY {
     balanceTitleText.textColor =  this.isOverdue ? new Color('DE2A18') : this.widgetColor;
     balanceTitleText.font =  Font.semiboldSystemFont(titleSize);
     balanceTitleText.textOpacity = 0.5;
+  };
+
+  getLogo = async () => {
+    var logo;
+    if (this.settings.logoImg ==='铁塔') {
+      logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw2.png', 'tower.png');
+    } else if (this.settings.logoImg ==='国家电网' || !this.settings.logoImg || !this.settings.customizeUrl) {
+      logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw.png', 'wsgw.png');
+    } else {
+      logo = await this.getImageByUrl(this.settings.customizeUrl, 'customize.png');
+    };
+    return logo
   };
   // ######################################
   // ######################################
@@ -520,39 +567,87 @@ class Widget extends DmYY {
     const startBgAngle = (11 * Math.PI) / 12;
     const endBgAngle = (25 * Math.PI) / 12;
     const totalBgAngle = endBgAngle - startBgAngle;
-    const segments = 100;
-    const gapAngle = Math.PI / 80;
-    const angleAt50 = startBgAngle + totalBgAngle * (this.wsgw.step_2 / this.wsgw.step_3);
-    const fillColor = new Color(this.smallStackColor, 0.1);
-    const tickColor = new Color(this.smallStackColor, 0.3);
+    const gapAngle = Math.PI / 15;
     const lineWidth = circleRadius * 2;
-    let progress = this.settings.stepMode === '月' ? this.currentMonthEle / this.wsgw.step_3 : parseFloat(this.stepEle) / this.wsgw.step_3;
+    
+    const colors = [
+    { base: new Color("#00CC99", 0.1), progress: new Color("#00CC99") },
+    { base: new Color("#FFD700", 0.1), progress: new Color("#FFD700") },
+    { base: new Color("#FF4500", 0.1), progress: new Color("#FF4500") },
+    { base: new Color("#800020", 0.1), progress: new Color("#800020") }
+    ];
+
+    const segmentAngle = (totalBgAngle - 2 * gapAngle) / 3;
+    
+    const step = this.stepEleText();
+
+    const level = step.level;
+    let progress = parseFloat(step.progress.slice(0, -1)) / 100;
     progress = progress > 1 ? 1 : progress;
+    
+    for (let i = 0; i < 3; i++) {
+      const segmentStartAngle = startBgAngle + i * (segmentAngle + gapAngle);
+      const segmentEndAngle = segmentStartAngle + segmentAngle;
 
-    this.drawArc(drawing, center, radius, startBgAngle, angleAt50 - gapAngle / 2, segments / 2, fillColor, lineWidth);
-    this.drawArc(drawing, center, radius, angleAt50 + gapAngle / 2, endBgAngle, segments / 2, fillColor, lineWidth);
+      this.drawArc(
+        drawing,
+        center,
+        radius,
+        segmentStartAngle,
+        segmentEndAngle,
+        100,
+        colors[i].base,
+        lineWidth
+      );
 
-    this.drawHalfCircle(center.x + radius * Math.cos(startBgAngle), center.y + radius * Math.sin(startBgAngle), startBgAngle, circleRadius, drawing, fillColor, -1);
-    this.drawHalfCircle(center.x + radius * Math.cos(endBgAngle), center.y + radius * Math.sin(endBgAngle), endBgAngle, circleRadius, drawing, fillColor, 1);
+      this.drawHalfCircle(
+        center.x + radius * Math.cos(segmentStartAngle),
+        center.y + radius * Math.sin(segmentStartAngle),
+        segmentStartAngle,
+        circleRadius,
+        drawing,
+        colors[i].base,
+        -1
+      );
+      this.drawHalfCircle(
+        center.x + radius * Math.cos(segmentEndAngle),
+        center.y + radius * Math.sin(segmentEndAngle),
+        segmentEndAngle,
+        circleRadius,
+        drawing,
+        colors[i].base,
+        1
+      );
 
-    this.drawTickMarks(radius, tickColor, startBgAngle, totalBgAngle, center, drawing);
+      if (level > i) {
+        const stepColors = this.gradientColor([`#${colors[i].progress.hex}`, `#${colors[i+1].progress.hex}`], 51);
+        const isCurrentLevel = level === i + 1;
+        const progressEndAngle = isCurrentLevel
+          ? segmentStartAngle + progress * segmentAngle
+          : segmentEndAngle;
+        const p = isCurrentLevel ? progress * 50 : 50; // 插值因子
+        this.lastColor = this.gradientColor([`#${colors[level - 1].progress.hex}`, `#${colors[level].progress.hex}`], 51)[Math.round(p)];
 
-    const startColor = new Color(this.smallStackColor);
-    const endColor = new Color(this.endColor);
+        for (let j = 0; j <= p; j++) {
+          const t = j / p;
+          const angle = segmentStartAngle + t * (progressEndAngle - segmentStartAngle);
+          const x = center.x + radius * Math.cos(angle);
+          const y = center.y + radius * Math.sin(angle);
 
-    let totalProgressAngle = totalBgAngle * progress;
-    for (let i = 0; i < segments * progress; i++) {
-      const t = i / segments;
-      const angle = startBgAngle + totalBgAngle * t;
-      const x = center.x + radius * Math.cos(angle);
-      const y = center.y + radius * Math.sin(angle);
-
-      const circleRect = new Rect(x - circleRadius, y - circleRadius, circleRadius * 2, circleRadius * 2);
-      drawing.setFillColor(this.interpolateColor(startColor, endColor, t));
-      drawing.fillEllipse(circleRect);
+          const circleRect = new Rect(
+            x - circleRadius,
+            y - circleRadius,
+            circleRadius * 2,
+            circleRadius * 2
+          );
+          drawing.setFillColor(new Color(stepColors[j]));
+          drawing.fillEllipse(circleRect);
+        }
+      }
     }
+
     return drawing.getImage();
-  };
+  }
   // ######################################
   // ######################################
   formatDate() {
@@ -600,36 +695,88 @@ class Widget extends DmYY {
       return 1;
     };
 
-    const scaleFactor = (matchingScreen.widgetSize - 30 ) / (referenceScreenSize.widgetSize - 30) * 0.95;
+    const scaleFactor = (matchingScreen.widgetSize - 30 ) / (referenceScreenSize.widgetSize - 30);
 
     return Math.floor(scaleFactor * 100) / 100;
   };
 
-  // 线性渐变颜色函数
-  interpolateColor(start, end, t) {
-    let r = Math.round(start.red * 255 + t * (end.red * 255 - start.red * 255));
-    let g = Math.round(start.green * 255 + t * (end.green * 255 - start.green * 255));
-    let b = Math.round(start.blue * 255 + t * (end.blue * 255 - start.blue * 255));
-    return new Color(`#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`);
+  gradientColor(colors, step) {
+    var startRGB = this.colorToRgb(colors[0]),
+    startR = startRGB[0],
+    startG = startRGB[1],
+    startB = startRGB[2];
+
+    var endRGB = this.colorToRgb(colors[1]),
+    endR = endRGB[0],
+    endG = endRGB[1],
+    endB = endRGB[2];
+
+    var sR = (endR - startR) / step,
+    sG = (endG - startG) / step,
+    sB = (endB - startB) / step;
+
+    var colorArr = [];
+    for (var i = 0;i < step; i++) {
+     var hex = this.colorToHex('rgb(' + parseInt((sR * i + startR)) + ',' + parseInt((sG * i + startG)) + ',' + parseInt((sB * i + startB)) + ')');
+     colorArr.push(hex);
+    }
+    return colorArr;
+  }
+
+  colorToRgb(sColor) {
+    var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+    var sColor = sColor.toLowerCase();
+    if (sColor && reg.test(sColor)) {
+      if (sColor.length === 4) {
+        var sColorNew = "#";
+        for (var i = 1; i < 4; i += 1) {
+          sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+        }
+        sColor = sColorNew;
+      }
+      var sColorChange = [];
+      for (var i = 1; i < 7; i += 2) {
+        sColorChange.push(parseInt("0x" + sColor.slice(i, i + 2)));
+      }
+      return sColorChange;
+    } else {
+      return sColor;
+    }
   };
-  
-  getDarkerHexColor(hex, amount = 50) {
 
-    let r = parseInt(hex.substring(1, 3), 16);
-    let g = parseInt(hex.substring(3, 5), 16);
-    let b = parseInt(hex.substring(5, 7), 16);
-
-    r = Math.max(0, r - amount);
-    g = Math.max(0, g - amount);
-    b = Math.max(0, b - amount);
-
-    const toHex = (value) => {
-      const hex = value.toString(16);
-      return hex.length === 1 ? "0" + hex : hex;
-    };
-
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-  };
+  colorToHex(rgb) {
+    var _this = rgb;
+    var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+    if (/^(rgb|RGB)/.test(_this)) {
+      var aColor = _this.replace(/(?:\(|\)|rgb|RGB)*/g,"").split(",");
+      var strHex = "#";
+      for (var i = 0; i < aColor.length; i++) {
+        var hex = Number(aColor[i]).toString(16);
+        hex = hex.length < 2 ? 0 + '' + hex : hex;
+        if (hex === "0") {
+          hex += hex;
+        }
+        strHex += hex;
+      }
+      if (strHex.length !== 7) {
+        strHex = _this;
+      }
+      return strHex;
+    } else if (reg.test(_this)) {
+      var aNum = _this.replace(/#/,"").split("");
+      if (aNum.length === 6) {
+        return _this;
+      } else if (aNum.length === 3) {
+        var numHex = "#";
+        for (var i = 0; i < aNum.length; i+=1) {
+          numHex += (aNum[i] + aNum[i]);
+        }
+        return numHex;
+      }
+    } else {
+      return _this;
+    }
+  }
 
   createCenteredText(stack, content, unit, fontIndex, fontSize, color, opacity = 1, icon) {
     const systemFonts = [
@@ -681,13 +828,6 @@ class Widget extends DmYY {
     textElement.font = Font.mediumSystemFont(10 * this.SCALE);
     outStack.addSpacer();
     return outStack;
-  };
-
-  addChineseUnit(stack, text, color, size) {
-    let textElement = stack.addText(text);
-    textElement.textColor = color;
-    textElement.font = Font.mediumSystemFont(size);
-    return textElement;
   };
   // ######################################
   // ######################################
@@ -856,12 +996,86 @@ class Widget extends DmYY {
   }
   // ######################################
   // ######################################
+  getBimonthlyStepEle() {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    const data = this.monthElePq
+
+    // 工具函数：根据年份和月份生成标签
+    function getLabel(year, month) {
+      return `${year}${month.toString().padStart(2, '0')}`;
+    }
+
+    // 工具函数：查找数据
+    function findData(label) {
+      return data.find(item => item.label === label);
+    }
+
+    // 定义 stepEle 的初始值
+    let stepEle = 0;
+
+    if (currentMonth % 2 === 1) { // 奇数月
+      // 获取上个月的标签
+      let previousYear = currentYear;
+      let previousMonth = currentMonth - 1;
+
+      if (previousMonth === 0) { // 处理跨年
+        previousYear -= 1;
+        previousMonth = 12;
+      }
+
+      const previousLabel = getLabel(previousYear, previousMonth);
+      const previousData = findData(previousLabel);
+
+      if (previousData) {
+        // 如果上个月的数据存在，返回 currentMonthEle
+        stepEle = Number(this.currentMonthEle);
+      } else {
+        // 如果上个月的数据不存在，检查上上个月的数据
+        let twoMonthsAgoYear = previousYear;
+        let twoMonthsAgoMonth = previousMonth - 1;
+
+        if (twoMonthsAgoMonth === 0) { // 处理跨年
+          twoMonthsAgoYear -= 1;
+          twoMonthsAgoMonth = 12;
+        }
+
+        const twoMonthsAgoLabel = getLabel(twoMonthsAgoYear, twoMonthsAgoMonth);
+        const twoMonthsAgoData = findData(twoMonthsAgoLabel);
+
+        if (twoMonthsAgoData) {
+          // 如果上上个月的数据存在，返回上上个月的 elePq + currentMonthEle
+          stepEle = twoMonthsAgoData.elePq + Number(this.currentMonthEle);
+        } else {
+          console.log("未找到足够的数据！");
+        }
+      }
+    } else { // 偶数月
+      // 获取上个月的标签
+      const previousYear = currentYear;
+      const previousMonth = currentMonth - 1;
+
+      const previousLabel = getLabel(previousYear, previousMonth);
+      const previousData = findData(previousLabel);
+
+      if (previousData) {
+        // 如果上个月的数据存在，返回上个月 elePq + currentMonthEle
+        stepEle = previousData.elePq + Number(this.currentMonthEle);
+      } else {
+        // 如果上个月的数据不存在，返回 currentMonthEle
+        stepEle = Number(this.currentMonthEle);
+      }
+    }
+
+    return stepEle
+  }
   // 获取当月电量
   getSumForCurrentMonth(data) {
     function sumValuesForMonth(data, year, month) {
       return data
         .filter(item => item.label.startsWith(`${year}${month.toString().padStart(2, '0')}`))
-        .reduce((sum, item) => sum + item.value, 0);
+        .reduce((sum, item) => sum + item.elePq, 0);
     }
 
     // 获取当前年月
@@ -902,7 +1116,7 @@ class Widget extends DmYY {
         .filter((item) => item.dayElePq !== '-')
         .map((item) => ({
           label: item.day,
-          value: parseFloat(item.dayElePq),
+          elePq: parseFloat(item.dayElePq),
         }));
         
       this.monthElePq = billData.monthElecQuantity.mothEleList
@@ -911,7 +1125,7 @@ class Widget extends DmYY {
           elePq: parseFloat(item.monthEleNum),
           cost: parseFloat(item.monthEleCost),
         }));
-        
+
       this.isOverdue = billData.arrearsOfFees;
       this.isPostPaid = billData.eleBill.hasOwnProperty('accountBalance') ? true : false;
       this.update = billData.eleBill.date;
@@ -927,8 +1141,9 @@ class Widget extends DmYY {
       this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
       this.yearUsage = parseFloat(billData.monthElecQuantity.dataInfo.totalEleNum) + Math.round(this.currentMonthEle);
       this.yearFee = parseFloat(billData.monthElecQuantity.dataInfo.totalEleCost).toFixed(2);
+      
       this.stepEle = parseFloat(billData.stepElecQuantity?.[0].electricParticulars.totalYearPq || billData.monthElecQuantity.dataInfo.totalEleNum) + Math.round(this.currentMonthEle);
-
+      if (this.settings.stepMode === '双月') this.stepEle = this.getBimonthlyStepEle();
     } catch (e) {
       console.log(e);
     }
@@ -939,7 +1154,7 @@ class Widget extends DmYY {
     return this.data?.[this.index];
   };
   
-  getUserInfo () {
+  getUserInfo() {
     const userArray = this.data.map((item, index) => {
       const conNo_dst = item.userInfo.consNo_dst;
       const consName_dst = item.userInfo.consName_dst;
@@ -950,6 +1165,44 @@ class Widget extends DmYY {
       };
     });
     console.log(`多户显示：桌面小组件长按 —> 编辑小组件 —> Parameter 输入对应户号的下标数字`);
+  };
+  
+  getEleLevel() {
+    let dayElePq = [];
+    if (this.settings.stepMode === '月') {
+      const now = new Date();
+      const currentMonth = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`;
+      dayElePq = this.dayElePq.filter(item => item.label.startsWith(currentMonth));
+    };
+    
+    let bimonthElePq = [];
+    if (this.settings.stepMode === '双月') {
+      const data = this.monthElePq;
+      if (data.length % 2 !== 0) {
+        data.pop();
+      }
+      
+      for (let i = 0; i < data.length; i += 2) {
+        const mergedItem = {
+          label: `${data[i].label}-${data[i+1].label}`,
+          elePq: data[i].elePq + data[i+1].elePq,
+          cost: data[i].cost + data[i+1].cost
+        };
+        bimonthElePq.push(mergedItem);
+      }
+    }
+
+    let eleList = [];
+    let total = 0;
+    for (const { elePq } of this.settings.stepMode === '月' ? dayElePq : this.settings.stepMode === '双月' ? bimonthElePq : this.monthElePq) {
+      const n = Number(elePq);
+      total += n;
+      if (this.settings.stepMode === '双月') total = n;
+      const level = total > Number(this.wsgw.step_3) ? 3 : total > Number(this.wsgw.step_2) ? 2 : 1;
+      eleList.push({ value: n, level });
+    }
+
+    return eleList
   };
 
   updateIndex() {
@@ -983,20 +1236,193 @@ class Widget extends DmYY {
   };
   // ######################################
   // ######################################
-  async setWidgetStyle_1 (stack, color) {
+  async setWidgetStyle_1 (stack) {
+    //  余额
+    const headerStack = stack.addStack();
+    const hlStack = headerStack.addStack();
+    hlStack.layoutVertically();
+    let balance = this.balance;
+    let balanceTitle = this.isOverdue ? '电费欠费' : '电费余额';
+    if (!this.isOverdue && this.isPostPaid) {
+      balance = this.settings.showBalance === 'true' ? this.remainFee : this.monthFee;
+      balanceTitle = this.settings.showBalance === 'true' ? '电费余额' : '上期电费';
+    };
+    const titleStack = hlStack.addStack();
+    titleStack.layoutVertically();
+    const title = titleStack.addText(balanceTitle);
+    const balanceStack = hlStack.addStack();
+    const balanceText = balanceStack.addText(`${balance}`);
+    this.unit(balanceStack, '元', 11.5 * this.SCALE, this.widgetColor);
+    title.font = Font.systemFont(12 * this.SCALE);
+    title.textOpacity = 0.7;
+    balanceText.font = Font.boldRoundedSystemFont(23 * this.SCALE);
+    balanceText.minimumScaleFactor = 0.5;
+    [title, balanceText].map(t => {
+      t.textColor = this.widgetColor;
+    });
+    headerStack.addSpacer();
+    let wsgw = headerStack.addImage(await this.getLogo());
+    wsgw.imageSize = new Size(26 * this.SCALE, 26 * this.SCALE);
+    wsgw.tintColor = new Color(this.smallStackColor);
+    stack.addSpacer();
+    //  进度条
+    const stepByMonth = this.settings.stepMode === '月';
+    const stepByBimonth = this.settings.stepMode === '双月';
+    const circlesPerRow = stepByMonth ? 10 : stepByBimonth ? 3 : 4; // 每排的圆圈数量
+    const totalCircles = stepByMonth ? 30 : stepByBimonth ? 6 : 12; // 总圆圈数量
+    const circleWidth = stepByMonth ? 10 * this.SCALE : stepByBimonth ? 44.07 * this.SCALE : 31.9 * this.SCALE;; // 每个圆圈的宽度
+    const circleHeight = stepByMonth ? 10 * this.SCALE : 8 * this.SCALE; // 每个圆圈的高度
+    const circleCornerRadius = stepByMonth ? 5 * this.SCALE : 4 * this.SCALE; // 圆角半径
+    const circleGap = 4.6 * this.SCALE; // 圆圈之间的间距
+
+    const eleList = this.getEleLevel();
+
+    const levelGradients = [
+      [new Color("#D6F2E1"), new Color("#98D2BC")], 
+      [new Color("#FFC777"), new Color("#FFB043")], 
+      [new Color("#F1939C"), new Color("#F07C82")], 
+    ];
+    const defaultColor = new Color("#81CDC7", 0.2);
+
+    function gradientColors(startColor, endColor, steps) {
+      const colors = [];
+      if (steps === 1) {
+        colors.push(startColor);
+        return colors;
+      }
+      for (let i = 0; i < steps; i++) {
+        const t = i / (steps - 1); // 计算插值比例
+        const r = Math.round(startColor.red * 255 + t * (endColor.red * 255 - startColor.red * 255));
+        const g = Math.round(startColor.green * 255 + t * (endColor.green * 255 - startColor.green * 255));
+        const b = Math.round(startColor.blue * 255 + t * (endColor.blue * 255 - startColor.blue * 255));
+        const a = startColor.alpha + t * (endColor.alpha - startColor.alpha);
+
+        const hexColor = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+        colors.push(new Color(hexColor, a));
+      }
+      return colors;
+    }
+
+    const levelGradientColors = levelGradients.map(([start, end], i) => {
+      const levelCount = eleList.filter(item => item.level === i + 1).length;
+      return gradientColors(start, end, levelCount);
+    });
+
+    let levelIndex = { 1: 0, 2: 0, 3: 0 };
+
+    for (let row = 0; row < Math.ceil(totalCircles / circlesPerRow); row++) {
+      const rowStack = stack.addStack();
+      rowStack.layoutHorizontally();
+      rowStack.centerAlignContent();
+
+      for (let col = 0; col < circlesPerRow; col++) {
+        const index = row * circlesPerRow + col;
+        if (index >= totalCircles) break;
+
+        const circle = rowStack.addStack();
+        circle.size = new Size(circleWidth, circleHeight);
+        circle.cornerRadius = circleCornerRadius;
+
+        const data = eleList[index]; 
+        let fillColor = defaultColor;
+        if (data && data.level >= 1 && data.level <= 3) {
+          fillColor = levelGradientColors[data.level - 1][levelIndex[data.level]];
+          levelIndex[data.level]++;
+        }
+
+        circle.backgroundColor = fillColor;
+
+        if (col < circlesPerRow - 1) rowStack.addSpacer(circleGap);
+      }
+
+      if (row < Math.ceil(totalCircles / circlesPerRow) - 1) stack.addSpacer(circleGap);
+    }
+    // 底部数据
+    const extraData = this.getWidgetData(this.settings.smallStyle_1 || '本月电量');
+    stack.addSpacer();
+    
+    this.setList(stack, extraData, this.smallStackColor)
+  };
+  
+  async setWidgetStyle_2 (stack) {
+    const bodyStack = stack.addStack();
+    //bodyStack.backgroundColor = Color.dynamic(new Color("#E2E2E7", 0), new Color("#2C2C2F"));
+    bodyStack.cornerRadius = 14 * this.SCALE;
+    bodyStack.layoutVertically();
+    const headerStack = bodyStack.addStack();
+    headerStack.setPadding(8 * this.SCALE, 12 * this.SCALE, 0, 12 * this.SCALE);
+    headerStack.layoutVertically();
+
+    let balance = this.balance;
+    let balanceTitle = this.isOverdue ? '电费欠费' : '电费余额';
+    if (!this.isOverdue && this.isPostPaid) {
+      balance = this.settings.showBalance === 'true' ? this.remainFee : this.monthFee;
+      balanceTitle = this.settings.showBalance === 'true' ? '电费余额' : '上期电费';
+    };
+
+    const title = headerStack.addText(balanceTitle);
+    title.font = Font.systemFont(12 * this.SCALE);
+    title.textColor = this.widgetColor;
+    title.textOpacity = 0.7;
+    const balanceStack = headerStack.addStack();
+    const balanceText = balanceStack.addText(balance);
+    balanceText.minimumScaleFactor = 0.5;
+    balanceText.font = Font.boldRoundedSystemFont(22 * this.SCALE);
+    balanceText.minimumScaleFactor = 0.5;
+    const color = this.widgetColor;
+    balanceText.textColor = color;
+    this.unit(balanceStack, '元', 6 * this.SCALE, color);
+    balanceStack.addSpacer();
+    balanceStack.centerAlignContent();
+
+    const logoImage = balanceStack.addImage(await this.getLogo());
+    logoImage.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
+
+    bodyStack.addSpacer();
+    const mainStack = bodyStack.addStack();
+    mainStack.setPadding(8 * this.SCALE, 12 * this.SCALE, 8 * this.SCALE, 12 * this.SCALE);
+    mainStack.cornerRadius = 14 * this.SCALE;
+    mainStack.backgroundColor = Color.dynamic(new Color("#E2E2E7", 0.3), new Color("#2C2C2F", 1));
+    mainStack.layoutVertically();
+
+    this.setList(
+      mainStack,
+      this.getWidgetData(this.settings.smallStyle_2_up || '本月电量'),
+      this.smallStackColor
+    );
+
+    mainStack.addSpacer();
+
+    this.setList(
+      mainStack,
+      this.getWidgetData(this.settings.smallStyle_2_down || '近日用电'),
+      this.endColor
+    );
+  };
+  
+  async setWidgetStyle_3 (stack, color) {
     //  标题
     this.setTitle(stack, new Color(color), new Color(color));
     stack.addSpacer();
     //  进度条
     stack.addImage(this.wideProgressBar());
-    const yearStack = stack.addStack();
-    const yearFee = yearStack.addText(this.getWidgetValue(this.settings.smallLeft) || `${this.yearUsage}`);
-    yearStack.addSpacer();
-    const yearUsage = yearStack.addText(this.getWidgetValue(this.settings.smallRight) || `¥${this.yearFee}`);
-    [yearFee, yearUsage].map(t => {
-      t.textColor = new Color(color);
-      t.font = Font.regularRoundedSystemFont(14 * this.SCALE);
-    });
+
+    const extraData = this.getWidgetData(this.settings.smallStyle_1 || `年度电量`)
+    if (extraData) {
+      const extraDataStack = stack.addStack();
+      extraDataStack.centerAlignContent();
+      const extraTitle = extraDataStack.addText(extraData[0]);
+      extraDataStack.addSpacer();
+      const extraValue = extraDataStack.addText(extraData[1]);
+      const extraUnit = extraDataStack.addText(extraData[2]);
+      extraTitle.font = Font.regularRoundedSystemFont(12 * this.SCALE);
+      extraUnit.font = Font.regularRoundedSystemFont(12 * this.SCALE);
+      extraValue.font = Font.regularRoundedSystemFont(14 * this.SCALE);
+      [extraTitle, extraValue, extraUnit].map(t => {
+        t.textColor = new Color(color);
+      });
+    }
+
     stack.addSpacer();
     //  余额
     let balance = this.balance;
@@ -1013,39 +1439,30 @@ class Widget extends DmYY {
     const balanceText = balanceStack.addText(`${balance}`);
     balanceStack.addSpacer(1);
     this.unit(balanceStack, '元', 8.5 * this.SCALE, new Color(color))
-    balanceTitleText.font = Font.semiboldSystemFont(12 * this.SCALE);
-    balanceTitleText.textOpacity = 0.5;
+    balanceTitleText.font = Font.systemFont(12 * this.SCALE);
+    balanceTitleText.textOpacity = 0.7;
     balanceText.font = Font.semiboldRoundedSystemFont(20 * this.SCALE);
     [balanceTitleText, balanceText].map(t => {
       t.textColor = new Color(color);
     });
     downStack.addSpacer();
-    //  LOGO
-    var logo;
-    if (this.settings.logoImg ==='铁塔') {
-      logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw2.png', 'tower.png');
-    } else if (this.settings.logoImg ==='国家电网' || !this.settings.logoImg || !this.settings.customizeUrl) {
-      logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw.png', 'wsgw.png');
-    } else {
-      logo = await this.getImageByUrl(this.settings.customizeUrl, 'customize.png');
-    };
-    let wsgw = downStack.addImage(logo);
+    let wsgw = downStack.addImage(await this.getLogo());
     wsgw.tintColor = new Color(color);
-    wsgw.imageOpacity = 0.5;
     wsgw.imageSize = new Size(36 * this.SCALE, 36 * this.SCALE);
   };
   
-  setWidgetStyle_2 (stack, color) {
+  setWidgetStyle_4 (stack, color) {
+
+    const step = this.stepEleText();
+
     const gaugeImage = this.gaugeChart();
     const bodyStack = stack.addStack();
-    const mainColor = new Color(color, 1);
-    const updateColor = new Color(color, 0.5);
-    const balanceBgcolor = new Color(color, 0.1);
+    const mainColor = new Color(this.lastColor);
     bodyStack.layoutVertically();
     bodyStack.backgroundImage = gaugeImage;
     bodyStack.addSpacer();
 
-    const arr = this.getWidgetData(this.settings.gaugeText) || ['本月电量', `${this.currentMonthEle}`, '度']
+    const arr = this.getWidgetData(this.settings.smallStyle_4 || '本月电量');
     if (arr === '自定户名') {
       const iconStack = bodyStack.addStack();
       iconStack.addSpacer();
@@ -1055,7 +1472,7 @@ class Widget extends DmYY {
       icon.tintColor = mainColor;
       icon.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
       iconStack.addSpacer();
-      bodyStack.addSpacer(5 * this.SCALE);
+      bodyStack.addSpacer(3 * this.SCALE);
       const nameStack = bodyStack.addStack();
       nameStack.addSpacer();
       const name = nameStack.addText(this.name || '国家电网');
@@ -1063,7 +1480,6 @@ class Widget extends DmYY {
       name.font = Font.mediumSystemFont(16 * this.SCALE);
       name.textColor = mainColor;
     } else if(arr === '阶梯电量') {
-      const step = this.stepEleText();
       const progress = step.progress;
       const icon = step.icon;
       this.createCenteredStack(bodyStack, '阶梯电量', mainColor);
@@ -1072,22 +1488,52 @@ class Widget extends DmYY {
     } else {
       this.createCenteredStack(bodyStack, arr[0], mainColor);
       bodyStack.addSpacer(5 * this.SCALE);
-      this.createCenteredText(bodyStack, arr[1], arr[2], 4, 16 * this.SCALE, mainColor, 1);
+      this.createCenteredText(bodyStack, arr[1], arr[2], 5, 16 * this.SCALE, mainColor, 1);
     };
 
-    bodyStack.addSpacer(12 * this.SCALE);
+    bodyStack.addSpacer(10 * this.SCALE);
 
-    this.setUpdateStack(bodyStack, updateColor);
+    this.setUpdateStack(bodyStack, mainColor);
 
-    bodyStack.addSpacer(2 * this.SCALE);
+    bodyStack.addSpacer(6 * this.SCALE);
 
     const downStack = bodyStack.addStack();
-    downStack.setPadding(0, 15 * this.SCALE, 0, 15 * this.SCALE)
-
-    this.setBalanceStack (downStack, balanceBgcolor, 5 * this.SCALE, this.size.balance - 2, this.size.smallFont, 3);
+    downStack.setPadding(0, 15 * this.SCALE, 5 * this.SCALE, 15 * this.SCALE)
+    const gradient = new LinearGradient();
+    gradient.locations = [0, 1];
+    gradient.colors = [
+      new Color('#00706C', 0),
+      new Color('#00706C', 0.05)
+    ];
+    gradient.startPoint = new Point(0, 0);
+    gradient.endPoint = new Point(0, 1);
+    downStack.cornerRadius = 12 * this.SCALE;
+    downStack.backgroundGradient = gradient;
+    downStack.layoutVertically();
+    downStack.centerAlignContent();
+    let balance = this.balance;
+    let balanceTitle = this.isOverdue ? '电费欠费' : '电费余额';
+    if (!this.isOverdue && this.isPostPaid) {
+      balance = this.settings.showBalance === 'true' ? this.remainFee : this.monthFee;
+      balanceTitle = this.settings.showBalance === 'true' ? '电费余额' : '上期电费';
+    };
+    const titleStack = downStack.addStack();
+    titleStack.addSpacer();
+    const balanceTitleText = titleStack.addText(balanceTitle);
+    titleStack.addSpacer();
+    const balanceStack = downStack.addStack();
+    balanceStack.addSpacer();
+    const balanceText = balanceStack.addText(`${balance}`);
+    this.unit(balanceStack, '元', 8 * this.SCALE, this.widgetColor)
+    balanceStack.addSpacer();
+    balanceTitleText.font = Font.systemFont(12 * this.SCALE);
+    balanceTitleText.textOpacity = 0.7;
+    balanceText.font = Font.semiboldRoundedSystemFont(20 * this.SCALE);
+    [balanceTitleText, balanceText].map(t => {
+      t.textColor = this.widgetColor;
+    });
   };
-  
-  //  小组件
+
   renderSmall = async (w) => {
     const padding = 12 * this.SCALE;
     w.setPadding(padding, padding, padding, padding);
@@ -1095,21 +1541,24 @@ class Widget extends DmYY {
     const smallColor = this.smallStackColor;
     bodyStack.layoutVertically();
     if (this.widgetStyle ==='1') {
-      bodyStack.setPadding(3, 3, 3, 3);
-      await this.setWidgetStyle_1(bodyStack, smallColor);
+      bodyStack.setPadding(3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE);
+      await this.setWidgetStyle_1(bodyStack);
+    } else if (this.widgetStyle ==='2') {
+      await this.setWidgetStyle_2(bodyStack);
+    } else if (this.widgetStyle ==='3') {
+      bodyStack.setPadding(3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE);
+      await this.setWidgetStyle_3(bodyStack, smallColor);
     } else {
-      this.setWidgetStyle_2(bodyStack, smallColor);
+      this.setWidgetStyle_4(bodyStack, smallColor);
     };
     return w;
   };
 
-  //  中组件
   renderMedium = async (w) => {
     w.setPadding(0, 0, 0, 0);
     w.backgroundColor = Color.dynamic(new Color(this.settings.rightDayColor || "#E2E2E7"), new Color(this.settings.rightNightColor || "#2C2C2F"));
-    const updateColor = new Color('#2F6E6B', 0.5)
+    const updateColor = new Color('#2F6E6B');
     const bodyStack = w.addStack();
-    bodyStack.layoutHorizontally();
     //  左侧stack
     const leftStack = bodyStack.addStack();
     leftStack.layoutVertically();
@@ -1124,15 +1573,7 @@ class Widget extends DmYY {
       leftStack.addSpacer();
       const logoStack = leftStack.addStack();
       logoStack.addSpacer();
-      let logo;
-      if (this.settings.logoImg ==='铁塔') {
-        logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw2.png', 'tower.png');
-      } else if (this.settings.logoImg ==='国家电网' || !this.settings.logoImg || !this.settings.customizeUrl) {
-        logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw.png', 'wsgw.png');
-      } else {
-        logo = await this.getImageByUrl(this.settings.customizeUrl, 'customize.png');
-      };
-      let wsgw = logoStack.addImage(logo);
+      let wsgw = logoStack.addImage(await this.getLogo());
       wsgw.imageSize = new Size(this.size.logo, this.size.logo);
       logoStack.addSpacer();
     };
@@ -1537,16 +1978,16 @@ class Widget extends DmYY {
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallLeft.png',
             type: 'select',
-            title: '小组件1左侧显示内容',
-            options: ['年度电量', '年度电费', '上期电费', '上期电量', '近日用电', '本月电量', '电费余额', '不显示'],
-            val: 'smallLeft',
+            title: '小组件1、3显示内容',
+            options: ['年度电量', '年度电费', '上期电费', '上期电量', '近日用电', '本月电量', '电费余额'],
+            val: 'smallStyle_1',
           },
           {
-            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallRight.png',
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallLeft.png',
             type: 'select',
-            title: '小组件1右侧显示内容',
-            options: ['年度电费', '年度电量', '上期电费', '上期电量', '近日用电', '本月电量', '电费余额', '不显示'],
-            val: 'smallRight',
+            title: '小组件4显示内容',
+            options: ['年度电量', '年度电费', '上期电费', '上期电量', '近日用电', '本月电量', '电费余额', '阶梯电量', '自定户名'],
+            val: 'smallStyle_4',
           },
         ],
       },
@@ -1554,11 +1995,18 @@ class Widget extends DmYY {
         title: '',
         menu: [
           {
-            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/gaugeText.png',
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStyle_2_up.png',
             type: 'select',
-            title: '小组件2显示内容',
-            options: ['年度电费', '年度电量', '上期电费', '上期电量', '近日用电', '本月电量', '电费余额', '阶梯电量', '自定户名'],
-            val: 'gaugeText',
+            title: '小组件2显示内容1',
+            options: ['年度电费', '年度电量', '上期电费', '上期电量', '近日用电', '本月电量', '电费余额'],
+            val: 'smallStyle_2_up',
+          },
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStyle_2_down.png',
+            type: 'select',
+            title: '小组件2显示内容2',
+            options: ['年度电费', '年度电量', '上期电费', '上期电量', '近日用电', '本月电量', '电费余额'],
+            val: 'smallStyle_2_down',
           },
         ],
       },
@@ -1588,7 +2036,7 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/stepMode.png',
             type: 'select',
             title: '阶梯电量计算方式',
-            options: ['年', '月'],
+            options: ['年', '月', '双月'],
             desc: '',
             val: 'stepMode',
           },
@@ -1647,21 +2095,21 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/widgetStyle.png',
             type: 'select',
             title: '小组件样式',
-            options: ['1', '2'],
+            options: ['1', '2', '3', '4'],
             val: 'widgetStyle',
           },
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor.png',
             type: 'color',
-            defaultValue : '#00CC99',
-            title: '小组件颜色',
+            defaultValue : '#3A9690',
+            title: '小组件颜色1',
             val: 'smallStackColor',
           },
           {
-            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/endColor.png',
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor.png',
             type: 'color',
-            defaultValue : '#006666',
-            title: '渐变色颜色',
+            defaultValue : '#3A9690',
+            title: '小组件颜色2',
             val: 'endColor',
           },
         ],
@@ -1680,21 +2128,21 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/widgetStyle_1.png',
             type: 'select',
             title: '小组件样式',
-            options: ['1', '2'],
+            options: ['1', '2', '3', '4'],
             val: 'widgetStyle_1',
           },
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor_1.png',
             type: 'color',
-            defaultValue : '#00CC99',
-            title: '小组件颜色',
+            defaultValue : '#3A9690',
+            title: '小组件颜色1',
             val: 'smallStackColor_1',
           },
           {
-            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/endColor_1.png',
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor_1.png',
             type: 'color',
-            defaultValue : '#006666',
-            title: '渐变色颜色',
+            defaultValue : '#3A9690',
+            title: '小组件颜色2',
             val: 'endColor_1',
           },
         ],
@@ -1713,22 +2161,42 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/widgetStyle_2.png',
             type: 'select',
             title: '小组件样式',
-            options: ['1', '2'],
+            options: ['1', '2', '3', '4'],
             val: 'widgetStyle_2',
           },
           {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor_2.png',
             type: 'color',
-            defaultValue : '#00CC99',
-            title: '小组件颜色',
+            defaultValue : '#3A9690',
+            title: '小组件颜色1',
             val: 'smallStackColor_2',
           },
           {
-            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/endColor_2.png',
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/smallStackColor_2.png',
             type: 'color',
-            defaultValue : '#006666',
-            title: '渐变色颜色',
+            defaultValue : '#3A9690',
+            title: '小组件颜色2',
             val: 'endColor_2',
+          },
+        ],
+      },
+      {
+        title: '重置颜色',
+        menu: [
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/clear.png',
+            title: '重置颜色',
+            desc: '重置当前颜色配置',
+            name: 'reset',
+            val: 'reset',
+            onClick: () => {
+              const propertiesToDelete = ['smallStackColor', 'endColor', 'smallStackColor_1', 'endColor_1', 'smallStackColor_2', 'endColor_2'];
+              propertiesToDelete.forEach(prop => {
+                delete this.settings[prop];
+              });
+              this.saveSettings();
+              this.reopenScript();
+            },
           },
         ],
       },
