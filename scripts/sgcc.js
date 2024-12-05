@@ -5,7 +5,7 @@
  * @author: 脑瓜
  * @feedback: https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.2
+ * version: 2.3
  * update: 2024/12/02
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，重写修改自作者@Yuheng0101
@@ -26,7 +26,7 @@ class Widget extends DmYY {
     this.Run();
   };
 
-  version = '2.2';
+  version = '2.3';
 
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
