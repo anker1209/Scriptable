@@ -22,7 +22,7 @@ class Widget extends DmYY {
     this.name = '中国广电';
     this.en = 'ChinaBroadnet_2024';
     this.logo = 'https://raw.githubusercontent.com/anker1209/icon/main/zggd-big.png';
-    this.verticalLogo = 'https://raw.githubusercontent.com/anker1209/icon/main/zggd.png';
+    this.smallLogo = 'https://raw.githubusercontent.com/anker1209/icon/main/zggd.png';
     this.Run();
   }
   
@@ -33,7 +33,7 @@ class Widget extends DmYY {
 
   gradient = false;
 
-  flowColorHex = '#20A162';//FFC107
+  flowColorHex = '#20A162';
   voiceColorHex = '#FF6F61';
 
   ringStackSize = 65;
@@ -74,7 +74,7 @@ class Widget extends DmYY {
   
   flow = {
     percent: 0,
-    title: '已用流量',
+    title: '流量剩余',
     number: '0',
     unit: 'MB',
     en: 'MB',
@@ -97,14 +97,14 @@ class Widget extends DmYY {
     BGColor: new Color(this.voiceColorHex, 0.2),
     colors: [],
   };
-  
+
   point = {
-    title: '剩余积分',
-    number: 0,
-    unit: '',
-    icon: 'tag.fill',
-    iconColor: new Color('fc6d6d'),
-  }
+    title: "更新时间",
+    number: `${this.arrUpdateTime[2]}:${this.arrUpdateTime[3]}`,
+    unit: "",
+    icon: "arrow.2.circlepath",
+    iconColor: new Color("fc6d6d"),
+  };
 
   init = async () => {
     try {
@@ -253,7 +253,42 @@ class Widget extends DmYY {
     [title, number].map(t => t.font = Font.systemFont(this.textSize * this.SCALE));
   };
 
-  async setFifthWidget(widget) {
+  async setThirdWidget(widget) {
+    const amountStack = widget.addStack();
+    amountStack.centerAlignContent();
+
+    const icon = await this.$request.get(this.smallLogo, 'IMG');
+
+    if (this.settings.builtInColor === 'true') {
+      const iconStack = amountStack.addStack();
+      iconStack.setPadding(3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE);
+      iconStack.backgroundColor = this.fee.iconColor;
+      iconStack.cornerRadius = 12 * this.SCALE;
+      const iconImage = iconStack.addImage(icon);
+      iconImage.imageSize = new Size(18 * this.SCALE, 18 * this.SCALE);
+      iconImage.tintColor = Color.white();
+    } else {
+      const iconImage = amountStack.addImage(icon);
+      iconImage.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
+    }
+
+    amountStack.addSpacer();
+
+    const amountText = amountStack.addText(`${this.fee.number}`);
+    amountText.font = Font.boldRoundedSystemFont(24 * this.SCALE);
+    amountText.minimumScaleFactor = 0.5;
+    amountText.textColor = this.widgetColor;
+    this.unit(amountStack, '元', 7 * this.SCALE);
+
+    widget.addSpacer();
+
+    const mainStack = widget.addStack();
+    this.setRow(mainStack, this.flow, this.flowColorHex);
+    mainStack.addSpacer();
+    this.setRow(mainStack, this.voice, this.voiceColorHex);
+  };
+
+  async setForthWidget(widget) {
     const bodyStack = widget.addStack();
     //bodyStack.backgroundColor = Color.dynamic(new Color("#E2E2E7", 0), new Color("#2C2C2F"));
     bodyStack.cornerRadius = 14 * this.SCALE;
@@ -266,18 +301,30 @@ class Widget extends DmYY {
     title.textColor = this.widgetColor
     title.textOpacity = 0.7;
     const balanceStack = headerStack.addStack();
-    const balanceText = balanceStack.addText(this.fee.number.toString());
+    const balanceText = balanceStack.addText(`${this.fee.number}`);
     balanceText.minimumScaleFactor = 0.5;
     balanceText.font = Font.boldRoundedSystemFont(22 * this.SCALE);
     const color = this.widgetColor;
     balanceText.textColor = color;
-    this.unit(balanceStack, '元', 6 * this.SCALE, color);
+    this.unit(balanceStack, '元', 5 * this.SCALE, color);
     balanceStack.addSpacer();
     balanceStack.centerAlignContent();
   
-    const logo = await this.$request.get(this.verticalLogo, 'IMG');
-    const logoImage = balanceStack.addImage(logo);
-    logoImage.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
+    const icon = await this.$request.get(this.smallLogo, 'IMG');
+
+    if (this.settings.builtInColor === 'true') {
+      const iconStack = balanceStack.addStack();
+      iconStack.setPadding(3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE, 3 * this.SCALE);
+      iconStack.backgroundColor = this.fee.iconColor;
+      iconStack.cornerRadius = 12 * this.SCALE;
+      const iconImage = iconStack.addImage(icon);
+      iconImage.imageSize = new Size(18 * this.SCALE, 18 * this.SCALE);
+      iconImage.tintColor = Color.white();
+    } else {
+      const iconImage = balanceStack.addImage(icon);
+      iconImage.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
+    }
+
 
     bodyStack.addSpacer();
     const mainStack = bodyStack.addStack();
@@ -289,30 +336,6 @@ class Widget extends DmYY {
     this.setList(mainStack, this.flow);
     mainStack.addSpacer();
     this.setList(mainStack, this.voice);
-  };
-
-  async setForthWidget(widget) {
-    const amountStack = widget.addStack();
-    amountStack.centerAlignContent();
-
-    const icon = await this.$request.get(this.verticalLogo, 'IMG');
-    const iconImage = amountStack.addImage(icon);
-    iconImage.imageSize = new Size(24 * this.SCALE, 24 * this.SCALE);
-
-    amountStack.addSpacer();
-
-    const amountText = amountStack.addText(this.fee.number.toString());
-    amountText.font = Font.boldRoundedSystemFont(24 * this.SCALE);
-    amountText.minimumScaleFactor = 0.5;
-    amountText.textColor = this.widgetColor;
-    this.unit(amountStack, '元', 7 * this.SCALE);
-
-    widget.addSpacer();
-
-    const mainStack = widget.addStack();
-    this.setRow(mainStack, this.flow, this.flowColorHex);
-    mainStack.addSpacer();
-    this.setRow(mainStack, this.voice, this.voiceColorHex);
   };
   
   setList(stack, data) {
@@ -443,7 +466,7 @@ class Widget extends DmYY {
     rowStack.addSpacer();
     let iconImage;
     if (logo) {
-      const icon = await this.$request.get(this.verticalLogo, 'IMG');
+      const icon = await this.$request.get(this.smallLogo, 'IMG');
       iconImage = rowStack.addImage(icon);
     } else {
       const icon = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
@@ -473,7 +496,7 @@ class Widget extends DmYY {
     iconStack.cornerRadius = 17 * this.SCALE;
     let iconImage;
     if (logo) {
-      const icon = await this.$request.get(this.verticalLogo, 'IMG');
+      const icon = await this.$request.get(this.smallLogo, 'IMG');
       iconImage = iconStack.addImage(icon);
     } else {
       const icon = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
@@ -566,7 +589,7 @@ class Widget extends DmYY {
       this.ringContent(canvaStack, data, percent);
     } else {
       canvaStack.addSpacer(10);
-      const smallLogo = await this.$request.get(this.verticalLogo, 'IMG');
+      const smallLogo = await this.$request.get(this.smallLogo, 'IMG');
       const logoStack = canvaStack.addStack();
       logoStack.size = new Size(40, 40);
       logoStack.backgroundImage = smallLogo;
@@ -1050,12 +1073,7 @@ class Widget extends DmYY {
     } else if (this.widgetStyle == "3") {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
-      await this.header(bodyStack);
-      const canvas = this.makeCanvas();
-      const ringStack = bodyStack.addStack();
-      this.imageCell(canvas, ringStack, this.flow);
-      ringStack.addSpacer();
-      this.imageCell(canvas, ringStack, this.voice);
+      await this.setThirdWidget(bodyStack);
     } else if (this.widgetStyle == "4") {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
@@ -1063,7 +1081,12 @@ class Widget extends DmYY {
     } else if (this.widgetStyle == "5") {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
-      await this.setFifthWidget(bodyStack);
+      await this.header(bodyStack);
+      const canvas = this.makeCanvas();
+      const ringStack = bodyStack.addStack();
+      this.imageCell(canvas, ringStack, this.flow);
+      ringStack.addSpacer();
+      this.imageCell(canvas, ringStack, this.voice);
     } else {
       const bodyStack = w.addStack();
       bodyStack.layoutVertically();
@@ -1109,7 +1132,7 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/step1.png',
             type: 'color',
             title: '流量进度条',
-            defaultValue: '#12A6E4',
+            defaultValue: '#20A162',
             desc: '',
             val: 'step1',
           },
@@ -1117,7 +1140,7 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/step2.png',
             type: 'color',
             title: '语音进度条',
-            defaultValue: '#F86527',
+            defaultValue: '#FF6F61',
             desc: '',
             val: 'step2',
           },
@@ -1141,7 +1164,7 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/logoColor.png',
             type: 'color',
             title: 'LOGO图标颜色',
-            defaultValue: '#F86527',
+            defaultValue: '#3F85AD',
             desc: '',
             val: 'logoColor',
           },
@@ -1149,7 +1172,7 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/flowIconColor.png',
             type: 'color',
             title: '流量图标颜色',
-            defaultValue: '#1AB6F8',
+            defaultValue: '#20A162',
             desc: '',
             val: 'flowIconColor',
           },
@@ -1157,7 +1180,7 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/voiceIconColor.png',
             type: 'color',
             title: '语音图标颜色',
-            defaultValue: '#30D15B',
+            defaultValue: '#FF6F61',
             desc: '',
             val: 'voiceIconColor',
           },
