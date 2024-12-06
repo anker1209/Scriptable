@@ -1,12 +1,8 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: deep-blue; icon-glyph: mobile-alt;
-// share-sheet-inputs: file-url, url;
 /*
  * @author: 2Ya&脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.2
+ * version: 2.3
  * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 电信cookie重写：https://raw.githubusercontent.com/dompling/Script/master/10000/index.js
@@ -25,7 +21,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '2.2';
+  version = '2.3';
 
   gradient = false;
 
@@ -189,7 +185,7 @@ class Widget extends DmYY {
       Object.keys(this.settings.dataSource).forEach((key) => {
         this[key] = { ...this[key], ...this.settings.dataSource[key] };
       });
-    this.getData();
+      this.getData();
     }
   };
   
@@ -253,7 +249,7 @@ class Widget extends DmYY {
               let ratableAmount = item.ratableAmount;
               let balanceAmount = item.balanceAmount;
               let usedAmount = ratableAmount - balanceAmount;
-              if (filterOrientateFlow && ratableResourcename.search('定向') != -1 || balanceAmount == '999999999999') {
+              if (filterOrientateFlow === 'true' && ratableResourcename.search('定向') != -1 || balanceAmount == '999999999999') {
                 ratableAmount = 0;
                 balanceAmount = 0;
               }
@@ -261,9 +257,10 @@ class Widget extends DmYY {
               totalBalanceFlowAmount += parseFloat(balanceAmount);
             }
             totalUsedFlowAmount += parseFloat(item.usageAmount);
-            if (showUsedFlow) {
+            if (showUsedFlow === 'true') {
               this.flow.title = '流量已用';
             }
+
             if (data.offerType == 21 && item.ratableAmount == '0') {
               // 无限流量用户
               isUnlimitedFlow = true;
@@ -278,12 +275,15 @@ class Widget extends DmYY {
     const totalFlowObj = this.formatFlow(totalFlowAmount);
     const totalBalanceFlowObj = this.formatFlow(totalBalanceFlowAmount);
     const totalUsedFlowObj = this.formatFlow(totalUsedFlowAmount);
-    const finalBalanceFlowObj = showUsedFlow ? totalUsedFlowObj : totalBalanceFlowObj;
+    const finalBalanceFlowObj = showUsedFlow === 'true' ? totalUsedFlowObj : totalBalanceFlowObj;
+    if (showUsedFlow === 'true') this.flow.title = '已用流量';
     
     // 设置流量
     this.flow.percent = ((totalBalanceFlowAmount / (totalFlowAmount || 1)) * 100).toFixed(2);
     this.flow.number = finalBalanceFlowObj.amount;
     this.flow.unit = finalBalanceFlowObj.unit;
+    this.flow.en = finalBalanceFlowObj.unit;
+    
     if (isUnlimitedFlow) {
       const usageAmountObj = this.formatFlow(totalUsedFlowAmount);
       this.flow.title = '流量已用';
@@ -320,6 +320,7 @@ class Widget extends DmYY {
         number: this.flow.number,
         unit: this.flow.unit,
         percent: this.flow.percent,
+        title: this.flow.title,
       },
     };
     this.saveSettings(false);
