@@ -5,8 +5,8 @@
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.4
- * update: 2024/12/02
+ * version: 2.4.1
+ * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 联通cookie获取方式（任选其一）：
  * 1、小一佬联通余量，教程: https://chinatelecomoperators.notion.site/iOS-6c4fc6433f28452b9e10aab1ed3eddc5
@@ -26,7 +26,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '2.4';
+  version = '2.4.1';
 
   cookie = '';
 
@@ -456,7 +456,7 @@ class Widget extends DmYY {
     imageStack.addSpacer();
     const iconStack = imageStack.addStack();
     iconStack.addSpacer();
-    const sfs = SFSymbol.named(data.icon);
+    const sfs = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
     sfs.applyHeavyWeight();
     const icon = iconStack.addImage(sfs.image);
     icon.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
