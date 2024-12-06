@@ -2,7 +2,7 @@
  * @author: 2Ya&脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.3
+ * version: 2.3.1
  * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 电信cookie重写：https://raw.githubusercontent.com/dompling/Script/master/10000/index.js
@@ -21,7 +21,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '2.3';
+  version = '2.3.1';
 
   gradient = false;
 
@@ -258,7 +258,7 @@ class Widget extends DmYY {
             }
             totalUsedFlowAmount += parseFloat(item.usageAmount);
             if (showUsedFlow === 'true') {
-              this.flow.title = '流量已用';
+              this.flow.title = '已用流量';
             }
 
             if (data.offerType == 21 && item.ratableAmount == '0') {
@@ -276,6 +276,7 @@ class Widget extends DmYY {
     const totalBalanceFlowObj = this.formatFlow(totalBalanceFlowAmount);
     const totalUsedFlowObj = this.formatFlow(totalUsedFlowAmount);
     const finalBalanceFlowObj = showUsedFlow === 'true' ? totalUsedFlowObj : totalBalanceFlowObj;
+    this.flow.title = '剩余流量';
     if (showUsedFlow === 'true') this.flow.title = '已用流量';
     
     // 设置流量
@@ -286,7 +287,7 @@ class Widget extends DmYY {
     
     if (isUnlimitedFlow) {
       const usageAmountObj = this.formatFlow(totalUsedFlowAmount);
-      this.flow.title = '流量已用';
+      this.flow.title = '已用流量';
       this.flow.number = usageAmountObj.amount;
       this.flow.unit = usageAmountObj.unit;
       this.flow.en = usageAmountObj.unit;
