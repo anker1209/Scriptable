@@ -6,7 +6,7 @@
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 1.2.1
+ * version: 1.2.2
  * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 广电教程（获取后运行小组件脚本,点击代理缓存即可）：
@@ -26,7 +26,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '1.2.1';
+  version = '1.2.2';
 
   access = ''; 
   body = '';
@@ -76,8 +76,8 @@ class Widget extends DmYY {
     percent: 0,
     title: '流量剩余',
     number: '0',
-    unit: 'MB',
-    en: 'MB',
+    unit: 'GB',
+    en: 'GB',
     icon: 'antenna.radiowaves.left.and.right',
     iconColor: new Color('#20A162'),
     FGColor: new Color(this.flowColorHex),
@@ -203,7 +203,7 @@ class Widget extends DmYY {
 
       if (userInfo.status === '000000') {
         console.log('获取信息成功');
-        console.log(userInfo.data);
+        console.log(userInfo);
         const data = userInfo.data.userData;
         this.fee.number = data.fee / 100;
         this.flow.number = (data.flow / 1048576).toFixed(2);
