@@ -5,8 +5,8 @@
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.1
- * update: 2024/12/02
+ * version: 2.1.1
+ * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，参数获取及重写作者@Yuheng0101
  * 参数获取及boxjs订阅(打开链接查看): https://github.com/ChinaTelecomOperators/ChinaMobile/releases/tag/Prerelease-Alpha
@@ -29,7 +29,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '2.1';
+  version = '2.1.1';
 
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
@@ -667,7 +667,7 @@ class Widget extends DmYY {
     imageStack.addSpacer();
     const iconStack = imageStack.addStack();
     iconStack.addSpacer();
-    const sfs = SFSymbol.named(data.icon);
+    const sfs = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
     sfs.applyHeavyWeight();
     const icon = iconStack.addImage(sfs.image);
     icon.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
