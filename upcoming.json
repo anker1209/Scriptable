@@ -5,22 +5,22 @@
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/sgcc.js"
 },{
   "name": "ChinaMobile_2024",
-  "version":"2.1",
+  "version":"2.1.1",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaMobile_2024.js"
 },{
   "name": "ChinaTelecom_2024",
-  "version":"2.1",
+  "version":"2.1.1",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaTelecom_2024.js"
 },{
   "name": "ChinaUnicom_2024",
-  "version":"2.4",
+  "version":"2.4.1",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaUnicom_2024.js"
 },{
   "name": "ChinaBroadnet_2024",
-  "version":"1.2",
+  "version":"1.2.1",
   "notes": "",
   "downloadUrl": "https://raw.githubusercontent.com/anker1209/Scriptable/main/scripts/ChinaBroadnet_2024.js"
 },
