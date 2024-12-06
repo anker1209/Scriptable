@@ -6,8 +6,8 @@
  * @author: 2Ya&脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.1
- * update: 2024/11/20
+ * version: 2.1.1
+ * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 联通cookie重写：https://raw.githubusercontent.com/dompling/Script/master/10010/index.js
 */
@@ -25,7 +25,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '2.1';
+  version = '2.1.1';
 
   gradient = false;
 
@@ -469,7 +469,7 @@ class Widget extends DmYY {
     imageStack.addSpacer();
     const iconStack = imageStack.addStack();
     iconStack.addSpacer();
-    const sfs = SFSymbol.named(data.icon);
+    const sfs = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
     sfs.applyHeavyWeight();
     const icon = iconStack.addImage(sfs.image);
     icon.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
