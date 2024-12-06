@@ -6,8 +6,8 @@
  * @author: 脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 1.2
- * update: 2024/12/02
+ * version: 1.2.1
+ * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 广电教程（获取后运行小组件脚本,点击代理缓存即可）：
  * https://github.com/wuhuhuuuu/study/tree/main/Scripts/ChinaBroadnet
@@ -26,7 +26,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '1.2';
+  version = '1.2.1';
 
   access = ''; 
   body = '';
@@ -391,7 +391,7 @@ class Widget extends DmYY {
     imageStack.addSpacer();
     const iconStack = imageStack.addStack();
     iconStack.addSpacer();
-    const sfs = SFSymbol.named(data.icon);
+    const sfs = SFSymbol.named(data.icon) || SFSymbol.named('phone.fill');
     sfs.applyHeavyWeight();
     const icon = iconStack.addImage(sfs.image);
     icon.imageSize = new Size(22 * this.SCALE, 22 * this.SCALE);
