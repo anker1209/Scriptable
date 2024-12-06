@@ -6,7 +6,7 @@
  * @author: 2Ya&脑瓜
  * @feedback https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.1.1
+ * version: 2.2
  * update: 2024/12/06
  * 原创UI，修改套用请注明来源
  * 电信cookie重写：https://raw.githubusercontent.com/dompling/Script/master/10000/index.js
@@ -25,7 +25,7 @@ class Widget extends DmYY {
     this.Run();
   }
   
-  version = '2.1.1';
+  version = '2.2';
 
   gradient = false;
 
@@ -193,13 +193,13 @@ class Widget extends DmYY {
     }
   };
   
-  formatFlow(number) {
-    const n = number / 1024;
-    if (n < 1024) {
-      return { count: n.toFixed(2), unit: "MB" };
+  formatFlow = (flow) => {
+    const remain = flow / 1024;
+    if (remain < 1024) {
+      return { amount: remain.toFixed(2), unit: 'MB' };
     }
-    return { count: (n / 1024).toFixed(2), unit: "GB" };
-  }
+    return { amount: (remain / 1024).toFixed(2), unit: 'GB' };
+  };
 
   updateCookie = async (loginUrl) => {
     if (loginUrl) {
@@ -219,52 +219,81 @@ class Widget extends DmYY {
       return this.notify(this.name, "请配置登录地址");
     }
     await this.updateCookie(this.settings.china_telecom_url);
-    const detail = await this.http({
+    const response = await this.http({
       url: this.fetchUrl.detail,
       headers: {
         Cookie: this.settings.cookie,
       },
     });
 
-    let flows = {
-        balanceAmount: 0,
-        usageAmount: 0,
-        ratableAmount: 0,
-      },
-      voice = {
-        balanceAmount: 0,
-        usageAmount: 0,
-        ratableAmount: 0,
-      };
-
-    detail.items?.forEach((data) => {
-      data.items.forEach((item) => {
-        if (item.balanceAmount != "999999999999" && item.unitTypeId === "3") {
-          Object.keys(flows).forEach((key) => {
-            flows[key] += Number(item[key]);
-          });
-        }
-        if (item.unitTypeId === "1") {
-          Object.keys(voice).forEach((key) => {
-            voice[key] += Number(item[key]);
-          });
-        }
-      });
-    });
-
-    this.flow.percent = (
-      (flows.balanceAmount / flows.ratableAmount) * 100).toFixed(2);
-    const flow = this.formatFlow(flows.balanceAmount);
-    this.flow.number = flow.count;
-    this.flow.unit = flow.unit;
-    this.flow.en = flow.unit;
-
-    if (voice) {
-      this.voice.percent = (
-        (Number(voice.balanceAmount) / Number(voice.ratableAmount)) * 100).toFixed(2);
-
-      this.voice.number = voice.balanceAmount;
+    const { filterOrientateFlow, showUsedFlow } = this.settings;
+    // 总流量
+    let totalFlowAmount = 0;
+    // 剩余流量
+    let totalBalanceFlowAmount = 0;
+    // 已用流量
+    let totalUsedFlowAmount = 0;
+    // 总语音
+    let totalVoiceAmount = 0;
+    // 剩余语音
+    let totalBalanceVoiceAmount = 0;
+    // 语音
+    if (response?.voiceAmount && response?.voiceBalance) {
+      totalVoiceAmount = response.voiceAmount;
+      totalBalanceVoiceAmount = response.voiceBalance;
     }
+    // 流量&语音
+    let isUnlimitedFlow = false;
+    response?.items?.forEach((data) => {
+      if (data.offerType !== 19) {
+        data.items?.forEach((item) => {
+          if (item.unitTypeId == 3) {
+            if (!(item.usageAmount == 0 && item.balanceAmount == 0)) {
+              let ratableResourcename = item.ratableResourcename;
+              let ratableAmount = item.ratableAmount;
+              let balanceAmount = item.balanceAmount;
+              let usedAmount = ratableAmount - balanceAmount;
+              if (filterOrientateFlow && ratableResourcename.search('定向') != -1 || balanceAmount == '999999999999') {
+                ratableAmount = 0;
+                balanceAmount = 0;
+              }
+              totalFlowAmount += parseFloat(ratableAmount);
+              totalBalanceFlowAmount += parseFloat(balanceAmount);
+            }
+            totalUsedFlowAmount += parseFloat(item.usageAmount);
+            if (showUsedFlow) {
+              this.flow.title = '流量已用';
+            }
+            if (data.offerType == 21 && item.ratableAmount == '0') {
+              // 无限流量用户
+              isUnlimitedFlow = true;
+            }
+          } else if (!response.voiceBalance && item.unitTypeId == 1) {
+            totalVoiceAmount += parseInt(item.ratableAmount);
+            totalBalanceVoiceAmount += parseInt(item.balanceAmount);
+          }
+        });
+      }
+    });
+    const totalFlowObj = this.formatFlow(totalFlowAmount);
+    const totalBalanceFlowObj = this.formatFlow(totalBalanceFlowAmount);
+    const totalUsedFlowObj = this.formatFlow(totalUsedFlowAmount);
+    const finalBalanceFlowObj = showUsedFlow ? totalUsedFlowObj : totalBalanceFlowObj;
+    
+    // 设置流量
+    this.flow.percent = ((totalBalanceFlowAmount / (totalFlowAmount || 1)) * 100).toFixed(2);
+    this.flow.number = finalBalanceFlowObj.amount;
+    this.flow.unit = finalBalanceFlowObj.unit;
+    if (isUnlimitedFlow) {
+      const usageAmountObj = this.formatFlow(totalUsedFlowAmount);
+      this.flow.title = '流量已用';
+      this.flow.number = usageAmountObj.amount;
+      this.flow.unit = usageAmountObj.unit;
+      this.flow.en = usageAmountObj.unit;
+    }
+    // 设置语音
+    this.voice.percent = ((totalBalanceVoiceAmount / (totalVoiceAmount || 1)) * 100).toFixed(2);
+    this.voice.number = totalBalanceVoiceAmount;
 
     const balance = await this.http({
       url: this.fetchUrl.balance,
@@ -1419,6 +1448,23 @@ class Widget extends DmYY {
             title: '组件样式',
             options: ['1', '2', '3', '4', '5', '6'],
             val: 'widgetStyle',
+          },
+        ],
+      });
+      this.registerAction({
+        title: '流量设置',
+        menu: [
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/filterOrientateFlow.png',
+            type: 'switch',
+            title: '过滤定向',
+            val: 'filterOrientateFlow',
+          },
+          {
+            url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/showUsedFlow.png',
+            type: 'switch',
+            title: '显示已用',
+            val: 'showUsedFlow',
           },
         ],
       });
