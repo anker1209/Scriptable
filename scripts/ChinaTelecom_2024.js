@@ -9,7 +9,7 @@
  * version: 2.1.1
  * update: 2024/12/06
  * 原创UI，修改套用请注明来源
- * 联通cookie重写：https://raw.githubusercontent.com/dompling/Script/master/10010/index.js
+ * 电信cookie重写：https://raw.githubusercontent.com/dompling/Script/master/10000/index.js
 */
 
 if (typeof require === 'undefined') require = importModule;
