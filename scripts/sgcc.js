@@ -1,12 +1,9 @@
-// Variables used by Scriptable.
-// These must be at the very top of the file. Do not edit.
-// icon-color: cyan; icon-glyph: magic;
 /*
  * @author: 脑瓜
  * @feedback: https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.3
- * update: 2024/12/02
+ * version: 2.3.1
+ * update: 2025/01/02
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，重写修改自作者@Yuheng0101
  * 重写: https://raw.githubusercontent.com/dompling/Script/master/wsgw/index.js
@@ -26,7 +23,7 @@ class Widget extends DmYY {
     this.Run();
   };
 
-  version = '2.3';
+  version = '2.3.1';
 
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
@@ -402,6 +399,12 @@ class Widget extends DmYY {
     var logo;
     if (this.settings.logoImg ==='铁塔') {
       logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw2.png', 'tower.png');
+    } else if (this.settings.logoImg ==='不显示') {
+      let context = new DrawContext();
+      context.size = new Size(1, 1);
+      context.opaque = false; context.setFillColor(new Color('#FFFFFF', 0));
+      context.fillRect(new Rect(0, 0, 1, 1)); 
+      logo = context.getImage();
     } else if (this.settings.logoImg ==='国家电网' || !this.settings.logoImg || !this.settings.customizeUrl) {
       logo = await this.getImageByUrl('https://raw.githubusercontent.com/anker1209/icon/main/gjdw.png', 'wsgw.png');
     } else {
@@ -1119,12 +1122,12 @@ class Widget extends DmYY {
           elePq: parseFloat(item.dayElePq),
         }));
         
-      this.monthElePq = billData.monthElecQuantity.mothEleList
-        .map((item) => ({
-          label: item.month,
-          elePq: parseFloat(item.monthEleNum),
-          cost: parseFloat(item.monthEleCost),
-        }));
+      this.monthElePq = (billData.monthElecQuantity?.mothEleList?? [])
+      .map((item) => ({
+        label: item.month,
+        elePq: parseFloat(item.monthEleNum),
+        cost: parseFloat(item.monthEleCost),
+      }));
 
       this.isOverdue = billData.arrearsOfFees;
       this.isPostPaid = billData.eleBill.hasOwnProperty('accountBalance') ? true : false;
@@ -1263,7 +1266,7 @@ class Widget extends DmYY {
     headerStack.addSpacer();
     let wsgw = headerStack.addImage(await this.getLogo());
     wsgw.imageSize = new Size(26 * this.SCALE, 26 * this.SCALE);
-    wsgw.tintColor = new Color(this.smallStackColor);
+    if (this.smallStackColor !== '#3A9690') wsgw.tintColor = new Color(this.smallStackColor);
     stack.addSpacer();
     //  进度条
     const stepByMonth = this.settings.stepMode === '月';
@@ -1583,7 +1586,7 @@ class Widget extends DmYY {
     const balanceStackBgcolor = Color.dynamic(new Color(this.settings.rightDayColor || "#E2E2E7"), new Color(this.settings.rightNightColor || "#2C2C2F"));
     this.setBalanceStack(leftStack, balanceStackBgcolor, 8 * this.SCALE, this.size.balance, this.size.smallFont, 4.5);
     leftStack.addSpacer(15);
-    this.split(bodyStack, 0.2, 0, true);
+    this.split(bodyStack, 0.5, 0, true);
     //  右侧Stack
     const rightStack = bodyStack.addStack();
     rightStack.setPadding(15, 15, 15, 15);
@@ -2017,7 +2020,7 @@ class Widget extends DmYY {
             url: 'https://raw.githubusercontent.com/anker1209/Scriptable/main/icon/logoImg.png',
             type: 'select',
             title: 'LOGO显示',
-            options: ['国家电网', '铁塔', '自定义'],
+            options: ['国家电网', '铁塔', '自定义', '不显示'],
             val: 'logoImg',
           },
           {
