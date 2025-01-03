@@ -2,8 +2,8 @@
  * @author: 脑瓜
  * @feedback: https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.3.1
- * update: 2025/01/02
+ * version: 2.3.2
+ * update: 2025/01/03
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，重写修改自作者@Yuheng0101
  * 重写: https://raw.githubusercontent.com/dompling/Script/master/wsgw/index.js
@@ -23,7 +23,7 @@ class Widget extends DmYY {
     this.Run();
   };
 
-  version = '2.3.1';
+  version = '2.3.2';
 
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
@@ -1140,12 +1140,12 @@ class Widget extends DmYY {
       this.remainFee = this.isPostPaid ? accountBalance : sumMoney; // 自定义显示
       
       this.currentMonthEle = this.getSumForCurrentMonth(this.dayElePq);
-      this.monthUsage = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleNum);
-      this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList).monthEleCost).toFixed(2);
-      this.yearUsage = parseFloat(billData.monthElecQuantity.dataInfo.totalEleNum) + Math.round(this.currentMonthEle);
-      this.yearFee = parseFloat(billData.monthElecQuantity.dataInfo.totalEleCost).toFixed(2);
+      this.monthUsage = parseFloat(this.last(billData.monthElecQuantity.mothEleList)?.monthEleNum??0);
+      this.monthFee = parseFloat(this.last(billData.monthElecQuantity.mothEleList)?.monthEleCost??0).toFixed(2);
+      this.yearUsage = parseFloat(billData.monthElecQuantity.dataInfo?.totalEleNum??0) + Math.round(this.currentMonthEle);
+      this.yearFee = parseFloat(billData.monthElecQuantity.dataInfo?.totalEleCost??0).toFixed(2);
       
-      this.stepEle = parseFloat(billData.stepElecQuantity?.[0].electricParticulars.totalYearPq || billData.monthElecQuantity.dataInfo.totalEleNum) + Math.round(this.currentMonthEle);
+      this.stepEle = parseFloat(billData.stepElecQuantity?.[0].electricParticulars.totalYearPq || billData.monthElecQuantity.dataInfo?.totalEleNum || 0) + Math.round(this.currentMonthEle);
       if (this.settings.stepMode === '双月') this.stepEle = this.getBimonthlyStepEle();
     } catch (e) {
       console.log(e);
