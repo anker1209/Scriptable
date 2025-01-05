@@ -2,7 +2,7 @@
  * @author: 脑瓜
  * @feedback: https://t.me/Scriptable_CN
  * telegram: @anker1209
- * version: 2.3.2
+ * version: 2.3.3
  * update: 2025/01/03
  * 原创UI，修改套用请注明来源
  * 使用该脚本需DmYY依赖及添加重写，重写修改自作者@Yuheng0101
@@ -23,7 +23,7 @@ class Widget extends DmYY {
     this.Run();
   };
 
-  version = '2.3.2';
+  version = '2.3.3';
 
   fm = FileManager.local();
   CACHE_FOLDER = Script.name();
@@ -152,6 +152,8 @@ class Widget extends DmYY {
       const dayAmount = parseFloat(this.settings.dayAmount) || 5;
       const dayOpt = this.dayElePq.map((item) => item.elePq).reverse();
       if (dayOpt.every(num => num === 0)) return;
+      const result = [...dayOpt].slice(-dayAmount);
+      if (result.every(num => num === 0)) return;
       const dayChart = bodyStack.addImage(this.chartBar(dayOpt, dayAmount));
       dayChart.imageSize = new Size((dayAmount * 18 - 10) * scale, 50 * scale);
       break;
