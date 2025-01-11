@@ -4,7 +4,7 @@
 // Author: 2Ya UI: 脑瓜 https://t.me/Scriptable_JS
 // 该脚本依赖DmYY及Calendar: https://github.com/dompling/Scriptable/tree/master/Scripts
 // version:1.0.3
-// update:2021/03/14
+// update:2021/03/15
 
 // 添加require，是为了vscode中可以正确引入包，以获得自动补全等功能
 if (typeof require === "undefined") require = importModule;
